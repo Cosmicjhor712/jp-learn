@@ -1,0 +1,133 @@
+[
+  {
+    "id": "lesson-1",
+    "title": "第1課：自己紹介（じこしょうかい）",
+    "description": "用「〜は〜です」介绍自己和他人的身份",
+    "vocabulary": [
+      { "id": "watashi", "japanese": "わたし", "english": "我", "partOfSpeech": "代名詞" },
+      { "id": "anata", "japanese": "あなた", "english": "你", "partOfSpeech": "代名詞" },
+      { "id": "gakusei", "japanese": "がくせい", "english": "学生", "partOfSpeech": "名詞" },
+      { "id": "sensei", "japanese": "せんせい", "english": "老师", "partOfSpeech": "名詞" },
+      { "id": "nihonjin", "japanese": "にほんじん", "english": "日本人", "partOfSpeech": "名詞" },
+      { "id": "kaishain", "japanese": "かいしゃいん", "english": "公司职员", "partOfSpeech": "名詞" },
+      { "id": "desu", "japanese": "です", "english": "是（礼貌体）", "partOfSpeech": "助動詞" },
+      { "id": "wa", "japanese": "は", "english": "（主题标记助词）", "partOfSpeech": "助詞" },
+      { "id": "ka", "japanese": "か", "english": "（疑问助词，放句尾表疑问）", "partOfSpeech": "助詞" },
+      { "id": "hai", "japanese": "はい", "english": "是 / 对", "partOfSpeech": "感動詞" },
+      { "id": "iie", "japanese": "いいえ", "english": "不 / 不是", "partOfSpeech": "感動詞" },
+      { "id": "no", "japanese": "の", "english": "的（所属）", "partOfSpeech": "助詞" }
+    ],
+    "grammar": [
+      {
+        "pattern": "A は B です",
+        "explanation": "「A 是 B」——日语最基本的判断句。は读作 wa（不是 ha）。句尾 です 表示礼貌。",
+        "example": "わたし は がくせい です。（我是学生。）"
+      },
+      {
+        "pattern": "A は B ですか",
+        "explanation": "「A 是 B 吗？」——在句尾加 か 变成疑问句。日语疑问句不用问号，用句号。",
+        "example": "あなた は せんせい ですか。（你是老师吗？）"
+      },
+      {
+        "pattern": "A の B",
+        "explanation": "「A 的 B」——の 连接两个名词表示所属或属性。",
+        "example": "わたし の ほん（我的书）"
+      }
+    ],
+    "sentences": [
+      { "id": "s1-1", "english": "我是学生。", "japanese": "わたしはがくせいです", "grammarNote": "A は B です" },
+      { "id": "s1-2", "english": "你是老师吗？", "japanese": "あなたはせんせいですか", "grammarNote": "A は B ですか" },
+      { "id": "s1-3", "english": "是的，我是老师。", "japanese": "はい、わたしはせんせいです" },
+      { "id": "s1-4", "english": "不，我是学生。", "japanese": "いいえ、わたしはがくせいです" },
+      { "id": "s1-5", "english": "我是日本人。", "japanese": "わたしはにほんじんです" },
+      { "id": "s1-6", "english": "你是公司职员吗？", "japanese": "あなたはかいしゃいんですか" }
+    ]
+  },
+  {
+    "id": "lesson-2",
+    "title": "第2課：これは何？（これはなんですか）",
+    "description": "用「こそあど」指示词询问和指认物品",
+    "vocabulary": [
+      { "id": "kore", "japanese": "これ", "english": "这个（离说话人近）", "partOfSpeech": "代名詞" },
+      { "id": "sore", "japanese": "それ", "english": "那个（离听话人近）", "partOfSpeech": "代名詞" },
+      { "id": "are", "japanese": "あれ", "english": "那个（离双方都远）", "partOfSpeech": "代名詞" },
+      { "id": "nan", "japanese": "なん", "english": "什么", "partOfSpeech": "代名詞" },
+      { "id": "hon", "japanese": "ほん", "english": "书", "partOfSpeech": "名詞" },
+      { "id": "tsukue", "japanese": "つくえ", "english": "桌子", "partOfSpeech": "名詞" },
+      { "id": "pen", "japanese": "ペン", "english": "笔", "partOfSpeech": "名詞" },
+      { "id": "kaban", "japanese": "かばん", "english": "包", "partOfSpeech": "名詞" },
+      { "id": "isu", "japanese": "いす", "english": "椅子", "partOfSpeech": "名詞" },
+      { "id": "keitai", "japanese": "けいたい", "english": "手机", "partOfSpeech": "名詞" },
+      { "id": "dare", "japanese": "だれ", "english": "谁", "partOfSpeech": "代名詞" },
+      { "id": "to", "japanese": "と", "english": "和（并列）", "partOfSpeech": "助詞" }
+    ],
+    "grammar": [
+      {
+        "pattern": "これは N です",
+        "explanation": "「这个是 N」——これ（这个）指离说话人近的物品。それ（那个）指离听话人近的。あれ指离双方都远的。",
+        "example": "これは ほん です。（这是书。）"
+      },
+      {
+        "pattern": "これは なん ですか",
+        "explanation": "「这是什么？」——なん 是「什么」。注意 なん 放在名词前面，单独用时也用 なん。",
+        "example": "それは なん ですか。（那是什么？）"
+      },
+      {
+        "pattern": "A と B",
+        "explanation": "「A 和 B」——と 连接两个名词表示并列。",
+        "example": "ほん と ペン（书和笔）"
+      }
+    ],
+    "sentences": [
+      { "id": "s2-1", "english": "这是什么？", "japanese": "これはなんですか", "grammarNote": "これは なん ですか" },
+      { "id": "s2-2", "english": "那是书。", "japanese": "それはほんです" },
+      { "id": "s2-3", "english": "那个（远处）是什么？", "japanese": "あれはなんですか" },
+      { "id": "s2-4", "english": "这个是我的包。", "japanese": "これはわたしのかばんです", "grammarNote": "A の B" },
+      { "id": "s2-5", "english": "那是老师的桌子。", "japanese": "それはせんせいのつくえです" },
+      { "id": "s2-6", "english": "这是书和笔。", "japanese": "これはほんとペンです", "grammarNote": "A と B" }
+    ]
+  },
+  {
+    "id": "lesson-3",
+    "title": "第3課：数字と時間（すうじとじかん）",
+    "description": "学会数字 1-10 及时间的表达方式",
+    "vocabulary": [
+      { "id": "ichi", "japanese": "いち", "english": "一", "partOfSpeech": "数字" },
+      { "id": "ni", "japanese": "に", "english": "二", "partOfSpeech": "数字" },
+      { "id": "san", "japanese": "さん", "english": "三", "partOfSpeech": "数字" },
+      { "id": "yon", "japanese": "よん", "english": "四", "partOfSpeech": "数字" },
+      { "id": "go", "japanese": "ご", "english": "五", "partOfSpeech": "数字" },
+      { "id": "roku", "japanese": "ろく", "english": "六", "partOfSpeech": "数字" },
+      { "id": "nana", "japanese": "なな", "english": "七", "partOfSpeech": "数字" },
+      { "id": "hachi", "japanese": "はち", "english": "八", "partOfSpeech": "数字" },
+      { "id": "kyuu", "japanese": "きゅう", "english": "九", "partOfSpeech": "数字" },
+      { "id": "juu", "japanese": "じゅう", "english": "十", "partOfSpeech": "数字" },
+      { "id": "ji", "japanese": "じ", "english": "〜点（钟）", "partOfSpeech": "接尾語" },
+      { "id": "fun", "japanese": "ふん", "english": "〜分（分钟）", "partOfSpeech": "接尾語" },
+      { "id": "ima", "japanese": "いま", "english": "现在", "partOfSpeech": "名詞" },
+      { "id": "nanji", "japanese": "なんじ", "english": "几点", "partOfSpeech": "代名詞" },
+      { "id": "gozen", "japanese": "ごぜん", "english": "上午 (AM)", "partOfSpeech": "名詞" },
+      { "id": "gogo", "japanese": "ごご", "english": "下午 (PM)", "partOfSpeech": "名詞" }
+    ],
+    "grammar": [
+      {
+        "pattern": "〜時〜分です",
+        "explanation": "「现在是 X 点 Y 分」——じ 接在数字后表示「点」，ふん（或 ぷん）接在数字后表示「分」。注意：分 的发音会随前面数字变化：いっぷん(1分)、にふん(2分)、さんぷん(3分)、よんぷん(4分)…",
+        "example": "いま さんじ じゅうごふん です。（现在是3点15分。）"
+      },
+      {
+        "pattern": "今 〜時ですか",
+        "explanation": "「现在几点？」——なんじ 是「几点」的意思。",
+        "example": "いま なんじ ですか。（现在几点？）"
+      }
+    ],
+    "sentences": [
+      { "id": "s3-1", "english": "现在几点？", "japanese": "いまなんじですか", "grammarNote": "今 何時ですか" },
+      { "id": "s3-2", "english": "现在是三点。", "japanese": "いまさんじです" },
+      { "id": "s3-3", "english": "现在是上午八点。", "japanese": "いまごぜんはちじです" },
+      { "id": "s3-4", "english": "现在是下午五点。", "japanese": "いまごごごじです" },
+      { "id": "s3-5", "english": "一、二、三、四、五。", "japanese": "いち、に、さん、よん、ご" },
+      { "id": "s3-6", "english": "六、七、八、九、十。", "japanese": "ろく、なな、はち、きゅう、じゅう" }
+    ]
+  }
+]
