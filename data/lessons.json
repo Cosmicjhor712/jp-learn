@@ -4,130 +4,2710 @@
     "title": "第1課：自己紹介（じこしょうかい）",
     "description": "用「〜は〜です」介绍自己和他人的身份",
     "vocabulary": [
-      { "id": "watashi", "japanese": "わたし", "english": "我", "partOfSpeech": "代名詞" },
-      { "id": "anata", "japanese": "あなた", "english": "你", "partOfSpeech": "代名詞" },
-      { "id": "gakusei", "japanese": "がくせい", "english": "学生", "partOfSpeech": "名詞" },
-      { "id": "sensei", "japanese": "せんせい", "english": "老师", "partOfSpeech": "名詞" },
-      { "id": "nihonjin", "japanese": "にほんじん", "english": "日本人", "partOfSpeech": "名詞" },
-      { "id": "kaishain", "japanese": "かいしゃいん", "english": "公司职员", "partOfSpeech": "名詞" },
-      { "id": "desu", "japanese": "です", "english": "是（礼貌体）", "partOfSpeech": "助動詞" },
-      { "id": "wa", "japanese": "は", "english": "（主题标记助词）", "partOfSpeech": "助詞" },
-      { "id": "ka", "japanese": "か", "english": "（疑问助词，放句尾表疑问）", "partOfSpeech": "助詞" },
-      { "id": "hai", "japanese": "はい", "english": "是 / 对", "partOfSpeech": "感動詞" },
-      { "id": "iie", "japanese": "いいえ", "english": "不 / 不是", "partOfSpeech": "感動詞" },
-      { "id": "no", "japanese": "の", "english": "的（所属）", "partOfSpeech": "助詞" }
+      {
+        "id": "lesson-1_watashi",
+        "japanese": "わたし",
+        "english": "我",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-1_anata",
+        "japanese": "あなた",
+        "english": "你",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-1_kare",
+        "japanese": "かれ",
+        "english": "他",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-1_kanojo",
+        "japanese": "かのじょ",
+        "english": "她",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-1_gakusei",
+        "japanese": "がくせい",
+        "english": "学生",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-1_sensei",
+        "japanese": "せんせい",
+        "english": "老师",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-1_kaishain",
+        "japanese": "かいしゃいん",
+        "english": "公司职员",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-1_nihonjin",
+        "japanese": "にほんじん",
+        "english": "日本人",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-1_amerikajin",
+        "japanese": "あめりかじん",
+        "english": "美国人",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-1_chuugokujin",
+        "japanese": "ちゅうごくじん",
+        "english": "中国人",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-1_desu",
+        "japanese": "です",
+        "english": "是（礼貌体）",
+        "partOfSpeech": "助動詞"
+      },
+      {
+        "id": "lesson-1_wa",
+        "japanese": "は",
+        "english": "（主题标记助词，读 wa）",
+        "partOfSpeech": "助詞"
+      },
+      {
+        "id": "lesson-1_ka",
+        "japanese": "か",
+        "english": "（疑问终助词）",
+        "partOfSpeech": "助詞"
+      },
+      {
+        "id": "lesson-1_hai",
+        "japanese": "はい",
+        "english": "是的 / 对",
+        "partOfSpeech": "感動詞"
+      },
+      {
+        "id": "lesson-1_iie",
+        "japanese": "いいえ",
+        "english": "不 / 不是",
+        "partOfSpeech": "感動詞"
+      },
+      {
+        "id": "lesson-1_no",
+        "japanese": "の",
+        "english": "的（所属）",
+        "partOfSpeech": "助詞"
+      }
     ],
     "grammar": [
       {
         "pattern": "A は B です",
-        "explanation": "「A 是 B」——日语最基本的判断句。は读作 wa（不是 ha）。句尾 です 表示礼貌。",
-        "example": "わたし は がくせい です。（我是学生。）"
+        "explanation": "「A 是 B」日语最基本的判断句。は读作 wa（不是 ha）。",
+        "example": "わたし は がくせい です。"
       },
       {
         "pattern": "A は B ですか",
-        "explanation": "「A 是 B 吗？」——在句尾加 か 变成疑问句。日语疑问句不用问号，用句号。",
-        "example": "あなた は せんせい ですか。（你是老师吗？）"
+        "explanation": "「A 是 B 吗？」句尾加 か 变成疑问句。",
+        "example": "あなた は せんせい ですか。"
       },
       {
         "pattern": "A の B",
-        "explanation": "「A 的 B」——の 连接两个名词表示所属或属性。",
-        "example": "わたし の ほん（我的书）"
+        "explanation": "「A 的 B」——の 连接两个名词表示所属。",
+        "example": "わたし の ほん"
       }
     ],
     "sentences": [
-      { "id": "s1-1", "english": "我是学生。", "japanese": "わたしはがくせいです", "grammarNote": "A は B です" },
-      { "id": "s1-2", "english": "你是老师吗？", "japanese": "あなたはせんせいですか", "grammarNote": "A は B ですか" },
-      { "id": "s1-3", "english": "是的，我是老师。", "japanese": "はい、わたしはせんせいです" },
-      { "id": "s1-4", "english": "不，我是学生。", "japanese": "いいえ、わたしはがくせいです" },
-      { "id": "s1-5", "english": "我是日本人。", "japanese": "わたしはにほんじんです" },
-      { "id": "s1-6", "english": "你是公司职员吗？", "japanese": "あなたはかいしゃいんですか" }
+      {
+        "id": "lesson-1_s1-1",
+        "english": "我是学生。",
+        "japanese": "わたしはがくせいです",
+        "grammarNote": "A は B です"
+      },
+      {
+        "id": "lesson-1_s1-2",
+        "english": "你是老师吗？",
+        "japanese": "あなたはせんせいですか",
+        "grammarNote": "A は B ですか"
+      },
+      {
+        "id": "lesson-1_s1-3",
+        "english": "是的，我是老师。",
+        "japanese": "はい、わたしはせんせいです"
+      },
+      {
+        "id": "lesson-1_s1-4",
+        "english": "不，我是公司职员。",
+        "japanese": "いいえ、わたしはかいしゃいんです"
+      },
+      {
+        "id": "lesson-1_s1-5",
+        "english": "他是日本人吗？",
+        "japanese": "かれはにほんじんですか"
+      },
+      {
+        "id": "lesson-1_s1-6",
+        "english": "她是中国人。",
+        "japanese": "かのじょはちゅうごくじんです"
+      },
+      {
+        "id": "lesson-1_s1-7",
+        "english": "这是我的书。",
+        "japanese": "これはわたしのほんです",
+        "grammarNote": "A の B"
+      }
     ]
   },
   {
     "id": "lesson-2",
-    "title": "第2課：これは何？（これはなんですか）",
-    "description": "用「こそあど」指示词询问和指认物品",
+    "title": "第2課：これ・それ・あれ",
+    "description": "用指示词指认人和物品",
     "vocabulary": [
-      { "id": "kore", "japanese": "これ", "english": "这个（离说话人近）", "partOfSpeech": "代名詞" },
-      { "id": "sore", "japanese": "それ", "english": "那个（离听话人近）", "partOfSpeech": "代名詞" },
-      { "id": "are", "japanese": "あれ", "english": "那个（离双方都远）", "partOfSpeech": "代名詞" },
-      { "id": "nan", "japanese": "なん", "english": "什么", "partOfSpeech": "代名詞" },
-      { "id": "hon", "japanese": "ほん", "english": "书", "partOfSpeech": "名詞" },
-      { "id": "tsukue", "japanese": "つくえ", "english": "桌子", "partOfSpeech": "名詞" },
-      { "id": "pen", "japanese": "ペン", "english": "笔", "partOfSpeech": "名詞" },
-      { "id": "kaban", "japanese": "かばん", "english": "包", "partOfSpeech": "名詞" },
-      { "id": "isu", "japanese": "いす", "english": "椅子", "partOfSpeech": "名詞" },
-      { "id": "keitai", "japanese": "けいたい", "english": "手机", "partOfSpeech": "名詞" },
-      { "id": "dare", "japanese": "だれ", "english": "谁", "partOfSpeech": "代名詞" },
-      { "id": "to", "japanese": "と", "english": "和（并列）", "partOfSpeech": "助詞" }
+      {
+        "id": "lesson-2_kore",
+        "japanese": "これ",
+        "english": "这个（离说话人近）",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_sore",
+        "japanese": "それ",
+        "english": "那个（离听话人近）",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_are",
+        "japanese": "あれ",
+        "english": "那个（离双方都远）",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_dore",
+        "japanese": "どれ",
+        "english": "哪个",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_kono",
+        "japanese": "この",
+        "english": "这个（后接名词）",
+        "partOfSpeech": "連体詞"
+      },
+      {
+        "id": "lesson-2_sono",
+        "japanese": "その",
+        "english": "那个（后接名词）",
+        "partOfSpeech": "連体詞"
+      },
+      {
+        "id": "lesson-2_ano",
+        "japanese": "あの",
+        "english": "那个（后接名词）",
+        "partOfSpeech": "連体詞"
+      },
+      {
+        "id": "lesson-2_dono",
+        "japanese": "どの",
+        "english": "哪个（后接名词）",
+        "partOfSpeech": "連体詞"
+      },
+      {
+        "id": "lesson-2_koko",
+        "japanese": "ここ",
+        "english": "这里",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_soko",
+        "japanese": "そこ",
+        "english": "那里",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_asoko",
+        "japanese": "あそこ",
+        "english": "那边",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_doko",
+        "japanese": "どこ",
+        "english": "哪里",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_hon",
+        "japanese": "ほん",
+        "english": "书",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-2_tsukue",
+        "japanese": "つくえ",
+        "english": "桌子",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-2_pen",
+        "japanese": "ペン",
+        "english": "笔",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-2_kaban",
+        "japanese": "かばん",
+        "english": "包",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-2_isu",
+        "japanese": "いす",
+        "english": "椅子",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-2_nan",
+        "japanese": "なん",
+        "english": "什么",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-2_dare",
+        "japanese": "だれ",
+        "english": "谁",
+        "partOfSpeech": "代名詞"
+      }
     ],
     "grammar": [
       {
-        "pattern": "これは N です",
-        "explanation": "「这个是 N」——これ（这个）指离说话人近的物品。それ（那个）指离听话人近的。あれ指离双方都远的。",
-        "example": "これは ほん です。（这是书。）"
+        "pattern": "これ / それ / あれ",
+        "explanation": "これ=离我近的东西，それ=离你近的东西，あれ=离双方都远的东西。可以单独使用。",
+        "example": "これは ほんです。"
       },
       {
-        "pattern": "これは なん ですか",
-        "explanation": "「这是什么？」——なん 是「什么」。注意 なん 放在名词前面，单独用时也用 なん。",
-        "example": "それは なん ですか。（那是什么？）"
+        "pattern": "この / その / あの + N",
+        "explanation": "この、その、あの 必须后接名词，不能单独使用。",
+        "example": "この ほん は わたしのです。"
       },
       {
-        "pattern": "A と B",
-        "explanation": "「A 和 B」——と 连接两个名词表示并列。",
-        "example": "ほん と ペン（书和笔）"
+        "pattern": "ここ / そこ / あそこ",
+        "explanation": "指示地点：ここ=这里，そこ=那里，あそこ=那边。",
+        "example": "ここは がっこうです。"
+      },
+      {
+        "pattern": "〜は なんですか",
+        "explanation": "询问未知物品时用「なん」。",
+        "example": "それは なんですか。"
       }
     ],
     "sentences": [
-      { "id": "s2-1", "english": "这是什么？", "japanese": "これはなんですか", "grammarNote": "これは なん ですか" },
-      { "id": "s2-2", "english": "那是书。", "japanese": "それはほんです" },
-      { "id": "s2-3", "english": "那个（远处）是什么？", "japanese": "あれはなんですか" },
-      { "id": "s2-4", "english": "这个是我的包。", "japanese": "これはわたしのかばんです", "grammarNote": "A の B" },
-      { "id": "s2-5", "english": "那是老师的桌子。", "japanese": "それはせんせいのつくえです" },
-      { "id": "s2-6", "english": "这是书和笔。", "japanese": "これはほんとペンです", "grammarNote": "A と B" }
+      {
+        "id": "lesson-2_s2-1",
+        "english": "这是什么？",
+        "japanese": "これはなんですか"
+      },
+      {
+        "id": "lesson-2_s2-2",
+        "english": "那是书。",
+        "japanese": "それはほんです"
+      },
+      {
+        "id": "lesson-2_s2-3",
+        "english": "那个（远处）是什么？",
+        "japanese": "あれはなんですか"
+      },
+      {
+        "id": "lesson-2_s2-4",
+        "english": "这个是我的笔吗？",
+        "japanese": "これはあなたのペンですか"
+      },
+      {
+        "id": "lesson-2_s2-5",
+        "english": "那个包是谁的？",
+        "japanese": "そのかばんはだれのですか"
+      },
+      {
+        "id": "lesson-2_s2-6",
+        "english": "你的椅子是哪个？",
+        "japanese": "あなたのいすはどれですか"
+      },
+      {
+        "id": "lesson-2_s2-7",
+        "english": "这里是我的学校。",
+        "japanese": "ここはわたしのがっこうです"
+      },
+      {
+        "id": "lesson-2_s2-8",
+        "english": "你的桌子在哪里？",
+        "japanese": "あなたのつくえはどこですか"
+      }
     ]
   },
   {
     "id": "lesson-3",
-    "title": "第3課：数字と時間（すうじとじかん）",
-    "description": "学会数字 1-10 及时间的表达方式",
+    "title": "第3課：数字と時間",
+    "description": "学会数字 1-100 及时间的表达方式",
     "vocabulary": [
-      { "id": "ichi", "japanese": "いち", "english": "一", "partOfSpeech": "数字" },
-      { "id": "ni", "japanese": "に", "english": "二", "partOfSpeech": "数字" },
-      { "id": "san", "japanese": "さん", "english": "三", "partOfSpeech": "数字" },
-      { "id": "yon", "japanese": "よん", "english": "四", "partOfSpeech": "数字" },
-      { "id": "go", "japanese": "ご", "english": "五", "partOfSpeech": "数字" },
-      { "id": "roku", "japanese": "ろく", "english": "六", "partOfSpeech": "数字" },
-      { "id": "nana", "japanese": "なな", "english": "七", "partOfSpeech": "数字" },
-      { "id": "hachi", "japanese": "はち", "english": "八", "partOfSpeech": "数字" },
-      { "id": "kyuu", "japanese": "きゅう", "english": "九", "partOfSpeech": "数字" },
-      { "id": "juu", "japanese": "じゅう", "english": "十", "partOfSpeech": "数字" },
-      { "id": "ji", "japanese": "じ", "english": "〜点（钟）", "partOfSpeech": "接尾語" },
-      { "id": "fun", "japanese": "ふん", "english": "〜分（分钟）", "partOfSpeech": "接尾語" },
-      { "id": "ima", "japanese": "いま", "english": "现在", "partOfSpeech": "名詞" },
-      { "id": "nanji", "japanese": "なんじ", "english": "几点", "partOfSpeech": "代名詞" },
-      { "id": "gozen", "japanese": "ごぜん", "english": "上午 (AM)", "partOfSpeech": "名詞" },
-      { "id": "gogo", "japanese": "ごご", "english": "下午 (PM)", "partOfSpeech": "名詞" }
+      {
+        "id": "lesson-3_ichi",
+        "japanese": "いち",
+        "english": "一",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_ni",
+        "japanese": "に",
+        "english": "二",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_san",
+        "japanese": "さん",
+        "english": "三",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_yon",
+        "japanese": "よん",
+        "english": "四",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_go",
+        "japanese": "ご",
+        "english": "五",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_roku",
+        "japanese": "ろく",
+        "english": "六",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_nana",
+        "japanese": "なな",
+        "english": "七",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_hachi",
+        "japanese": "はち",
+        "english": "八",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_kyuu",
+        "japanese": "きゅう",
+        "english": "九",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_juu",
+        "japanese": "じゅう",
+        "english": "十",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_hyaku",
+        "japanese": "ひゃく",
+        "english": "百",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_sen",
+        "japanese": "せん",
+        "english": "千",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_zero",
+        "japanese": "ぜろ",
+        "english": "零",
+        "partOfSpeech": "数字"
+      },
+      {
+        "id": "lesson-3_ji",
+        "japanese": "じ",
+        "english": "〜点（小时）",
+        "partOfSpeech": "接尾語"
+      },
+      {
+        "id": "lesson-3_fun",
+        "japanese": "ふん",
+        "english": "〜分（分钟）",
+        "partOfSpeech": "接尾語"
+      },
+      {
+        "id": "lesson-3_han",
+        "japanese": "はん",
+        "english": "半（30分钟）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-3_ima",
+        "japanese": "いま",
+        "english": "现在",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-3_nanji",
+        "japanese": "なんじ",
+        "english": "几点",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-3_gozen",
+        "japanese": "ごぜん",
+        "english": "上午",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-3_gogo",
+        "japanese": "ごご",
+        "english": "下午",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-3_asa",
+        "japanese": "あさ",
+        "english": "早上",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-3_hiru",
+        "japanese": "ひる",
+        "english": "中午",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-3_yoru",
+        "japanese": "よる",
+        "english": "晚上",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-3_konnichiwa",
+        "japanese": "こんにちは",
+        "english": "你好（白天）",
+        "partOfSpeech": "感動詞"
+      },
+      {
+        "id": "lesson-3_konbanwa",
+        "japanese": "こんばんは",
+        "english": "晚上好",
+        "partOfSpeech": "感動詞"
+      },
+      {
+        "id": "lesson-3_ohayou",
+        "japanese": "おはよう",
+        "english": "早上好",
+        "partOfSpeech": "感動詞"
+      }
     ],
     "grammar": [
       {
-        "pattern": "〜時〜分です",
-        "explanation": "「现在是 X 点 Y 分」——じ 接在数字后表示「点」，ふん（或 ぷん）接在数字后表示「分」。注意：分 的发音会随前面数字变化：いっぷん(1分)、にふん(2分)、さんぷん(3分)、よんぷん(4分)…",
-        "example": "いま さんじ じゅうごふん です。（现在是3点15分。）"
+        "pattern": "数字 1-10",
+        "explanation": "いち〜じゅう 是基础数字。11=じゅういち，20=にじゅう，以此类推。",
+        "example": "いち、に、さん..."
       },
       {
-        "pattern": "今 〜時ですか",
-        "explanation": "「现在几点？」——なんじ 是「几点」的意思。",
-        "example": "いま なんじ ですか。（现在几点？）"
+        "pattern": "〜時〜分",
+        "explanation": "「X 点 Y 分」。じ 接数字后表小时。ふん/ぷん 接数字后表分钟（1分=いっぷん）。",
+        "example": "いま くじ です。（现在9点。）"
+      },
+      {
+        "pattern": "午前 / 午後",
+        "explanation": "午前=AM（上午），午後=PM（下午），放在时间前面。",
+        "example": "ごぜん はちじ（上午8点）"
       }
     ],
     "sentences": [
-      { "id": "s3-1", "english": "现在几点？", "japanese": "いまなんじですか", "grammarNote": "今 何時ですか" },
-      { "id": "s3-2", "english": "现在是三点。", "japanese": "いまさんじです" },
-      { "id": "s3-3", "english": "现在是上午八点。", "japanese": "いまごぜんはちじです" },
-      { "id": "s3-4", "english": "现在是下午五点。", "japanese": "いまごごごじです" },
-      { "id": "s3-5", "english": "一、二、三、四、五。", "japanese": "いち、に、さん、よん、ご" },
-      { "id": "s3-6", "english": "六、七、八、九、十。", "japanese": "ろく、なな、はち、きゅう、じゅう" }
+      {
+        "id": "lesson-3_s3-1",
+        "english": "现在几点？",
+        "japanese": "いまなんじですか"
+      },
+      {
+        "id": "lesson-3_s3-2",
+        "english": "现在是三点。",
+        "japanese": "いまさんじです"
+      },
+      {
+        "id": "lesson-3_s3-3",
+        "english": "现在几点十五分？",
+        "japanese": "いまなんじじゅうごふんですか"
+      },
+      {
+        "id": "lesson-3_s3-4",
+        "english": "现在是上午八点。",
+        "japanese": "いまごぜんはちじです"
+      },
+      {
+        "id": "lesson-3_s3-5",
+        "english": "现在是下午五点。",
+        "japanese": "いまごごごじです"
+      },
+      {
+        "id": "lesson-3_s3-6",
+        "english": "我早上六点起床。",
+        "japanese": "わたしはあさろくじにおきます"
+      },
+      {
+        "id": "lesson-3_s3-7",
+        "english": "你好！现在几点？",
+        "japanese": "こんにちは！いまなんじですか"
+      }
+    ]
+  },
+  {
+    "id": "lesson-4",
+    "title": "第4課：動詞（どうし）",
+    "description": "学习基本动词和「〜ます」活用",
+    "vocabulary": [
+      {
+        "id": "lesson-4_taberu",
+        "japanese": "たべます",
+        "english": "吃",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_nomu",
+        "japanese": "のみます",
+        "english": "喝",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_miru",
+        "japanese": "みます",
+        "english": "看",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_kiku",
+        "japanese": "ききます",
+        "english": "听",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_yomu",
+        "japanese": "よみます",
+        "english": "读",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_kaku",
+        "japanese": "かきます",
+        "english": "写",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_hanasu",
+        "japanese": "はなします",
+        "english": "说",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_suru",
+        "japanese": "します",
+        "english": "做",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_benkyou_suru",
+        "japanese": "べんきょうします",
+        "english": "学习",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_shigoto_suru",
+        "japanese": "しごとします",
+        "english": "工作",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_iku",
+        "japanese": "いきます",
+        "english": "去",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_kuru",
+        "japanese": "きます",
+        "english": "来",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_kaeru",
+        "japanese": "かえります",
+        "english": "回（家）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_ouen_suru",
+        "japanese": "おうえんします",
+        "english": "加油 / 支援",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-4_go_hangyou_ban_desu",
+        "japanese": "ごはん",
+        "english": "饭",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-4_ocha",
+        "japanese": "おちゃ",
+        "english": "茶",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-4_mizu",
+        "japanese": "みず",
+        "english": "水",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-4_eiga",
+        "japanese": "えいが",
+        "english": "电影",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-4_ongaku",
+        "japanese": "おんがく",
+        "english": "音乐",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-4_shimbun",
+        "japanese": "しんぶん",
+        "english": "报纸",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-4_tegami",
+        "japanese": "てがみ",
+        "english": "信",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-4_hon_wo_yomu",
+        "japanese": "ほん",
+        "english": "书",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "動詞ます形",
+        "explanation": "日语动词以「ます」结尾表示礼貌体。基本变形：食べる→食べます、飲む→飲みます。",
+        "example": "わたしは ごはんを たべます。"
+      },
+      {
+        "pattern": "を（目的語マーカー）",
+        "explanation": "助词「を」标记动作的对象（宾语），读作 o。",
+        "example": "おちゃを のみます。"
+      },
+      {
+        "pattern": "に（時間マーカー）",
+        "explanation": "助词「に」标记动作发生的时间点。",
+        "example": "くじに べんきょうします。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-4_s4-1",
+        "english": "我吃饭。",
+        "japanese": "わたしはごはんをたべます",
+        "grammarNote": "〜を〜ます"
+      },
+      {
+        "id": "lesson-4_s4-2",
+        "english": "喝茶。",
+        "japanese": "おちゃをのみます"
+      },
+      {
+        "id": "lesson-4_s4-3",
+        "english": "我看电影。",
+        "japanese": "えいがをみます"
+      },
+      {
+        "id": "lesson-4_s4-4",
+        "english": "我听音乐。",
+        "japanese": "おんがくをききます"
+      },
+      {
+        "id": "lesson-4_s4-5",
+        "english": "我学习日语。",
+        "japanese": "にほんごをべんきょうします"
+      },
+      {
+        "id": "lesson-4_s4-6",
+        "english": "我六点回家。",
+        "japanese": "ろくじにかえります"
+      },
+      {
+        "id": "lesson-4_s4-7",
+        "english": "我读报纸。",
+        "japanese": "しんぶんをよみます"
+      },
+      {
+        "id": "lesson-4_s4-8",
+        "english": "你去学校吗？",
+        "japanese": "がっこうにいきますか"
+      }
+    ]
+  },
+  {
+    "id": "lesson-5",
+    "title": "第5課：行く・来る・帰る",
+    "description": "学习移动动词和目的地表达",
+    "vocabulary": [
+      {
+        "id": "lesson-5_gakkou",
+        "japanese": "がっこう",
+        "english": "学校",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_toshokan",
+        "japanese": "としょかん",
+        "english": "图书馆",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_ginkou",
+        "japanese": "ぎんこう",
+        "english": "银行",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_yuubinkyoku",
+        "japanese": "ゆうびんきょく",
+        "english": "邮局",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_byouin",
+        "japanese": "びょういん",
+        "english": "医院",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_depaato",
+        "japanese": "でぱーと",
+        "english": "百货商店",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_resutoran",
+        "japanese": "れすとらん",
+        "english": "餐厅",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_eki",
+        "japanese": "えき",
+        "english": "车站",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_kouen",
+        "japanese": "こうえん",
+        "english": "公园",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_tatemono",
+        "japanese": "たてもの",
+        "english": "建筑",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_heya",
+        "japanese": "へや",
+        "english": "房间",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_ie",
+        "japanese": "いえ",
+        "english": "家",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_densha",
+        "japanese": "でんしゃ",
+        "english": "电车",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_basu",
+        "japanese": "ばす",
+        "english": "公交车",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_takushii",
+        "japanese": "たくしー",
+        "english": "出租车",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_jitensha",
+        "japanese": "じてんしゃ",
+        "english": "自行车",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-5_aruite",
+        "japanese": "あるいて",
+        "english": "步行",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-5_issho_ni",
+        "japanese": "いっしょに",
+        "english": "一起",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-5_dono_kurai",
+        "japanese": "どのくらい",
+        "english": "多久 / 多远",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-5_maiban",
+        "japanese": "まいばん",
+        "english": "每天晚上",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "へ（方向マーカー）",
+        "explanation": "助词「へ」表示移动的方向，读作 e（不是 he）。",
+        "example": "がっこうへ いきます。"
+      },
+      {
+        "pattern": "で（交通工具）",
+        "explanation": "助词「で」表示使用的交通工具。",
+        "example": "でんしゃで いきます。"
+      },
+      {
+        "pattern": "〜と いっしょに",
+        "explanation": "「と」表示共同动作的对象，「いっしょに」=一起。",
+        "example": "ともだちと いっしょに いきます。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-5_s5-1",
+        "english": "我去学校。",
+        "japanese": "わたしはがっこうへいきます",
+        "grammarNote": "〜へ いきます"
+      },
+      {
+        "id": "lesson-5_s5-2",
+        "english": "坐电车去车站。",
+        "japanese": "でんしゃでえきへいきます",
+        "grammarNote": "〜で"
+      },
+      {
+        "id": "lesson-5_s5-3",
+        "english": "和朋友一起去图书馆。",
+        "japanese": "ともだちといっしょにとしょかんへいきます",
+        "grammarNote": "〜と いっしょに"
+      },
+      {
+        "id": "lesson-5_s5-4",
+        "english": "我走路回家。",
+        "japanese": "あるいていえへかえります"
+      },
+      {
+        "id": "lesson-5_s5-5",
+        "english": "你每天怎么去学校？",
+        "japanese": "まいにちどうやってがっこうへいきますか"
+      },
+      {
+        "id": "lesson-5_s5-6",
+        "english": "我骑自行车去银行。",
+        "japanese": "じてんしゃでぎんこうへいきます"
+      },
+      {
+        "id": "lesson-5_s5-7",
+        "english": "妈妈八点去医院。",
+        "japanese": "ははははちじにびょういんへいきます"
+      }
+    ]
+  },
+  {
+    "id": "lesson-6",
+    "title": "第6課：形容詞（けいようし）",
+    "description": "学习い形容词和な形容词的用法",
+    "vocabulary": [
+      {
+        "id": "lesson-6_ookii",
+        "japanese": "おおきい",
+        "english": "大的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_chiisai",
+        "japanese": "ちいさい",
+        "english": "小的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_atarashii",
+        "japanese": "あたらしい",
+        "english": "新的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_furui",
+        "japanese": "ふるい",
+        "english": "旧的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_takai",
+        "japanese": "たかい",
+        "english": "贵的 / 高的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_yasui",
+        "japanese": "やすい",
+        "english": "便宜的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_omoshiroi",
+        "japanese": "おもしろい",
+        "english": "有趣的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_mazui",
+        "japanese": "まずい",
+        "english": "难吃的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_oishii",
+        "japanese": "おいしい",
+        "english": "好吃的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_kawaii",
+        "japanese": "かわいい",
+        "english": "可爱的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_samui",
+        "japanese": "さむい",
+        "english": "冷的（天气）",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_atsui",
+        "japanese": "あつい",
+        "english": "热的（天气/物品）",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_suzushii",
+        "japanese": "すずしい",
+        "english": "凉爽的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_shizuka_na",
+        "japanese": "しずかな",
+        "english": "安静的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_genki_na",
+        "japanese": "げんきな",
+        "english": "有精神的 / 健康的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_benri_na",
+        "japanese": "べんりな",
+        "english": "方便的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_nigiyaka_na",
+        "japanese": "にぎやかな",
+        "english": "热闹的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-6_kantan_na",
+        "japanese": "かんたんな",
+        "english": "简单的",
+        "partOfSpeech": "形容詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "い形容詞 + 名詞",
+        "explanation": "い形容词直接加名词，不需要「な」或「の」。",
+        "example": "おおきい いぬ（大狗）"
+      },
+      {
+        "pattern": "な形容詞 + 名詞",
+        "explanation": "な形容词加名词时中间要加「な」。",
+        "example": "しずかな へや（安静的房间）"
+      },
+      {
+        "pattern": "〜は 〜です（形容詞）",
+        "explanation": "形容词作谓语时：い形以「い」结尾直接加です；な形去掉「な」加です。",
+        "example": "この ほん は おもしろいです。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-6_s6-1",
+        "english": "这个手机很小。",
+        "japanese": "このけいたいはちいさいです"
+      },
+      {
+        "id": "lesson-6_s6-2",
+        "english": "我的房间很安静。",
+        "japanese": "わたしのへやはしずかです"
+      },
+      {
+        "id": "lesson-6_s6-3",
+        "english": "这个苹果很好吃。",
+        "japanese": "このりんごはおいしいです"
+      },
+      {
+        "id": "lesson-6_s6-4",
+        "english": "那本书很有趣。",
+        "japanese": "そのほんはおもしろいです"
+      },
+      {
+        "id": "lesson-6_s6-5",
+        "english": "今天是冷还是热？",
+        "japanese": "きょうはさむいですかあついですか"
+      },
+      {
+        "id": "lesson-6_s6-6",
+        "english": "日语简单吗？",
+        "japanese": "にほんごはかんたんですか"
+      },
+      {
+        "id": "lesson-6_s6-7",
+        "english": "这个包很方便。",
+        "japanese": "このかばんはべんりです"
+      }
+    ]
+  },
+  {
+    "id": "lesson-7",
+    "title": "第7課：すき・きらい",
+    "description": "表达喜好、愿望和感受",
+    "vocabulary": [
+      {
+        "id": "lesson-7_suki",
+        "japanese": "すき",
+        "english": "喜欢",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-7_daisuki",
+        "japanese": "だいすき",
+        "english": "很喜欢",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-7_kirai",
+        "japanese": "きらい",
+        "english": "不喜欢",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-7_dai_kirai",
+        "japanese": "だいきらい",
+        "english": "很讨厌",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-7_joozu",
+        "japanese": "じょうず",
+        "english": "擅长",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-7_heta",
+        "japanese": "へた",
+        "english": "不擅长",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-7_hoshii",
+        "japanese": "ほしい",
+        "english": "想要（物品）",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-7_tai",
+        "japanese": "たい",
+        "english": "想做（动词＋たい）",
+        "partOfSpeech": "助動詞"
+      },
+      {
+        "id": "lesson-7_want",
+        "japanese": "ほしい",
+        "english": "想要",
+        "partOfSpeech": "語彙"
+      },
+      {
+        "id": "lesson-7_sport",
+        "japanese": "スポーツ",
+        "english": "运动",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_tenisu",
+        "japanese": "てにす",
+        "english": "网球",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_sakkka",
+        "japanese": "さっかー",
+        "english": "足球",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_yakyuu",
+        "japanese": "やきゅう",
+        "english": "棒球",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_suiei",
+        "japanese": "すいえい",
+        "english": "游泳",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_ryouri",
+        "japanese": "りょうり",
+        "english": "烹饪 / 料理",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_tabi",
+        "japanese": "たび",
+        "english": "旅行",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_kuruma",
+        "japanese": "くるま",
+        "english": "车",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_nihongo",
+        "japanese": "にほんご",
+        "english": "日语",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-7_ongaku",
+        "japanese": "おんがく",
+        "english": "音乐",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "〜が すきです",
+        "explanation": "表达喜好：喜欢的事物用助词「が」标记。",
+        "example": "すしが すきです。"
+      },
+      {
+        "pattern": "〜が じょうずです",
+        "explanation": "表达擅长：描述某人的技能。",
+        "example": "かのじょは てにすが じょうずです。"
+      },
+      {
+        "pattern": "〜たいです",
+        "explanation": "表达想做某事：动词ます形去掉ます + たい。",
+        "example": "にほんへ いきたいです。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-7_s7-1",
+        "english": "我喜欢日语。",
+        "japanese": "にほんごがすきです"
+      },
+      {
+        "id": "lesson-7_s7-2",
+        "english": "你喜欢什么运动？",
+        "japanese": "どんなスポーツがすきですか"
+      },
+      {
+        "id": "lesson-7_s7-3",
+        "english": "我很喜欢猫。",
+        "japanese": "ねこがだいすきです"
+      },
+      {
+        "id": "lesson-7_s7-4",
+        "english": "他不喜欢吃鱼。",
+        "japanese": "かれはさかながきらいです"
+      },
+      {
+        "id": "lesson-7_s7-5",
+        "english": "妈妈很擅长做菜。",
+        "japanese": "はははりょうりがじょうずです"
+      },
+      {
+        "id": "lesson-7_s7-6",
+        "english": "我想去日本。",
+        "japanese": "にほんへいきたいです"
+      },
+      {
+        "id": "lesson-7_s7-7",
+        "english": "你想要什么？",
+        "japanese": "なにがほしいですか"
+      },
+      {
+        "id": "lesson-7_s7-8",
+        "english": "我想要新车。",
+        "japanese": "あたらしいくるまがほしいです"
+      }
+    ]
+  },
+  {
+    "id": "lesson-8",
+    "title": "第8課：あります・います",
+    "description": "表达事物的存在和位置",
+    "vocabulary": [
+      {
+        "id": "lesson-8_aru",
+        "japanese": "あります",
+        "english": "有（物品/事物）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-8_iru",
+        "japanese": "います",
+        "english": "有（人/动物）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-8_ue",
+        "japanese": "うえ",
+        "english": "上面",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_shita",
+        "japanese": "した",
+        "english": "下面",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_mae",
+        "japanese": "まえ",
+        "english": "前面",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_ushiro",
+        "japanese": "うしろ",
+        "english": "后面",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_naka",
+        "japanese": "なか",
+        "english": "里面",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_soto",
+        "japanese": "そと",
+        "english": "外面",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_tonari",
+        "japanese": "となり",
+        "english": "旁边",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_chikaku",
+        "japanese": "ちかく",
+        "english": "附近",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_aida",
+        "japanese": "あいだ",
+        "english": "之间",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_migi",
+        "japanese": "みぎ",
+        "english": "右边",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_hidari",
+        "japanese": "ひだり",
+        "english": "左边",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_yuka",
+        "japanese": "ゆか",
+        "english": "地板",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_kabe",
+        "japanese": "かべ",
+        "english": "墙",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_mado",
+        "japanese": "まど",
+        "english": "窗户",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_doa",
+        "japanese": "どあ",
+        "english": "门",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_neko",
+        "japanese": "ねこ",
+        "english": "猫",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_inu",
+        "japanese": "いぬ",
+        "english": "狗",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_tori",
+        "japanese": "とり",
+        "english": "鸟",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_sakana",
+        "japanese": "さかな",
+        "english": "鱼",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_hana",
+        "japanese": "はな",
+        "english": "花",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-8_ki",
+        "japanese": "き",
+        "english": "树",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "〜に 〜が あります",
+        "explanation": "表达某处有某物（无生命）。あります用于不会动的事物。",
+        "example": "つくえのうえに ほんが あります。"
+      },
+      {
+        "pattern": "〜に 〜が います",
+        "explanation": "表达某处有某人/动物。います用于会动的人或动物。",
+        "example": "こうえんに ねこが います。"
+      },
+      {
+        "pattern": "位置の表現",
+        "explanation": "うえ/した/まえ/うしろ/となり 等放在名词 + の 后面表示位置。",
+        "example": "つくえの うえ（桌子上面）"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-8_s8-1",
+        "english": "桌子上有书。",
+        "japanese": "つくえのうえにほんがあります"
+      },
+      {
+        "id": "lesson-8_s8-2",
+        "english": "房间里有一只猫。",
+        "japanese": "へやにねこがいます"
+      },
+      {
+        "id": "lesson-8_s8-3",
+        "english": "学校旁边有公园吗？",
+        "japanese": "がっこうのとなりにこうえんがありますか"
+      },
+      {
+        "id": "lesson-8_s8-4",
+        "english": "椅子下面有猫。",
+        "japanese": "いすのしたにねこがいます"
+      },
+      {
+        "id": "lesson-8_s8-5",
+        "english": "图书馆在哪里？",
+        "japanese": "としょかんはどこですか"
+      },
+      {
+        "id": "lesson-8_s8-6",
+        "english": "图书馆在车站的后面。",
+        "japanese": "としょかんはえきのうしろにあります"
+      },
+      {
+        "id": "lesson-8_s8-7",
+        "english": "我的房间里没有花。",
+        "japanese": "わたしのへやにはながありません"
+      }
+    ]
+  },
+  {
+    "id": "lesson-9",
+    "title": "第9課：過去形（かこけい）",
+    "description": "学习过去时态的表达",
+    "vocabulary": [
+      {
+        "id": "lesson-9_kinoo",
+        "japanese": "きのう",
+        "english": "昨天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_ototoi",
+        "japanese": "おととい",
+        "english": "前天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_kyou",
+        "japanese": "きょう",
+        "english": "今天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_ashita",
+        "japanese": "あした",
+        "english": "明天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_asatte",
+        "japanese": "あさって",
+        "english": "后天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_maishuu",
+        "japanese": "まいしゅう",
+        "english": "每周",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_senshuu",
+        "japanese": "せんしゅう",
+        "english": "上周",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_raishuu",
+        "japanese": "らいしゅう",
+        "english": "下周",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_konshuu",
+        "japanese": "こんしゅう",
+        "english": "这周",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_getsuyoubi",
+        "japanese": "げつようび",
+        "english": "星期一",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_kayoubi",
+        "japanese": "かようび",
+        "english": "星期二",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_suiyoubi",
+        "japanese": "すいようび",
+        "english": "星期三",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_mokuyoubi",
+        "japanese": "もくようび",
+        "english": "星期四",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_kinyoubi",
+        "japanese": "きんようび",
+        "english": "星期五",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_doyoubi",
+        "japanese": "どようび",
+        "english": "星期六",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_nichiyoubi",
+        "japanese": "にちようび",
+        "english": "星期日",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-9_deshita",
+        "japanese": "でした",
+        "english": "是（过去）",
+        "partOfSpeech": "助動詞"
+      },
+      {
+        "id": "lesson-9_mashita",
+        "japanese": "ました",
+        "english": "（动词过去礼貌体）",
+        "partOfSpeech": "助動詞"
+      },
+      {
+        "id": "lesson-9_dewa_arimasen_deshita",
+        "japanese": "ではありませんでした",
+        "english": "不是（过去否定）",
+        "partOfSpeech": "助動詞"
+      },
+      {
+        "id": "lesson-9_masen_deshita",
+        "japanese": "ませんでした",
+        "english": "（动词过去否定）",
+        "partOfSpeech": "助動詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "名詞 + でした",
+        "explanation": "名词句的过去时：です→でした（是→曾是）。",
+        "example": "きのうは にちようび でした。"
+      },
+      {
+        "pattern": "動詞 + ました",
+        "explanation": "动词的过去时：ます→ました。",
+        "example": "きのう えいがを みました。"
+      },
+      {
+        "pattern": "否定の過去",
+        "explanation": "否定过去：では ありません でした / ません でした。",
+        "example": "せんしゅうは やすみません でした。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-9_s9-1",
+        "english": "昨天是星期日。",
+        "japanese": "きのうはにちようびでした"
+      },
+      {
+        "id": "lesson-9_s9-2",
+        "english": "昨天我看电影了。",
+        "japanese": "きのうえいがをみました"
+      },
+      {
+        "id": "lesson-9_s9-3",
+        "english": "上周我去了大阪。",
+        "japanese": "せんしゅうおおさかへいきました"
+      },
+      {
+        "id": "lesson-9_s9-4",
+        "english": "昨天吃了寿司。",
+        "japanese": "きのうすしをたべました"
+      },
+      {
+        "id": "lesson-9_s9-5",
+        "english": "前天没去学校。",
+        "japanese": "おとといがっこうへいきませんでした"
+      },
+      {
+        "id": "lesson-9_s9-6",
+        "english": "星期二和朋友一起学了日语。",
+        "japanese": "かようびにともだちとにほんごをべんきょうしました"
+      },
+      {
+        "id": "lesson-9_s9-7",
+        "english": "昨天很冷。",
+        "japanese": "きのうはさむかったです"
+      }
+    ]
+  },
+  {
+    "id": "lesson-10",
+    "title": "第10課：て形（てけい）",
+    "description": "学习て形的变化和请求表达",
+    "vocabulary": [
+      {
+        "id": "lesson-10_te_kudasai",
+        "japanese": "〜てください",
+        "english": "请〜（请求）",
+        "partOfSpeech": "表現"
+      },
+      {
+        "id": "lesson-10_te_mo_ii_desu",
+        "japanese": "〜てもいいです",
+        "english": "可以〜（许可）",
+        "partOfSpeech": "表現"
+      },
+      {
+        "id": "lesson-10_te_wa_ikemasen",
+        "japanese": "〜てはいけません",
+        "english": "不可以〜（禁止）",
+        "partOfSpeech": "表現"
+      },
+      {
+        "id": "lesson-10_te_imasu",
+        "japanese": "〜ています",
+        "english": "正在〜（进行）",
+        "partOfSpeech": "表現"
+      },
+      {
+        "id": "lesson-10_matte",
+        "japanese": "まって",
+        "english": "等（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_yonde",
+        "japanese": "よんで",
+        "english": "读（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_nonde",
+        "japanese": "のんで",
+        "english": "喝（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_tabete",
+        "japanese": "たべて",
+        "english": "吃（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_mite",
+        "japanese": "みて",
+        "english": "看（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_kiite",
+        "japanese": "きいて",
+        "english": "听（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_kaite",
+        "japanese": "かいて",
+        "english": "写（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_hanashite",
+        "japanese": "はなして",
+        "english": "说（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_itte",
+        "japanese": "いって",
+        "english": "去（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_shite",
+        "japanese": "して",
+        "english": "做（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_benkyou_shite",
+        "japanese": "べんきょうして",
+        "english": "学习（て形）",
+        "partOfSpeech": "動詞"
+      },
+      {
+        "id": "lesson-10_shashin",
+        "japanese": "しゃしん",
+        "english": "照片",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-10_toire",
+        "japanese": "といれ",
+        "english": "厕所",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-10_kitte",
+        "japanese": "きって",
+        "english": "邮票",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-10_hagaki",
+        "japanese": "はがき",
+        "english": "明信片",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "〜てください",
+        "explanation": "动词て形 + ください = 「请〜」。礼貌的请求表达。",
+        "example": "まって ください。"
+      },
+      {
+        "pattern": "〜ています",
+        "explanation": "动词て形 + います = 「正在〜」。表示动作正在进行。",
+        "example": "いま べんきょうして います。"
+      },
+      {
+        "pattern": "〜てもいいです",
+        "explanation": "动词て形 + もいいです = 「可以〜」。征求许可。",
+        "example": "はいって も いいです。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-10_s10-1",
+        "english": "请等一下。",
+        "japanese": "まってください"
+      },
+      {
+        "id": "lesson-10_s10-2",
+        "english": "请写你的名字。",
+        "japanese": "なまえをかいてください"
+      },
+      {
+        "id": "lesson-10_s10-3",
+        "english": "现在正在学习。",
+        "japanese": "いまべんきょうしています"
+      },
+      {
+        "id": "lesson-10_s10-4",
+        "english": "可以拍照吗？",
+        "japanese": "しゃしんをとってもいいですか"
+      },
+      {
+        "id": "lesson-10_s10-5",
+        "english": "请读这本书。",
+        "japanese": "このほんをよんでください"
+      },
+      {
+        "id": "lesson-10_s10-6",
+        "english": "我在看电影。",
+        "japanese": "えいがをみています"
+      },
+      {
+        "id": "lesson-10_s10-7",
+        "english": "这里不可以吸烟。",
+        "japanese": "ここでたばこをすってはいけません"
+      }
+    ]
+  },
+  {
+    "id": "lesson-11",
+    "title": "第11課：数え方（かぞえかた）と買い物",
+    "description": "学习量词和购物场景表达",
+    "vocabulary": [
+      {
+        "id": "lesson-11_ikkai",
+        "japanese": "いっかい",
+        "english": "一次 / 一楼",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-11_ni_hon",
+        "japanese": "にほん",
+        "english": "两瓶",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_san_biki",
+        "japanese": "さんびき",
+        "english": "三只（动物）",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_yon_mai",
+        "japanese": "よんまい",
+        "english": "四张（纸）",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_go_dai",
+        "japanese": "ごだい",
+        "english": "五台（机器）",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_roku_ko",
+        "japanese": "ろっこ",
+        "english": "六个（小物品）",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_nana_satsu",
+        "japanese": "ななさつ",
+        "english": "七册（书）",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_hachi_nin",
+        "japanese": "はちにん",
+        "english": "八个人",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_kyuu_hai",
+        "japanese": "きゅうはい",
+        "english": "九杯",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_juu_wa",
+        "japanese": "じゅうわ",
+        "english": "十只（鸟）",
+        "partOfSpeech": "助数詞"
+      },
+      {
+        "id": "lesson-11_ikutsu",
+        "japanese": "いくつ",
+        "english": "几个",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-11_kudasai",
+        "japanese": "ください",
+        "english": "请给我〜",
+        "partOfSpeech": "表現"
+      },
+      {
+        "id": "lesson-11_onegai_shimasu",
+        "japanese": "おねがいします",
+        "english": "拜托了 / 请",
+        "partOfSpeech": "表現"
+      },
+      {
+        "id": "lesson-11_ikura",
+        "japanese": "いくら",
+        "english": "多少钱",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-11_yasui",
+        "japanese": "やすい",
+        "english": "便宜",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-11_takai",
+        "japanese": "たかい",
+        "english": "贵",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-11_ichinen",
+        "japanese": "いちねん",
+        "english": "一年",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "助数詞",
+        "explanation": "数字后面加不同的量词：〜個（こ）小物品、〜本（ほん）细长物、〜枚（まい）薄平物。发音有时会变。",
+        "example": "りんごを よっこ ください。"
+      },
+      {
+        "pattern": "〜を ください",
+        "explanation": "购物时用「〜をください」表示「请给我〜」。",
+        "example": "この ペンを ください。"
+      },
+      {
+        "pattern": "〜は いくらですか",
+        "explanation": "询问价格。",
+        "example": "これは いくらですか。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-11_s11-1",
+        "english": "这个多少钱？",
+        "japanese": "これはいくらですか"
+      },
+      {
+        "id": "lesson-11_s11-2",
+        "english": "请给我三个苹果。",
+        "japanese": "りんごをみっつください"
+      },
+      {
+        "id": "lesson-11_s11-3",
+        "english": "请给我两瓶水。",
+        "japanese": "みずをにほんください"
+      },
+      {
+        "id": "lesson-11_s11-4",
+        "english": "请给我四张邮票。",
+        "japanese": "きってをよんまいください"
+      },
+      {
+        "id": "lesson-11_s11-5",
+        "english": "教室里有多少人？",
+        "japanese": "きょうしつになんにんいますか"
+      },
+      {
+        "id": "lesson-11_s11-6",
+        "english": "这个包很便宜。",
+        "japanese": "このかばんはやすいです"
+      }
+    ]
+  },
+  {
+    "id": "lesson-12",
+    "title": "第12課：家族（かぞく）と人",
+    "description": "学习家庭成员称呼和描述他人",
+    "vocabulary": [
+      {
+        "id": "lesson-12_watashi",
+        "japanese": "わたし",
+        "english": "我",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-12_anata",
+        "japanese": "あなた",
+        "english": "你",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-12_kare",
+        "japanese": "かれ",
+        "english": "他",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-12_kanojo",
+        "japanese": "かのじょ",
+        "english": "她",
+        "partOfSpeech": "代名詞"
+      },
+      {
+        "id": "lesson-12_otousan",
+        "japanese": "おとうさん",
+        "english": "父亲（尊称）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_okaasan",
+        "japanese": "おかあさん",
+        "english": "母亲（尊称）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_oniisan",
+        "japanese": "おにいさん",
+        "english": "哥哥（尊称）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_oneesan",
+        "japanese": "おねえさん",
+        "english": "姐姐（尊称）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_otouto",
+        "japanese": "おとうと",
+        "english": "弟弟",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_imouto",
+        "japanese": "いもうと",
+        "english": "妹妹",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_chichi",
+        "japanese": "ちち",
+        "english": "父亲（谦称）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_haha",
+        "japanese": "はは",
+        "english": "母亲（谦称）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_ani",
+        "japanese": "あに",
+        "english": "哥哥（谦称）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_ane",
+        "japanese": "あね",
+        "english": "姐姐（谦称）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_tomodachi",
+        "japanese": "ともだち",
+        "english": "朋友",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_shinseki",
+        "japanese": "しんせき",
+        "english": "亲戚",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_seito",
+        "japanese": "せいと",
+        "english": "学生（小学生等）",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_shigoto",
+        "japanese": "しごと",
+        "english": "工作",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_isha",
+        "japanese": "いしゃ",
+        "english": "医生",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_kangoshi",
+        "japanese": "かんごし",
+        "english": "护士",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_untenshu",
+        "japanese": "うんてんしゅ",
+        "english": "司机",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_gakkou",
+        "japanese": "がっこう",
+        "english": "学校",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-12_daigaku",
+        "japanese": "だいがく",
+        "english": "大学",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "家族の呼び方",
+        "explanation": "日语有尊称（称呼他人家人）和谦称（称呼自己家人）的区别。",
+        "example": "あなたの おかあさん / わたしの はは"
+      },
+      {
+        "pattern": "〜に 〜が います",
+        "explanation": "表达「某人有某人/某物」。所有主用「に」，被拥有者用「が」。",
+        "example": "わたしには あねが います。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-12_s12-1",
+        "english": "你有兄弟姐妹吗？",
+        "japanese": "あなたはきょうだいがいますか"
+      },
+      {
+        "id": "lesson-12_s12-2",
+        "english": "我有一个姐姐。",
+        "japanese": "わたしにはあねがひとりいます"
+      },
+      {
+        "id": "lesson-12_s12-3",
+        "english": "你的父亲是医生吗？",
+        "japanese": "おとうさんはいしゃですか"
+      },
+      {
+        "id": "lesson-12_s12-4",
+        "english": "是的，父亲是医生。",
+        "japanese": "はい、ちちはいしゃです"
+      },
+      {
+        "id": "lesson-12_s12-5",
+        "english": "我的朋友是大学生。",
+        "japanese": "ともだちはだいがくせいです"
+      },
+      {
+        "id": "lesson-12_s12-6",
+        "english": "哥哥在银行工作。",
+        "japanese": "あにはぎんこうではたらいています"
+      },
+      {
+        "id": "lesson-12_s12-7",
+        "english": "这个人是谁？",
+        "japanese": "このひとはだれですか"
+      }
+    ]
+  },
+  {
+    "id": "lesson-13",
+    "title": "第13課：天気（てんき）と自然",
+    "description": "描述天气、季节和自然现象",
+    "vocabulary": [
+      {
+        "id": "lesson-13_hare",
+        "japanese": "はれ",
+        "english": "晴天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_ame",
+        "japanese": "あめ",
+        "english": "雨",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_kumori",
+        "japanese": "くもり",
+        "english": "阴天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_yuki",
+        "japanese": "ゆき",
+        "english": "雪",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_kaminari",
+        "japanese": "かみなり",
+        "english": "雷",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_arashi",
+        "japanese": "あらし",
+        "english": "暴风雨",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_kaze",
+        "japanese": "かぜ",
+        "english": "风",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_haru",
+        "japanese": "はる",
+        "english": "春天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_natsu",
+        "japanese": "なつ",
+        "english": "夏天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_aki",
+        "japanese": "あき",
+        "english": "秋天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_fuyu",
+        "japanese": "ふゆ",
+        "english": "冬天",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_kion",
+        "japanese": "きおん",
+        "english": "气温",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_ondo",
+        "japanese": "おんど",
+        "english": "温度",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_tenki_yohou",
+        "japanese": "てんきよほう",
+        "english": "天气预报",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_sora",
+        "japanese": "そら",
+        "english": "天空",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_umi",
+        "japanese": "うみ",
+        "english": "大海",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_kawa",
+        "japanese": "かわ",
+        "english": "河流",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_yama",
+        "japanese": "やま",
+        "english": "山",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-13_shizen",
+        "japanese": "しぜん",
+        "english": "自然",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "天気の言い方",
+        "explanation": "「はれです」「あめです」描述天气。名词直接加です。",
+        "example": "きょうは はれです。"
+      },
+      {
+        "pattern": "〜が ふります",
+        "explanation": "「雨が ふります」=下雨，「雪が ふります」=下雪。ふる是「降る」。",
+        "example": "あしたは あめが ふります。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-13_s13-1",
+        "english": "今天天气怎么样？",
+        "japanese": "きょうのてんきはどうですか"
+      },
+      {
+        "id": "lesson-13_s13-2",
+        "english": "今天是晴天。",
+        "japanese": "きょうははれです"
+      },
+      {
+        "id": "lesson-13_s13-3",
+        "english": "下午会下雨。",
+        "japanese": "ごごからあめがふります"
+      },
+      {
+        "id": "lesson-13_s13-4",
+        "english": "冬天很冷。",
+        "japanese": "ふゆはさむいです"
+      },
+      {
+        "id": "lesson-13_s13-5",
+        "english": "夏天很热。",
+        "japanese": "なつはあついです"
+      },
+      {
+        "id": "lesson-13_s13-6",
+        "english": "日本的秋天很美。",
+        "japanese": "にほんのあきはきれいです"
+      },
+      {
+        "id": "lesson-13_s13-7",
+        "english": "明天会下雪吗？",
+        "japanese": "あしたはゆきがふりますか"
+      }
+    ]
+  },
+  {
+    "id": "lesson-14",
+    "title": "第14課：体（からだ）と健康",
+    "description": "学习身体部位和健康相关表达",
+    "vocabulary": [
+      {
+        "id": "lesson-14_atama",
+        "japanese": "あたま",
+        "english": "头",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_kami",
+        "japanese": "かみ",
+        "english": "头发",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_kao",
+        "japanese": "かお",
+        "english": "脸",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_me",
+        "japanese": "め",
+        "english": "眼睛",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_hana",
+        "japanese": "はな",
+        "english": "鼻子",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_kuchi",
+        "japanese": "くち",
+        "english": "嘴",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_mimi",
+        "japanese": "みみ",
+        "english": "耳朵",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_kubi",
+        "japanese": "くび",
+        "english": "脖子",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_kata",
+        "japanese": "かた",
+        "english": "肩膀",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_te",
+        "japanese": "て",
+        "english": "手",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_ashi",
+        "japanese": "あし",
+        "english": "脚",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_onaka",
+        "japanese": "おなか",
+        "english": "肚子",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_senaka",
+        "japanese": "せなか",
+        "english": "背",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_karada",
+        "japanese": "からだ",
+        "english": "身体",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_genki",
+        "japanese": "げんき",
+        "english": "健康的 / 精神好",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-14_byouki",
+        "japanese": "びょうき",
+        "english": "生病",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_kaze",
+        "japanese": "かぜ",
+        "english": "感冒",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_ita_i",
+        "japanese": "いたい",
+        "english": "疼的",
+        "partOfSpeech": "形容詞"
+      },
+      {
+        "id": "lesson-14_netsu",
+        "japanese": "ねつ",
+        "english": "发烧",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-14_kusuri",
+        "japanese": "くすり",
+        "english": "药",
+        "partOfSpeech": "名詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "〜が いたいです",
+        "explanation": "「某部位 が いたいです」=某部位疼。使用助词が。",
+        "example": "あたまが いたいです。"
+      },
+      {
+        "pattern": "〜が あります 病気",
+        "explanation": "生病用「〜が あります/です」。",
+        "example": "かぜが あります。（感冒了）"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-14_s14-1",
+        "english": "我头痛。",
+        "japanese": "あたまがいたいです"
+      },
+      {
+        "id": "lesson-14_s14-2",
+        "english": "肚子疼。",
+        "japanese": "おなかがいたいです"
+      },
+      {
+        "id": "lesson-14_s14-3",
+        "english": "他感冒了。",
+        "japanese": "かれはかぜです"
+      },
+      {
+        "id": "lesson-14_s14-4",
+        "english": "你还好吗？",
+        "japanese": "だいじょうぶですか"
+      },
+      {
+        "id": "lesson-14_s14-5",
+        "english": "请多保重。",
+        "japanese": "おだいじに"
+      },
+      {
+        "id": "lesson-14_s14-6",
+        "english": "我昨天发烧了。",
+        "japanese": "きのうねつがありました"
+      },
+      {
+        "id": "lesson-14_s14-7",
+        "english": "请吃药。",
+        "japanese": "くすりをのんでください"
+      }
+    ]
+  },
+  {
+    "id": "lesson-15",
+    "title": "第15課：趣味（しゅみ）と週末",
+    "description": "谈论兴趣、爱好和周末活动",
+    "vocabulary": [
+      {
+        "id": "lesson-15_shumi",
+        "japanese": "しゅみ",
+        "english": "兴趣",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_hon_wo_yomu",
+        "japanese": "どくしょ",
+        "english": "读书",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_ryokou",
+        "japanese": "りょこう",
+        "english": "旅行",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_undou",
+        "japanese": "うんどう",
+        "english": "运动",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_shashin_wo_toru",
+        "japanese": "しゃしん",
+        "english": "摄影 / 照片",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_golf",
+        "japanese": "ごるふ",
+        "english": "高尔夫",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_ongaku_wo_kiku",
+        "japanese": "おんがく",
+        "english": "音乐",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_tsuri",
+        "japanese": "つり",
+        "english": "钓鱼",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_ryouri_wo_suru",
+        "japanese": "りょうり",
+        "english": "做菜",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_shuumatsu",
+        "japanese": "しゅうまつ",
+        "english": "周末",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_heijitsu",
+        "japanese": "へいじつ",
+        "english": "平日",
+        "partOfSpeech": "名詞"
+      },
+      {
+        "id": "lesson-15_taitei",
+        "japanese": "たいてい",
+        "english": "通常 / 大体",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-15_tokidoki",
+        "japanese": "ときどき",
+        "english": "有时",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-15_yoku",
+        "japanese": "よく",
+        "english": "经常",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-15_zenzen",
+        "japanese": "ぜんぜん",
+        "english": "完全不（后接否定）",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-15_mada",
+        "japanese": "まだ",
+        "english": "还 / 仍然",
+        "partOfSpeech": "副詞"
+      },
+      {
+        "id": "lesson-15_soshite",
+        "japanese": "そして",
+        "english": "然后 / 而且",
+        "partOfSpeech": "接続詞"
+      },
+      {
+        "id": "lesson-15_demo",
+        "japanese": "でも",
+        "english": "但是",
+        "partOfSpeech": "接続詞"
+      }
+    ],
+    "grammar": [
+      {
+        "pattern": "趣味は 〜です",
+        "explanation": "回答兴趣爱好的句型。",
+        "example": "しゅみは どくしょ です。"
+      },
+      {
+        "pattern": "频率副词",
+        "explanation": "よく（经常）、ときどき（有时）、ぜんぜん〜ない（完全不）。放在动词前面。",
+        "example": "よく えいがを みます。"
+      }
+    ],
+    "sentences": [
+      {
+        "id": "lesson-15_s15-1",
+        "english": "你的爱好是什么？",
+        "japanese": "しゅみはなんですか"
+      },
+      {
+        "id": "lesson-15_s15-2",
+        "english": "我的爱好是读书。",
+        "japanese": "しゅみはどくしょです"
+      },
+      {
+        "id": "lesson-15_s15-3",
+        "english": "我经常看电影。",
+        "japanese": "よくえいがをみます"
+      },
+      {
+        "id": "lesson-15_s15-4",
+        "english": "我有时做菜。",
+        "japanese": "ときどきりょうりをします"
+      },
+      {
+        "id": "lesson-15_s15-5",
+        "english": "我完全不吸烟。",
+        "japanese": "ぜんぜんたばこをすいません"
+      },
+      {
+        "id": "lesson-15_s15-6",
+        "english": "周末我通常去公园。",
+        "japanese": "しゅうまつはたいていこうえんへいきます"
+      },
+      {
+        "id": "lesson-15_s15-7",
+        "english": "他喜欢旅行，但是没时间。",
+        "japanese": "かれはりょこうがすきですがじかんがありません"
+      }
     ]
   }
 ]
