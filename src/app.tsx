@@ -208,7 +208,7 @@ export default function App(): React.JSX.Element {
     });
   }
 
-  function updateEntry(itemId: string, correct: boolean): void {
+  function updateEntry(itemId: string, grade: number): void {
     updateProgress((current) => {
       const entry = current.entries[itemId];
       if (!entry) return current;
@@ -217,7 +217,7 @@ export default function App(): React.JSX.Element {
         ...current,
         entries: {
           ...current.entries,
-          [itemId]: updateSrs(entry, correct),
+          [itemId]: updateSrs(entry, grade),
         },
       };
     });
@@ -390,9 +390,9 @@ export default function App(): React.JSX.Element {
           prompt={word.english}
           hint={`词性：${word.partOfSpeech}`}
           check={(answer) => checkAnswer(answer, word.japanese)}
-          onNext={(correct) => {
-            updateEntry(word.id, correct);
-            const nextCorrect = correctCount + (correct ? 1 : 0);
+          onNext={(grade) => {
+            updateEntry(word.id, grade);
+            const nextCorrect = correctCount + (grade >= 2 ? 1 : 0);
             const nextIndex = index + 1;
 
             if (nextIndex < total) {
@@ -439,9 +439,9 @@ export default function App(): React.JSX.Element {
           check={(answer) =>
             checkAnswer(answer, sentence.japanese, sentence.alternatives)
           }
-          onNext={(correct) => {
-            updateEntry(sentence.id, correct);
-            const nextCorrect = correctCount + (correct ? 1 : 0);
+          onNext={(grade) => {
+            updateEntry(sentence.id, grade);
+            const nextCorrect = correctCount + (grade >= 2 ? 1 : 0);
             const nextIndex = index + 1;
 
             if (nextIndex < total) {
@@ -492,9 +492,9 @@ export default function App(): React.JSX.Element {
           check={(answer) =>
             checkAnswer(answer, prompt.expected, prompt.alternatives)
           }
-          onNext={(correct) => {
-            updateEntry(entry.itemId, correct);
-            const nextCorrect = screen.correctCount + (correct ? 1 : 0);
+          onNext={(grade) => {
+            updateEntry(entry.itemId, grade);
+            const nextCorrect = screen.correctCount + (grade >= 2 ? 1 : 0);
             const nextIndex = screen.index + 1;
 
             if (nextIndex < screen.queue.length) {
@@ -575,7 +575,7 @@ export default function App(): React.JSX.Element {
           今日待复习：<Text color="yellow">{stats.due}</Text>
         </Text>
         <Text>
-          已掌握：<Text color="green">{stats.mastered}</Text>（间隔 21 天以上）
+          已掌握：<Text color="green">{stats.mastered}</Text>（稳定度 ≥ 21 天）
         </Text>
 
         <Box marginY={1} flexDirection="column">

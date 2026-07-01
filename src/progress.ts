@@ -52,12 +52,46 @@ export function initProgress(lessons: Lesson[]): Progress {
   };
 }
 
+/** 检查并迁移旧版进度（SM-2 → FSRS 字段变化） */
+function migrateProgress(progress: Progress): boolean {
+  let changed = false;
+  for (const [id, entry] of Object.entries(progress.entries)) {
+    const e = entry as unknown as Record<string, unknown>;
+    // 旧版有 easeFactor，新版没有
+    if ("easeFactor" in e && !("stability" in e)) {
+      const itemType = (e.itemType as string) || "word";
+      const oldInterval = (e.interval as number) || 0;
+      const nextReview = (e.nextReview as string) || new Date().toISOString().slice(0, 10);
+      const lastReview = (e.lastReview as string) || "";
+      const oldReps = (e.repetitions as number) || 0;
+      // 根据 interval 换算一个近似的 stability 值
+      const stability = Math.max(0.3, oldInterval * 0.4);
+      progress.entries[id] = {
+        itemId: id,
+        itemType: (itemType === "sentence" ? "sentence" : "word") as "word" | "sentence",
+        stability,
+        difficulty: 5.0,
+        retrievability: 0,
+        interval: oldInterval,
+        nextReview,
+        lastReview,
+        repetitions: oldReps,
+      };
+      changed = true;
+    }
+  }
+  return changed;
+}
+
 /** 获取或初始化进度 */
 export function getOrInitProgress(lessons: Lesson[]): Progress {
   const existing = loadProgress();
   if (existing) {
+    // 迁移旧版数据（SM-2 → FSRS）
+    const migrated = migrateProgress(existing);
+
     // 如果课程数据更新了，补全新词条
-    let changed = false;
+    let changed = migrated;
     for (const lesson of lessons) {
       for (const word of lesson.vocabulary) {
         if (!existing.entries[word.id]) {

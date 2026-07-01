@@ -10,7 +10,7 @@ export interface QuestionBoxProps {
   prompt: string;
   hint?: string;
   check: (answer: string) => CheckResult;
-  onNext: (correct: boolean) => void;
+  onNext: (grade: number) => void;  // 1=忘了 2=难 3=好 4=轻松
 }
 
 type Phase = "input" | "retry" | "success" | "gave-up";
@@ -71,7 +71,15 @@ export default function QuestionBox({
   useInput(
     (_input, key) => {
       if (!key.return) return;
-      onNext(phase === "success");
+      // 推导评分等级：
+      //   success & 无重试 → grade 3 (好)
+      //   success & 有重试 → grade 2 (难)
+      //   gave-up          → grade 1 (忘了)
+      const grade =
+        phase === "success"
+          ? (attempts > 0 ? 2 : 3)
+          : 1;
+      onNext(grade);
     },
     { isActive: phase === "success" || phase === "gave-up" }
   );

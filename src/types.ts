@@ -37,15 +37,17 @@ export interface Lesson {
   sentences: Sentence[];
 }
 
-/** SRS 条目状态 */
+/** SRS 条目状态 — FSRS (Free Spaced Repetition Scheduler) */
 export interface SrsEntry {
   itemId: string;        // 对应 VocabWord.id 或 Sentence.id
   itemType: "word" | "sentence";
-  repetitions: number;   // 连续正确次数
-  easeFactor: number;    // 难度系数 (初始 2.5)
+  stability: number;     // 记忆稳定度（天），值越大越牢固
+  difficulty: number;    // 难度 (1~10)，1=最易 10=最难
+  retrievability: number; // 复习时的回忆概率 (0~1)
   interval: number;      // 当前间隔（天）
   nextReview: string;    // 下次复习日期 (YYYY-MM-DD)
   lastReview: string;    // 上次复习日期
+  repetitions: number;   // 总复习次数
 }
 
 /** 用户整体进度 */
