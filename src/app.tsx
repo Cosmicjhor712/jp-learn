@@ -236,6 +236,11 @@ export default function App(): React.JSX.Element {
 
   function startReview(): void {
     const queue = getDueEntries(Object.values(progress.entries))
+      .filter((entry) => {
+        // 只复习已学课程的词条
+        const lessonId = entry.itemId.match(/^(lesson-\d+)_/)?.[1];
+        return lessonId && progress.completedLessons.includes(lessonId);
+      })
       .filter((entry) => getReviewPrompt(entry) !== null)
       .map((entry) => entry.itemId);
 
