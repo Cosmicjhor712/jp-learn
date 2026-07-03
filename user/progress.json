@@ -498,57 +498,57 @@
     "lesson-2_s2-4": {
       "itemId": "lesson-2_s2-4",
       "itemType": "sentence",
-      "stability": 0.3,
+      "stability": 0.44999999999999996,
       "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
+      "retrievability": 1,
+      "interval": 1,
+      "nextReview": "2026-07-03",
+      "lastReview": "2026-07-02",
+      "repetitions": 1
     },
     "lesson-2_s2-5": {
       "itemId": "lesson-2_s2-5",
       "itemType": "sentence",
-      "stability": 0.3,
+      "stability": 0.44999999999999996,
       "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
+      "retrievability": 1,
+      "interval": 1,
+      "nextReview": "2026-07-03",
+      "lastReview": "2026-07-02",
+      "repetitions": 1
     },
     "lesson-2_s2-6": {
       "itemId": "lesson-2_s2-6",
       "itemType": "sentence",
-      "stability": 0.3,
+      "stability": 0.44999999999999996,
       "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
+      "retrievability": 1,
+      "interval": 1,
+      "nextReview": "2026-07-03",
+      "lastReview": "2026-07-02",
+      "repetitions": 1
     },
     "lesson-2_s2-7": {
       "itemId": "lesson-2_s2-7",
       "itemType": "sentence",
-      "stability": 0.3,
+      "stability": 0.44999999999999996,
       "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
+      "retrievability": 1,
+      "interval": 1,
+      "nextReview": "2026-07-03",
+      "lastReview": "2026-07-02",
+      "repetitions": 1
     },
     "lesson-2_s2-8": {
       "itemId": "lesson-2_s2-8",
       "itemType": "sentence",
-      "stability": 0.3,
+      "stability": 0.44999999999999996,
       "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
+      "retrievability": 1,
+      "interval": 1,
+      "nextReview": "2026-07-03",
+      "lastReview": "2026-07-02",
+      "repetitions": 1
     },
     "lesson-3_ichi": {
       "itemId": "lesson-3_ichi",
@@ -4467,5 +4467,7 @@
       "repetitions": 0
     }
   },
-  "completedLessons": []
+  "completedLessons": [
+    "lesson-2"
+  ]
 }

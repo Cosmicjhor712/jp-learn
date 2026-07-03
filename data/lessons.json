@@ -536,8 +536,8 @@
       },
       {
         "id": "lesson-3_s3-3",
-        "english": "现在几点十五分？",
-        "japanese": "いまなんじじゅうごふんですか"
+        "english": "现在是三点十五分。",
+        "japanese": "いまさんじじゅうごふんです"
       },
       {
         "id": "lesson-3_s3-4",
@@ -651,7 +651,7 @@
         "partOfSpeech": "動詞"
       },
       {
-        "id": "lesson-4_go_hangyou_ban_desu",
+        "id": "lesson-4_gohan",
         "japanese": "ごはん",
         "english": "饭",
         "partOfSpeech": "名詞"
@@ -693,7 +693,7 @@
         "partOfSpeech": "名詞"
       },
       {
-        "id": "lesson-4_hon_wo_yomu",
+        "id": "lesson-4_hon",
         "japanese": "ほん",
         "english": "书",
         "partOfSpeech": "名詞"
@@ -797,13 +797,13 @@
       },
       {
         "id": "lesson-5_depaato",
-        "japanese": "でぱーと",
+        "japanese": "デパート",
         "english": "百货商店",
         "partOfSpeech": "名詞"
       },
       {
         "id": "lesson-5_resutoran",
-        "japanese": "れすとらん",
+        "japanese": "レストラン",
         "english": "餐厅",
         "partOfSpeech": "名詞"
       },
@@ -845,13 +845,13 @@
       },
       {
         "id": "lesson-5_basu",
-        "japanese": "ばす",
+        "japanese": "バス",
         "english": "公交车",
         "partOfSpeech": "名詞"
       },
       {
         "id": "lesson-5_takushii",
-        "japanese": "たくしー",
+        "japanese": "タクシー",
         "english": "出租车",
         "partOfSpeech": "名詞"
       },
@@ -1167,12 +1167,6 @@
         "partOfSpeech": "助動詞"
       },
       {
-        "id": "lesson-7_want",
-        "japanese": "ほしい",
-        "english": "想要",
-        "partOfSpeech": "語彙"
-      },
-      {
         "id": "lesson-7_sport",
         "japanese": "スポーツ",
         "english": "运动",
@@ -1180,13 +1174,13 @@
       },
       {
         "id": "lesson-7_tenisu",
-        "japanese": "てにす",
+        "japanese": "テニス",
         "english": "网球",
         "partOfSpeech": "名詞"
       },
       {
         "id": "lesson-7_sakkka",
-        "japanese": "さっかー",
+        "japanese": "サッカー",
         "english": "足球",
         "partOfSpeech": "名詞"
       },
@@ -1396,7 +1390,7 @@
       },
       {
         "id": "lesson-8_doa",
-        "japanese": "どあ",
+        "japanese": "ドア",
         "english": "门",
         "partOfSpeech": "名詞"
       },
@@ -1776,7 +1770,7 @@
       },
       {
         "id": "lesson-10_toire",
-        "japanese": "といれ",
+        "japanese": "トイレ",
         "english": "厕所",
         "partOfSpeech": "名詞"
       },
@@ -2176,7 +2170,7 @@
       {
         "id": "lesson-12_s12-3",
         "english": "你的父亲是医生吗？",
-        "japanese": "おとうさんはいしゃですか"
+        "japanese": "あなたのおとうさんはいしゃですか"
       },
       {
         "id": "lesson-12_s12-4",
@@ -2522,7 +2516,7 @@
       {
         "id": "lesson-14_s14-3",
         "english": "他感冒了。",
-        "japanese": "かれはかぜです"
+        "japanese": "かれはかぜをひいています"
       },
       {
         "id": "lesson-14_s14-4",
@@ -2558,7 +2552,7 @@
         "partOfSpeech": "名詞"
       },
       {
-        "id": "lesson-15_hon_wo_yomu",
+        "id": "lesson-15_dokusho",
         "japanese": "どくしょ",
         "english": "读书",
         "partOfSpeech": "名詞"
@@ -2576,19 +2570,19 @@
         "partOfSpeech": "名詞"
       },
       {
-        "id": "lesson-15_shashin_wo_toru",
+        "id": "lesson-15_shashin",
         "japanese": "しゃしん",
         "english": "摄影 / 照片",
         "partOfSpeech": "名詞"
       },
       {
         "id": "lesson-15_golf",
-        "japanese": "ごるふ",
+        "japanese": "ゴルフ",
         "english": "高尔夫",
         "partOfSpeech": "名詞"
       },
       {
-        "id": "lesson-15_ongaku_wo_kiku",
+        "id": "lesson-15_ongaku",
         "japanese": "おんがく",
         "english": "音乐",
         "partOfSpeech": "名詞"
@@ -2600,7 +2594,7 @@
         "partOfSpeech": "名詞"
       },
       {
-        "id": "lesson-15_ryouri_wo_suru",
+        "id": "lesson-15_ryouri",
         "japanese": "りょうり",
         "english": "做菜",
         "partOfSpeech": "名詞"
