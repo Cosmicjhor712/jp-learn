@@ -114,8 +114,22 @@ function Panel({
   );
 }
 
+function entriesFromCompletedLessons(
+  entries: SrsEntry[],
+  completedLessons: string[]
+): SrsEntry[] {
+  return entries.filter((entry) => {
+    const m = entry.itemId.match(/^(lesson-\d+)_/);
+    return m && completedLessons.includes(m[1]);
+  });
+}
+
 function TopBar({ progress }: { progress: Progress }): React.JSX.Element {
-  const stats = getStats(Object.values(progress.entries));
+  const trained = progress.completedLessons.length > 0;
+  const relevantEntries = trained
+    ? entriesFromCompletedLessons(Object.values(progress.entries), progress.completedLessons)
+    : Object.values(progress.entries);
+  const stats = getStats(relevantEntries);
 
   return (
     <Box
@@ -151,10 +165,13 @@ export default function App(): React.JSX.Element {
   );
   const [screen, setScreen] = useState<Screen>({ type: "menu" });
 
-  const stats = useMemo(
-    () => getStats(Object.values(progress.entries)),
-    [progress]
-  );
+  const stats = useMemo(() => {
+    const trained = progress.completedLessons.length > 0;
+    const relevant = trained
+      ? entriesFromCompletedLessons(Object.values(progress.entries), progress.completedLessons)
+      : Object.values(progress.entries);
+    return getStats(relevant);
+  }, [progress]);
 
   const staticInputActive =
     screen.type === "grammar" ||
@@ -592,8 +609,9 @@ export default function App(): React.JSX.Element {
             ].filter((entry): entry is SrsEntry => Boolean(entry));
             const dueItems = getDueEntries(lessonEntries).length;
             const totalItems = lesson.vocabulary.length + lesson.sentences.length;
-            const status =
-              dueItems > 0 ? `待复习 ${dueItems}` : done ? "已学完" : "未开始";
+            const status = done
+              ? (dueItems > 0 ? `待复习 ${dueItems}` : "已学完")
+              : "未开始";
 
             return (
               <Box key={lesson.id}>
