@@ -153,7 +153,7 @@ function TopBar({ progress }: { progress: Progress }): React.JSX.Element {
 function KeyHint({ children }: { children?: React.ReactNode }): React.JSX.Element {
   return (
     <Text dimColor>
-      {children ?? "↑/↓ 选择 · Enter 确认 · Esc 返回 · Ctrl+C 退出"}
+      {children ?? "↑/↓ 选择 · Enter 确认 · Esc 返回"}
     </Text>
   );
 }

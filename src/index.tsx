@@ -16,4 +16,4 @@ if (!stdin.isTTY || typeof stdin.setRawMode !== "function") {
   process.exit(1);
 }
 
-render(<App />);
+render(<App />, { exitOnCtrlC: false });
