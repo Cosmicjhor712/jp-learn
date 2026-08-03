@@ -1067,17 +1067,6 @@
       "lastReview": "2026-07-10",
       "repetitions": 1
     },
-    "lesson-4_go_hangyou_ban_desu": {
-      "itemId": "lesson-4_go_hangyou_ban_desu",
-      "itemType": "word",
-      "stability": 0.3,
-      "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
-    },
     "lesson-4_ocha": {
       "itemId": "lesson-4_ocha",
       "itemType": "word",
@@ -1143,17 +1132,6 @@
       "nextReview": "2026-07-11",
       "lastReview": "2026-07-10",
       "repetitions": 1
-    },
-    "lesson-4_hon_wo_yomu": {
-      "itemId": "lesson-4_hon_wo_yomu",
-      "itemType": "word",
-      "stability": 0.3,
-      "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
     },
     "lesson-4_s4-1": {
       "itemId": "lesson-4_s4-1",
@@ -1894,17 +1872,6 @@
     },
     "lesson-7_tai": {
       "itemId": "lesson-7_tai",
-      "itemType": "word",
-      "stability": 0.3,
-      "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
-    },
-    "lesson-7_want": {
-      "itemId": "lesson-7_want",
       "itemType": "word",
       "stability": 0.3,
       "difficulty": 5,
@@ -4202,17 +4169,6 @@
       "lastReview": "",
       "repetitions": 0
     },
-    "lesson-15_hon_wo_yomu": {
-      "itemId": "lesson-15_hon_wo_yomu",
-      "itemType": "word",
-      "stability": 0.3,
-      "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
-    },
     "lesson-15_ryokou": {
       "itemId": "lesson-15_ryokou",
       "itemType": "word",
@@ -4235,17 +4191,6 @@
       "lastReview": "",
       "repetitions": 0
     },
-    "lesson-15_shashin_wo_toru": {
-      "itemId": "lesson-15_shashin_wo_toru",
-      "itemType": "word",
-      "stability": 0.3,
-      "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
-    },
     "lesson-15_golf": {
       "itemId": "lesson-15_golf",
       "itemType": "word",
@@ -4257,30 +4202,8 @@
       "lastReview": "",
       "repetitions": 0
     },
-    "lesson-15_ongaku_wo_kiku": {
-      "itemId": "lesson-15_ongaku_wo_kiku",
-      "itemType": "word",
-      "stability": 0.3,
-      "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
-    },
     "lesson-15_tsuri": {
       "itemId": "lesson-15_tsuri",
-      "itemType": "word",
-      "stability": 0.3,
-      "difficulty": 5,
-      "retrievability": 0,
-      "interval": 0,
-      "nextReview": "2026-07-02",
-      "lastReview": "",
-      "repetitions": 0
-    },
-    "lesson-15_ryouri_wo_suru": {
-      "itemId": "lesson-15_ryouri_wo_suru",
       "itemType": "word",
       "stability": 0.3,
       "difficulty": 5,

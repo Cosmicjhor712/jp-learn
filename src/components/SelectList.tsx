@@ -17,6 +17,15 @@ export default function SelectList({
   onSelect,
 }: SelectListProps): React.JSX.Element {
   const [selected, setSelected] = useState(0);
+  const itemsKey = items.map((item) => item.value).join("\u0000");
+  const [prevItemsKey, setPrevItemsKey] = useState(itemsKey);
+
+  // 菜单内容变化时回到第一项（渲染期同步调整，避免闪烁）；
+  // 内容不变（同屏导航）时保留当前位置
+  if (itemsKey !== prevItemsKey) {
+    setPrevItemsKey(itemsKey);
+    setSelected(0);
+  }
 
   useEffect(() => {
     setSelected((current) =>

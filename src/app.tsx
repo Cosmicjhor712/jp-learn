@@ -8,6 +8,8 @@ import { checkAnswer } from "./exercises.js";
 import SelectList from "./components/SelectList.js";
 import ProgressBar from "./components/ProgressBar.js";
 import QuestionBox from "./components/QuestionBox.js";
+import ChoiceBox from "./components/ChoiceBox.js";
+import { canSpeak, speak } from "./tts.js";
 
 const require = createRequire(import.meta.url);
 const lessons = require("../data/lessons.json") as Lesson[];
@@ -17,6 +19,8 @@ const APP_WIDTH = 72;
 type Screen =
   | { type: "menu" }
   | { type: "lesson-select" }
+  | { type: "listen-menu" }
+  | { type: "listen-lesson-select"; mode: ListenMode }
   | { type: "grammar"; lessonId: string }
   | { type: "vocab-preview"; lessonId: string }
   | {
@@ -40,7 +44,12 @@ type Screen =
     }
   | { type: "review"; queue: string[]; index: number; correctCount: number }
   | { type: "review-done"; correctCount: number; total: number }
+  | { type: "listen-dictation"; lessonId: string; queue: string[]; index: number; correctCount: number }
+  | { type: "listen-choice"; lessonId: string; queue: string[]; index: number; correctCount: number }
+  | { type: "listen-done"; mode: ListenMode; correctCount: number; total: number }
   | { type: "stats" };
+
+type ListenMode = "dictation" | "choice";
 
 interface ReviewPrompt {
   title: string;
@@ -50,8 +59,90 @@ interface ReviewPrompt {
   hint?: string;
 }
 
+interface ListenItem {
+  kind: "word" | "sentence";
+  id: string;
+  japanese: string;
+  english: string;
+  hint?: string;
+  alternatives?: string[];
+}
+
 function getLesson(lessonId: string): Lesson | undefined {
   return lessons.find((lesson) => lesson.id === lessonId);
+}
+
+function getListenItem(itemId: string): ListenItem | null {
+  for (const lesson of lessons) {
+    const word = lesson.vocabulary.find((item) => item.id === itemId);
+    if (word) {
+      return {
+        kind: "word",
+        id: word.id,
+        japanese: word.japanese,
+        english: word.english,
+        hint: `词性：${word.partOfSpeech}`,
+      };
+    }
+
+    const sentence = lesson.sentences.find((item) => item.id === itemId);
+    if (sentence) {
+      return {
+        kind: "sentence",
+        id: sentence.id,
+        japanese: sentence.japanese,
+        english: sentence.english,
+        hint: sentence.grammarNote,
+        alternatives: sentence.alternatives,
+      };
+    }
+  }
+
+  return null;
+}
+
+function buildListenQueue(lesson: Lesson): string[] {
+  return [
+    ...lesson.vocabulary.map((word) => word.id),
+    ...lesson.sentences.map((sentence) => sentence.id),
+  ];
+}
+
+function shuffle<T>(items: T[]): T[] {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function makeChoices(
+  item: ListenItem,
+  lessonId: string
+): { choices: string[]; correctIndex: number } {
+  const pool: string[] = [];
+  const pushLesson = (lesson: Lesson): void => {
+    if (item.kind === "word") {
+      pool.push(...lesson.vocabulary.map((word) => word.english));
+    } else {
+      pool.push(...lesson.sentences.map((sentence) => sentence.english));
+    }
+  };
+
+  const lesson = getLesson(lessonId);
+  if (lesson) pushLesson(lesson);
+  if (pool.length < 4) {
+    for (const other of lessons) {
+      if (other.id !== lessonId) pushLesson(other);
+    }
+  }
+
+  const distractors = shuffle([
+    ...new Set(pool.filter((english) => english !== item.english)),
+  ]).slice(0, 3);
+  const choices = shuffle([item.english, ...distractors]);
+  return { choices, correctIndex: choices.indexOf(item.english) };
 }
 
 function getReviewPrompt(entry: SrsEntry): ReviewPrompt | null {
@@ -178,6 +269,7 @@ export default function App(): React.JSX.Element {
     screen.type === "vocab-preview" ||
     screen.type === "lesson-complete" ||
     screen.type === "review-done" ||
+    screen.type === "listen-done" ||
     screen.type === "stats";
 
   useInput(
@@ -207,6 +299,7 @@ export default function App(): React.JSX.Element {
       if (
         screen.type === "lesson-complete" ||
         screen.type === "review-done" ||
+        screen.type === "listen-done" ||
         screen.type === "stats"
       ) {
         setScreen({ type: "menu" });
@@ -301,6 +394,13 @@ export default function App(): React.JSX.Element {
               subtitle: `今日到期：${dueInfo}`,
             },
             {
+              label: "听力练习",
+              value: "listen",
+              subtitle: canSpeak
+                ? "听写 + 理解选择，巩固已学课程"
+                : "听写 + 理解选择（当前系统无语音）",
+            },
+            {
               label: "查看进度",
               value: "stats",
               subtitle: `已掌握 ${stats.mastered} / ${stats.total} 项`,
@@ -310,6 +410,7 @@ export default function App(): React.JSX.Element {
           onSelect={(value) => {
             if (value === "learn") setScreen({ type: "lesson-select" });
             if (value === "review") startReview();
+            if (value === "listen") setScreen({ type: "listen-menu" });
             if (value === "stats") setScreen({ type: "stats" });
             if (value === "exit") exit();
           }}
@@ -589,6 +690,234 @@ export default function App(): React.JSX.Element {
     );
   }
 
+  function renderListenMenu(): React.JSX.Element {
+    return (
+      <Panel title="听力练习">
+        <SelectList
+          items={[
+            {
+              label: "听写模式",
+              value: "dictation",
+              subtitle: "听日语，打出你听到的内容",
+            },
+            {
+              label: "理解选择",
+              value: "choice",
+              subtitle: "听日语，选择对应的中文意思",
+            },
+            { label: "返回主菜单", value: "__back" },
+          ]}
+          onSelect={(value) => {
+            if (value === "__back") {
+              setScreen({ type: "menu" });
+              return;
+            }
+            setScreen({
+              type: "listen-lesson-select",
+              mode: value as ListenMode,
+            });
+          }}
+        />
+        {!canSpeak ? (
+          <Text color="yellow">当前系统不支持 say 语音，题目将无法播放音频。</Text>
+        ) : null}
+        <KeyHint />
+      </Panel>
+    );
+  }
+
+  function renderListenLessonSelect(mode: ListenMode): React.JSX.Element {
+    const items = lessons
+      .filter((lesson) => progress.completedLessons.includes(lesson.id))
+      .map((lesson) => ({
+        label: lesson.title,
+        value: lesson.id,
+        subtitle: lesson.description,
+      }));
+
+    if (items.length === 0) {
+      items.push({
+        label: "还没有已学完的课程",
+        value: "__none",
+        subtitle: "先通过“学习新课”完成至少一节课",
+      });
+    }
+    items.push({ label: "返回听力菜单", value: "__back", subtitle: "" });
+
+    return (
+      <Panel title={`${mode === "dictation" ? "听写模式" : "理解选择"} - 选择课程`}>
+        <SelectList
+          items={items}
+          onSelect={(value) => {
+            if (value === "__back") {
+              setScreen({ type: "listen-menu" });
+              return;
+            }
+            if (value === "__none") return;
+
+            const lesson = getLesson(value);
+            if (!lesson) return;
+            const queue = buildListenQueue(lesson);
+            setScreen(
+              mode === "dictation"
+                ? {
+                    type: "listen-dictation",
+                    lessonId: lesson.id,
+                    queue,
+                    index: 0,
+                    correctCount: 0,
+                  }
+                : {
+                    type: "listen-choice",
+                    lessonId: lesson.id,
+                    queue,
+                    index: 0,
+                    correctCount: 0,
+                  }
+            );
+          }}
+        />
+        <KeyHint />
+      </Panel>
+    );
+  }
+
+  function renderListenDictation(
+    lesson: Lesson,
+    screenValue: Extract<Screen, { type: "listen-dictation" }>
+  ): React.JSX.Element {
+    const itemId = screenValue.queue[screenValue.index];
+    const item = getListenItem(itemId);
+
+    if (!item) {
+      return (
+        <Panel title="听力听写">
+          <Text color="red">这个练习条目已不存在。</Text>
+          <KeyHint>Enter 返回主菜单</KeyHint>
+        </Panel>
+      );
+    }
+
+    return (
+      <Box flexDirection="column">
+        <ProgressBar current={screenValue.index} total={screenValue.queue.length} />
+        <QuestionBox
+          key={itemId}
+          title="听力听写"
+          progress={`${screenValue.index + 1}/${screenValue.queue.length}`}
+          prompt="请听下面的日语，输入你听到的内容"
+          hint={item.hint}
+          check={(answer) => checkAnswer(answer, item.japanese, item.alternatives)}
+          play={(slow) => speak(item.japanese, slow)}
+          onNext={(grade) => {
+            updateEntry(itemId, grade);
+            const nextCorrect = screenValue.correctCount + (grade >= 2 ? 1 : 0);
+            const nextIndex = screenValue.index + 1;
+
+            if (nextIndex < screenValue.queue.length) {
+              setScreen({
+                type: "listen-dictation",
+                lessonId: lesson.id,
+                queue: screenValue.queue,
+                index: nextIndex,
+                correctCount: nextCorrect,
+              });
+              return;
+            }
+
+            setScreen({
+              type: "listen-done",
+              mode: "dictation",
+              correctCount: nextCorrect,
+              total: screenValue.queue.length,
+            });
+          }}
+        />
+      </Box>
+    );
+  }
+
+  function renderListenChoice(
+    lesson: Lesson,
+    screenValue: Extract<Screen, { type: "listen-choice" }>
+  ): React.JSX.Element {
+    const itemId = screenValue.queue[screenValue.index];
+    const item = getListenItem(itemId);
+
+    if (!item) {
+      return (
+        <Panel title="听力理解">
+          <Text color="red">这个练习条目已不存在。</Text>
+          <KeyHint>Enter 返回主菜单</KeyHint>
+        </Panel>
+      );
+    }
+
+    const { choices, correctIndex } = makeChoices(item, lesson.id);
+
+    return (
+      <Box flexDirection="column">
+        <ProgressBar current={screenValue.index} total={screenValue.queue.length} />
+        <ChoiceBox
+          key={itemId}
+          title="听力理解"
+          progress={`${screenValue.index + 1}/${screenValue.queue.length}`}
+          question={
+            item.kind === "word" ? "这个词的意思是？" : "这句话的意思是？"
+          }
+          choices={choices}
+          correctIndex={correctIndex}
+          play={(slow) => speak(item.japanese, slow)}
+          onNext={(grade) => {
+            updateEntry(itemId, grade);
+            const nextCorrect = screenValue.correctCount + (grade >= 2 ? 1 : 0);
+            const nextIndex = screenValue.index + 1;
+
+            if (nextIndex < screenValue.queue.length) {
+              setScreen({
+                type: "listen-choice",
+                lessonId: lesson.id,
+                queue: screenValue.queue,
+                index: nextIndex,
+                correctCount: nextCorrect,
+              });
+              return;
+            }
+
+            setScreen({
+              type: "listen-done",
+              mode: "choice",
+              correctCount: nextCorrect,
+              total: screenValue.queue.length,
+            });
+          }}
+        />
+      </Box>
+    );
+  }
+
+  function renderListenDone(
+    screenValue: Extract<Screen, { type: "listen-done" }>
+  ): React.JSX.Element {
+    return (
+      <Panel title="听力练习完成" borderColor="green">
+        <Text color="green" bold>
+          {screenValue.mode === "dictation" ? "听写" : "理解选择"}完成！
+        </Text>
+        <Text>
+          本次答对：{screenValue.correctCount}/{screenValue.total}
+        </Text>
+        <ProgressBar
+          current={screenValue.correctCount}
+          total={screenValue.total}
+        />
+        <Box marginTop={1}>
+          <KeyHint>Enter 回到主菜单</KeyHint>
+        </Box>
+      </Panel>
+    );
+  }
+
   function renderStats(): React.JSX.Element {
     return (
       <Panel title="学习进度">
@@ -637,8 +966,13 @@ export default function App(): React.JSX.Element {
   function renderContent(): React.JSX.Element {
     if (screen.type === "menu") return renderMenu();
     if (screen.type === "lesson-select") return renderLessonSelect();
+    if (screen.type === "listen-menu") return renderListenMenu();
+    if (screen.type === "listen-lesson-select") {
+      return renderListenLessonSelect(screen.mode);
+    }
     if (screen.type === "review") return renderReview();
     if (screen.type === "review-done") return renderReviewDone(screen);
+    if (screen.type === "listen-done") return renderListenDone(screen);
     if (screen.type === "lesson-complete") return renderLessonComplete(screen);
     if (screen.type === "stats") return renderStats();
 
@@ -656,6 +990,14 @@ export default function App(): React.JSX.Element {
     if (screen.type === "vocab-preview") return renderVocabPreview(lesson);
     if (screen.type === "drill-word") {
       return renderWordDrill(lesson, screen.index, screen.correctCount);
+    }
+
+    if (screen.type === "listen-dictation") {
+      return renderListenDictation(lesson, screen);
+    }
+
+    if (screen.type === "listen-choice") {
+      return renderListenChoice(lesson, screen);
     }
 
     return renderSentenceDrill(

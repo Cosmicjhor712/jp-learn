@@ -11,9 +11,10 @@ export interface QuestionBoxProps {
   hint?: string;
   check: (answer: string) => CheckResult;
   onNext: (grade: number) => void;  // 1=忘了 2=难 3=好 4=轻松
+  play?: (slow: boolean) => void;   // 提供时进入听力模式：先播放语音再作答
 }
 
-type Phase = "input" | "retry" | "success" | "gave-up";
+type Phase = "listen" | "input" | "relisten" | "retry" | "success" | "gave-up";
 
 const MAX_ATTEMPTS = 3;
 
@@ -51,22 +52,30 @@ export default function QuestionBox({
   hint,
   check,
   onNext,
+  play,
 }: QuestionBoxProps): React.JSX.Element {
   const [answer, setAnswer] = useState("");
   const [lastAnswer, setLastAnswer] = useState("");
   const [lastResult, setLastResult] = useState<CheckResult | null>(null);
-  const [phase, setPhase] = useState<Phase>("input");
+  const [phase, setPhase] = useState<Phase>(play ? "listen" : "input");
   const [attempts, setAttempts] = useState(0);
   const [showDiff, setShowDiff] = useState(false);
+  const [slow, setSlow] = useState(false);
 
   useEffect(() => {
     setAnswer("");
     setLastAnswer("");
     setLastResult(null);
-    setPhase("input");
+    setPhase(play ? "listen" : "input");
     setAttempts(0);
     setShowDiff(false);
+    setSlow(false);
   }, [title, progress, prompt]);
+
+  // 听力模式：进入 listen 阶段时自动播放一次
+  useEffect(() => {
+    if (play && phase === "listen") play(false);
+  }, [phase]);
 
   useInput(
     (_input, key) => {
@@ -82,6 +91,30 @@ export default function QuestionBox({
       onNext(grade);
     },
     { isActive: phase === "success" || phase === "gave-up" }
+  );
+
+  useInput(
+    (input, key) => {
+      const ch = input.toLowerCase();
+
+      if (key.return) {
+        // 听完了（或看完了 diff），进入作答阶段
+        setPhase("input");
+        return;
+      }
+
+      if (ch === "p") {
+        play?.(slow);
+        return;
+      }
+
+      if (ch === "s") {
+        const nextSlow = !slow;
+        setSlow(nextSlow);
+        play?.(nextSlow);
+      }
+    },
+    { isActive: Boolean(play) && (phase === "listen" || phase === "relisten") }
   );
 
   function submit(value: string): void {
@@ -108,11 +141,21 @@ export default function QuestionBox({
     const nextAttempts = attempts + 1;
     setAttempts(nextAttempts);
     setShowDiff(true);
-    setPhase(nextAttempts >= MAX_ATTEMPTS ? "gave-up" : "retry");
+    setPhase(
+      nextAttempts >= MAX_ATTEMPTS
+        ? "gave-up"
+        : play
+          ? "relisten"
+          : "retry"
+    );
   }
 
   const borderColor =
-    phase === "success" ? "green" : phase === "input" ? "cyan" : "red";
+    phase === "success"
+      ? "green"
+      : phase === "input" || phase === "listen"
+        ? "cyan"
+        : "red";
   const inputActive = phase === "input" || phase === "retry";
   const diff =
     showDiff && lastResult && !lastResult.correct
@@ -140,6 +183,15 @@ export default function QuestionBox({
       </Text>
       {hint ? <Text dimColor>提示：{hint}</Text> : null}
 
+      {phase === "listen" && play ? (
+        <Box marginTop={1} flexDirection="column">
+          <Text color="cyan" bold>
+            ▶ 正在播放…{slow ? "（慢速）" : ""}
+          </Text>
+          <Text dimColor>p 重听 · s 慢速 · Enter 开始作答</Text>
+        </Box>
+      ) : null}
+
       {diff ? (
         <Box flexDirection="column" marginTop={1}>
           <Text color="red" bold>
@@ -152,6 +204,14 @@ export default function QuestionBox({
             <DiffLine tokens={diff.userTokens} />
             <Text dimColor>绿色=正确  红色=漏掉  黄色=多打</Text>
           </Box>
+        </Box>
+      ) : null}
+
+      {phase === "relisten" && play ? (
+        <Box marginTop={1}>
+          <Text dimColor>
+            p 重听{slow ? "（慢速）" : ""} · s 慢速 · Enter 再答一次
+          </Text>
         </Box>
       ) : null}
 
