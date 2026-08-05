@@ -5,6 +5,14 @@ import type { Lesson, Progress, SrsEntry } from "./types.js";
 import { getOrInitProgress, saveProgress } from "./progress.js";
 import { getDueEntries, getStats, updateSrs } from "./srs.js";
 import { checkAnswer } from "./exercises.js";
+import {
+  buildListenQueue,
+  entriesForCompletedLessons,
+  findLesson,
+  findListenItem,
+  findReviewPrompt,
+  makeChoices,
+} from "./logic.js";
 import SelectList from "./components/SelectList.js";
 import ProgressBar from "./components/ProgressBar.js";
 import QuestionBox from "./components/QuestionBox.js";
@@ -51,129 +59,6 @@ type Screen =
 
 type ListenMode = "dictation" | "choice";
 
-interface ReviewPrompt {
-  title: string;
-  prompt: string;
-  expected: string;
-  alternatives?: string[];
-  hint?: string;
-}
-
-interface ListenItem {
-  kind: "word" | "sentence";
-  id: string;
-  japanese: string;
-  english: string;
-  hint?: string;
-  alternatives?: string[];
-}
-
-function getLesson(lessonId: string): Lesson | undefined {
-  return lessons.find((lesson) => lesson.id === lessonId);
-}
-
-function getListenItem(itemId: string): ListenItem | null {
-  for (const lesson of lessons) {
-    const word = lesson.vocabulary.find((item) => item.id === itemId);
-    if (word) {
-      return {
-        kind: "word",
-        id: word.id,
-        japanese: word.japanese,
-        english: word.english,
-        hint: `词性：${word.partOfSpeech}`,
-      };
-    }
-
-    const sentence = lesson.sentences.find((item) => item.id === itemId);
-    if (sentence) {
-      return {
-        kind: "sentence",
-        id: sentence.id,
-        japanese: sentence.japanese,
-        english: sentence.english,
-        hint: sentence.grammarNote,
-        alternatives: sentence.alternatives,
-      };
-    }
-  }
-
-  return null;
-}
-
-function buildListenQueue(lesson: Lesson): string[] {
-  return [
-    ...lesson.vocabulary.map((word) => word.id),
-    ...lesson.sentences.map((sentence) => sentence.id),
-  ];
-}
-
-function shuffle<T>(items: T[]): T[] {
-  const arr = [...items];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-function makeChoices(
-  item: ListenItem,
-  lessonId: string
-): { choices: string[]; correctIndex: number } {
-  const pool: string[] = [];
-  const pushLesson = (lesson: Lesson): void => {
-    if (item.kind === "word") {
-      pool.push(...lesson.vocabulary.map((word) => word.english));
-    } else {
-      pool.push(...lesson.sentences.map((sentence) => sentence.english));
-    }
-  };
-
-  const lesson = getLesson(lessonId);
-  if (lesson) pushLesson(lesson);
-  if (pool.length < 4) {
-    for (const other of lessons) {
-      if (other.id !== lessonId) pushLesson(other);
-    }
-  }
-
-  const distractors = shuffle([
-    ...new Set(pool.filter((english) => english !== item.english)),
-  ]).slice(0, 3);
-  const choices = shuffle([item.english, ...distractors]);
-  return { choices, correctIndex: choices.indexOf(item.english) };
-}
-
-function getReviewPrompt(entry: SrsEntry): ReviewPrompt | null {
-  for (const lesson of lessons) {
-    if (entry.itemType === "word") {
-      const word = lesson.vocabulary.find((item) => item.id === entry.itemId);
-      if (!word) continue;
-
-      return {
-        title: "词汇回想",
-        prompt: word.english,
-        expected: word.japanese,
-        hint: `词性：${word.partOfSpeech}`,
-      };
-    }
-
-    const sentence = lesson.sentences.find((item) => item.id === entry.itemId);
-    if (!sentence) continue;
-
-    return {
-      title: "整句翻译",
-      prompt: sentence.english,
-      expected: sentence.japanese,
-      alternatives: sentence.alternatives,
-      hint: sentence.grammarNote,
-    };
-  }
-
-  return null;
-}
-
 function Panel({
   title,
   children,
@@ -205,20 +90,10 @@ function Panel({
   );
 }
 
-function entriesFromCompletedLessons(
-  entries: SrsEntry[],
-  completedLessons: string[]
-): SrsEntry[] {
-  return entries.filter((entry) => {
-    const m = entry.itemId.match(/^(lesson-\d+)_/);
-    return m && completedLessons.includes(m[1]);
-  });
-}
-
 function TopBar({ progress }: { progress: Progress }): React.JSX.Element {
   const trained = progress.completedLessons.length > 0;
   const relevantEntries = trained
-    ? entriesFromCompletedLessons(Object.values(progress.entries), progress.completedLessons)
+    ? entriesForCompletedLessons(Object.values(progress.entries), progress.completedLessons)
     : Object.values(progress.entries);
   const stats = getStats(relevantEntries);
 
@@ -259,7 +134,7 @@ export default function App(): React.JSX.Element {
   const stats = useMemo(() => {
     const trained = progress.completedLessons.length > 0;
     const relevant = trained
-      ? entriesFromCompletedLessons(Object.values(progress.entries), progress.completedLessons)
+      ? entriesForCompletedLessons(Object.values(progress.entries), progress.completedLessons)
       : Object.values(progress.entries);
     return getStats(relevant);
   }, [progress]);
@@ -351,7 +226,7 @@ export default function App(): React.JSX.Element {
         const lessonId = entry.itemId.match(/^(lesson-\d+)_/)?.[1];
         return lessonId && progress.completedLessons.includes(lessonId);
       })
-      .filter((entry) => getReviewPrompt(entry) !== null)
+      .filter((entry) => findReviewPrompt(entry, lessons) !== null)
       .map((entry) => entry.itemId);
 
     setScreen(
@@ -592,7 +467,7 @@ export default function App(): React.JSX.Element {
 
     const itemId = screen.queue[screen.index];
     const entry = progress.entries[itemId];
-    const prompt = entry ? getReviewPrompt(entry) : null;
+    const prompt = entry ? findReviewPrompt(entry, lessons) : null;
 
     if (!entry || !prompt) {
       return (
@@ -642,7 +517,7 @@ export default function App(): React.JSX.Element {
   }
 
   function renderLessonComplete(screenValue: Extract<Screen, { type: "lesson-complete" }>): React.JSX.Element {
-    const lesson = getLesson(screenValue.lessonId);
+    const lesson = findLesson(lessons, screenValue.lessonId);
 
     return (
       <Panel title="课程完成" borderColor="green">
@@ -719,7 +594,7 @@ export default function App(): React.JSX.Element {
           }}
         />
         {!canSpeak ? (
-          <Text color="yellow">当前系统不支持 say 语音，题目将无法播放音频。</Text>
+          <Text color="yellow">未检测到可用的语音引擎，题目将无法播放音频。</Text>
         ) : null}
         <KeyHint />
       </Panel>
@@ -755,7 +630,7 @@ export default function App(): React.JSX.Element {
             }
             if (value === "__none") return;
 
-            const lesson = getLesson(value);
+            const lesson = findLesson(lessons, value);
             if (!lesson) return;
             const queue = buildListenQueue(lesson);
             setScreen(
@@ -787,7 +662,7 @@ export default function App(): React.JSX.Element {
     screenValue: Extract<Screen, { type: "listen-dictation" }>
   ): React.JSX.Element {
     const itemId = screenValue.queue[screenValue.index];
-    const item = getListenItem(itemId);
+    const item = findListenItem(itemId, lessons);
 
     if (!item) {
       return (
@@ -842,7 +717,7 @@ export default function App(): React.JSX.Element {
     screenValue: Extract<Screen, { type: "listen-choice" }>
   ): React.JSX.Element {
     const itemId = screenValue.queue[screenValue.index];
-    const item = getListenItem(itemId);
+    const item = findListenItem(itemId, lessons);
 
     if (!item) {
       return (
@@ -853,7 +728,7 @@ export default function App(): React.JSX.Element {
       );
     }
 
-    const { choices, correctIndex } = makeChoices(item, lesson.id);
+    const { choices, correctIndex } = makeChoices(item, lesson.id, lessons);
 
     return (
       <Box flexDirection="column">
@@ -976,7 +851,7 @@ export default function App(): React.JSX.Element {
     if (screen.type === "lesson-complete") return renderLessonComplete(screen);
     if (screen.type === "stats") return renderStats();
 
-    const lesson = getLesson(screen.lessonId);
+    const lesson = findLesson(lessons, screen.lessonId);
     if (!lesson) {
       return (
         <Panel title="找不到课程" borderColor="red">

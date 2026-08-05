@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node", "react", "vite/client"],
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "declaration": false,
+    "rootDir": "."
+  },
+  "include": [
+    "web/**/*.ts",
+    "web/**/*.tsx",
+    "src/types.ts",
+    "src/srs.ts",
+    "src/exercises.ts",
+    "src/logic.ts",
+    "vite.config.ts"
+  ]
+}
