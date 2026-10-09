@@ -16,6 +16,23 @@ import ProgressBar from "./components/ProgressBar";
 import QuestionPanel from "./components/QuestionPanel";
 import ChoicePanel from "./components/ChoicePanel";
 import lessonsData from "../data/lessons.json";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  CalendarDays,
+  ChartNoAxesColumnIncreasing,
+  ChevronRight,
+  CircleCheck,
+  Clock3,
+  Headphones,
+  House,
+  Keyboard,
+  RotateCcw,
+} from "lucide-react";
+import KanaPractice from "./components/KanaPractice.tsx";
+import KanaAnnotation from "./components/KanaAnnotation.tsx";
+import { useInputLearning } from "./inputLearning.tsx";
 
 const lessons = lessonsData as Lesson[];
 
@@ -23,6 +40,7 @@ type ListenMode = "dictation" | "choice";
 
 type Screen =
   | { type: "menu" }
+  | { type: "kana-practice" }
   | { type: "lesson-select" }
   | { type: "listen-menu" }
   | { type: "listen-lesson-select"; mode: ListenMode }
@@ -81,16 +99,38 @@ function BackButton({
 }
 
 export default function App(): React.JSX.Element {
+  const { preferences, history } = useInputLearning();
   const [progress, setProgress] = useState<Progress | null>(null);
   const [screen, setScreen] = useState<Screen>({ type: "menu" });
+
+  function returnHome(): void {
+    if (canSpeak) window.speechSynthesis.cancel();
+    setScreen({ type: "menu" });
+  }
 
   useEffect(() => {
     loadProgress(lessons).then(setProgress);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [screen.type]);
+
   // 进度变化后持久化
   useEffect(() => {
     if (progress) saveProgress(progress);
+  }, [progress]);
+
+  const reviewQueue = useMemo(() => {
+    if (!progress) return [];
+    return getDueEntries(
+      entriesForCompletedLessons(
+        Object.values(progress.entries),
+        progress.completedLessons
+      )
+    )
+      .filter((entry) => findReviewPrompt(entry, lessons) !== null)
+      .map((entry) => entry.itemId);
   }, [progress]);
 
   const stats = useMemo(() => {
@@ -102,8 +142,8 @@ export default function App(): React.JSX.Element {
           progress.completedLessons
         )
       : Object.values(progress.entries);
-    return getStats(relevant);
-  }, [progress]);
+    return { ...getStats(relevant), due: reviewQueue.length };
+  }, [progress, reviewQueue]);
 
   function updateEntry(itemId: string, grade: number): void {
     setProgress((current) => {
@@ -134,18 +174,10 @@ export default function App(): React.JSX.Element {
 
   function startReview(): void {
     if (!progress) return;
-    const queue = getDueEntries(Object.values(progress.entries))
-      .filter((entry) => {
-        const lessonId = entry.itemId.match(/^(lesson-\d+)_/)?.[1];
-        return lessonId && progress.completedLessons.includes(lessonId);
-      })
-      .filter((entry) => findReviewPrompt(entry, lessons) !== null)
-      .map((entry) => entry.itemId);
-
     setScreen(
-      queue.length === 0
+      reviewQueue.length === 0
         ? { type: "review-done", correctCount: 0, total: 0 }
-        : { type: "review", queue, index: 0, correctCount: 0 }
+        : { type: "review", queue: reviewQueue, index: 0, correctCount: 0 }
     );
   }
 
@@ -155,42 +187,248 @@ export default function App(): React.JSX.Element {
   const current = progress;
 
   function renderMenu(): React.JSX.Element {
+    const completedCount = lessons.filter((lesson) =>
+      current.completedLessons.includes(lesson.id),
+    ).length;
+    const nextLesson = lessons.find(
+      (lesson) => !current.completedLessons.includes(lesson.id),
+    );
+    const nextNumber = nextLesson ? lessons.indexOf(nextLesson) + 1 : 0;
+    const hasReview = stats.due > 0;
+    const practiceAttempts = Object.values(history).reduce(
+      (total, item) => total + item.attempts,
+      0,
+    );
+
+    function openNextLesson(): void {
+      if (nextLesson) setScreen({ type: "grammar", lessonId: nextLesson.id });
+    }
+
     return (
-      <div className="card">
-        <div className="card-head">
-          <strong>操作</strong>
-        </div>
-        <div className="menu-list">
-          <button
-            className="menu-btn"
-            onClick={() => setScreen({ type: "lesson-select" })}
-          >
-            <span>📖 学习新课</span>
-            <span className="muted">从课程中学习新词汇和语法</span>
-          </button>
-          <button className="menu-btn" onClick={startReview}>
-            <span>🔁 开始复习</span>
-            <span className="muted">
-              {stats.due > 0 ? `今日到期：${stats.due} 题` : "今天已清空"}
+      <div className="learning-home">
+        <section aria-label="学习概览" className="home-overview">
+          <div className="home-heading">
+            <h1>今日学习</h1>
+            <span className="home-date">
+              <CalendarDays size={15} aria-hidden="true" />
+              {new Date().toLocaleDateString("zh-CN", {
+                month: "long",
+                day: "numeric",
+                weekday: "long",
+              })}
             </span>
-          </button>
-          <button
-            className="menu-btn"
-            onClick={() => setScreen({ type: "listen-menu" })}
-          >
-            <span>🎧 听力练习</span>
-            <span className="muted">
-              {canSpeak ? "听写 + 理解选择，巩固已学课程" : "当前浏览器不支持语音"}
+          </div>
+          <dl className="home-metrics">
+            <div className={hasReview ? "metric-due" : ""}>
+              <dt>
+                <Clock3 size={15} aria-hidden="true" />
+                待复习
+              </dt>
+              <dd aria-label={`${stats.due} 项待复习`}>
+                {stats.due}
+                <span>项</span>
+              </dd>
+            </div>
+            <div>
+              <dt>
+                <BookOpen size={15} aria-hidden="true" />
+                已完成课程
+              </dt>
+              <dd
+                aria-label={`已完成 ${completedCount} / ${lessons.length} 课`}
+              >
+                {completedCount}
+                <span>/ {lessons.length} 课</span>
+              </dd>
+            </div>
+            <div className="metric-mastered">
+              <dt>
+                <CircleCheck size={15} aria-hidden="true" />
+                已掌握词条
+              </dt>
+              <dd aria-label={`已掌握 ${stats.mastered} / ${stats.total} 项`}>
+                {stats.mastered}
+                <span>/ {stats.total} 项</span>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section
+          aria-label="今日任务"
+          className={`home-task ${hasReview ? "task-due" : ""}`}
+        >
+          <div className="home-section-heading">
+            <h2>今日任务</h2>
+            <span
+              className={`home-status ${hasReview ? "status-due" : "status-clear"}`}
+            >
+              {hasReview ? (
+                <Clock3 size={14} aria-hidden="true" />
+              ) : (
+                <CircleCheck size={14} aria-hidden="true" />
+              )}
+              {hasReview
+                ? "复习优先"
+                : completedCount === 0
+                  ? "准备开始"
+                  : "暂无到期复习"}
             </span>
-          </button>
-          <button
-            className="menu-btn"
-            onClick={() => setScreen({ type: "stats" })}
-          >
-            <span>📊 查看进度</span>
-            <span className="muted">已掌握 {stats.mastered} / {stats.total} 项</span>
-          </button>
-        </div>
+          </div>
+          <div className="home-task-body">
+            <div className="home-task-summary">
+              {hasReview ? (
+                <RotateCcw size={24} aria-hidden="true" />
+              ) : nextLesson ? (
+                <BookOpen size={24} aria-hidden="true" />
+              ) : (
+                <CircleCheck size={24} aria-hidden="true" />
+              )}
+              <div>
+                <h3>
+                  {hasReview
+                    ? "复习已学内容"
+                    : nextLesson
+                      ? completedCount === 0
+                        ? "开始第一课"
+                        : "开始下一课"
+                      : "今日复习已清空"}
+                </h3>
+                <p>
+                  {hasReview
+                    ? `${stats.due} 项到期 · ${completedCount} 课已学`
+                    : nextLesson
+                      ? nextLesson.title
+                      : `${completedCount} 门课程已全部完成`}
+                </p>
+              </div>
+            </div>
+            <div className="home-task-actions">
+              <button
+                type="button"
+                className="home-primary"
+                onClick={
+                  hasReview
+                    ? startReview
+                    : nextLesson
+                      ? openNextLesson
+                      : () => setScreen({ type: "kana-practice" })
+                }
+              >
+                {hasReview ? "开始复习" : nextLesson ? "开始学习" : "练习假名"}
+                <ArrowRight size={18} aria-hidden="true" />
+              </button>
+              {!hasReview ? (
+                <button
+                  type="button"
+                  className="home-link"
+                  onClick={startReview}
+                >
+                  <RotateCcw size={15} aria-hidden="true" />
+                  开始复习
+                </button>
+              ) : null}
+            </div>
+          </div>
+        </section>
+
+        <section
+          aria-label={nextLesson ? "下一课" : "课程进度"}
+          className="home-course"
+        >
+          <div className="home-section-heading">
+            <h2>{nextLesson ? "下一课" : "课程进度"}</h2>
+            <button
+              type="button"
+              className="home-link"
+              onClick={() => setScreen({ type: "lesson-select" })}
+            >
+              <BookOpen size={15} aria-hidden="true" />
+              学习新课
+              <ChevronRight size={15} aria-hidden="true" />
+            </button>
+          </div>
+          {nextLesson ? (
+            <button
+              type="button"
+              className="next-lesson"
+              aria-label={`开始学习：${nextLesson.title}`}
+              title={`学习${nextLesson.title}`}
+              onClick={openNextLesson}
+            >
+              <span className="lesson-number" aria-hidden="true">
+                {String(nextNumber).padStart(2, "0")}
+              </span>
+              <span className="next-lesson-content">
+                <strong>{nextLesson.title}</strong>
+                <span className="lesson-description">
+                  {nextLesson.description}
+                </span>
+                <span className="lesson-details">
+                  {nextLesson.vocabulary.length} 个词汇
+                  <span aria-hidden="true">·</span>
+                  {nextLesson.sentences.length} 个句子
+                  <span aria-hidden="true">·</span>
+                  {nextLesson.grammar.length} 个语法点
+                </span>
+              </span>
+              <ArrowUpRight size={22} aria-hidden="true" />
+            </button>
+          ) : (
+            <div className="course-finished">
+              <CircleCheck size={24} aria-hidden="true" />
+              <div>
+                <strong>全部课程已完成</strong>
+                <span>
+                  {completedCount} / {lessons.length} 课
+                </span>
+              </div>
+            </div>
+          )}
+        </section>
+
+        <section aria-label="专项练习" className="home-practice">
+          <div className="home-section-heading">
+            <h2>专项练习</h2>
+          </div>
+          <div className="home-practice-grid">
+            <button
+              type="button"
+              className="practice-entry"
+              disabled={!canSpeak || completedCount === 0}
+              onClick={() => setScreen({ type: "listen-menu" })}
+            >
+              <Headphones size={23} aria-hidden="true" />
+              <span>
+                <strong>听力练习</strong>
+                <small>
+                  {!canSpeak
+                    ? "浏览器不支持语音"
+                    : completedCount === 0
+                      ? "暂无可练课程"
+                      : `${completedCount} 课可练`}
+                </small>
+              </span>
+              <ChevronRight size={18} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="practice-entry"
+              onClick={() => setScreen({ type: "kana-practice" })}
+            >
+              <Keyboard size={23} aria-hidden="true" />
+              <span>
+                <strong>假名输入练习</strong>
+                <small>
+                  {practiceAttempts
+                    ? `累计练习 ${practiceAttempts} 次`
+                    : "尚无练习记录"}
+                </small>
+              </span>
+              <ChevronRight size={18} aria-hidden="true" />
+            </button>
+          </div>
+        </section>
       </div>
     );
   }
@@ -266,7 +504,7 @@ export default function App(): React.JSX.Element {
         <div className="vocab-list">
           {lesson.vocabulary.map((word) => (
             <div key={word.id} className="vocab-row">
-              <span className="jp">{word.japanese}</span>
+              <span className="jp"><KanaAnnotation text={word.japanese} annotate={preferences.help !== "manual"} /></span>
               <span>{word.english}</span>
               <span className="muted">{word.partOfSpeech}</span>
             </div>
@@ -306,6 +544,7 @@ export default function App(): React.JSX.Element {
           title="词汇练习"
           progress={`${index + 1}/${lesson.vocabulary.length}`}
           prompt={word.english}
+          expected={word.japanese}
           hint={`词性：${word.partOfSpeech}`}
           check={(answer) => checkAnswer(answer, word.japanese)}
           onNext={(grade) => {
@@ -352,6 +591,7 @@ export default function App(): React.JSX.Element {
           title="整句翻译"
           progress={`${index + 1}/${lesson.sentences.length}`}
           prompt={sentence.english}
+          expected={sentence.japanese}
           hint={sentence.grammarNote}
           check={(answer) =>
             checkAnswer(answer, sentence.japanese, sentence.alternatives)
@@ -405,6 +645,7 @@ export default function App(): React.JSX.Element {
           title={prompt.title}
           progress={`${index + 1}/${queue.length}`}
           prompt={prompt.prompt}
+          expected={prompt.expected}
           hint={prompt.hint}
           check={(answer) =>
             checkAnswer(answer, prompt.expected, prompt.alternatives)
@@ -539,6 +780,7 @@ export default function App(): React.JSX.Element {
           title="听力听写"
           progress={`${index + 1}/${queue.length}`}
           prompt="请听下面的日语，输入你听到的内容"
+          expected={item.japanese}
           hint={item.hint}
           check={(answer) => checkAnswer(answer, item.japanese, item.alternatives)}
           play={(slow) => speak(item.japanese, slow)}
@@ -695,6 +937,8 @@ export default function App(): React.JSX.Element {
     switch (screen.type) {
       case "menu":
         return renderMenu();
+      case "kana-practice":
+        return <KanaPractice onBack={() => setScreen({ type: "menu" })} />;
       case "lesson-select":
         return renderLessonSelect();
       case "grammar":
@@ -766,9 +1010,26 @@ export default function App(): React.JSX.Element {
     <div className="app">
       <header className="topbar">
         <strong>日本語学習</strong>
-        <span className="muted">
-          {stats.due} 待复习 · {stats.mastered}/{stats.total} 掌握
-        </span>
+        {screen.type === "menu" ? (
+          <button type="button" className="home-link topbar-progress" onClick={() => setScreen({ type: "stats" })}>
+            <ChartNoAxesColumnIncreasing size={16} aria-hidden="true" />查看进度<ArrowUpRight size={14} aria-hidden="true" />
+          </button>
+        ) : (
+          <span className="muted topbar-stats">
+            {stats.due} 待复习 · {stats.mastered}/{stats.total} 掌握
+          </span>
+        )}
+        {screen.type !== "menu" ? (
+          <button
+            type="button"
+            className="home-button"
+            title="返回主界面"
+            onClick={returnHome}
+          >
+            <House size={16} aria-hidden="true" />
+            返回主界面
+          </button>
+        ) : null}
       </header>
       <main>{renderContent()}</main>
     </div>

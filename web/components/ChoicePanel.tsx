@@ -56,6 +56,9 @@ export default function ChoicePanel({
 
   useEffect(() => {
     function onKey(e: KeyboardEvent): void {
+      if (e.isComposing || e.keyCode === 229) return;
+      const target = e.target as HTMLElement;
+      if (target.closest("input, textarea, select, button")) return;
       if (phase === "success" || phase === "gave-up") {
         if (e.key === "Enter") {
           e.preventDefault();
