@@ -13,6 +13,7 @@
 - **Ink TUI 界面**：方向键导航 + TextInput 输入 + 面板边框 (`src/app.tsx`, `src/components/`)
 - **听力练习**：跨平台语音朗读 + 听写 / 理解选择两种模式，复用答案比对与 FSRS (`src/tts.ts`, `src/components/ChoiceBox.tsx`)
 - **Web 版界面**：浏览器可视化 UI，鼠标点击操作，语音走浏览器 Web Speech API，进度与终端版共用 `user/progress.json` (`web/`, `vite.config.ts`)
+- **Web 日语输入练习台**：内置罗马字转假名、平/片假名切换、可点击键盘、假名查询、答案按键标注与输入专项练习 (`src/kana.ts`, `web/components/Kana*.tsx`)
 
 ### ✅ Ink (React TUI) 迁移已完成
 
@@ -76,10 +77,27 @@ npm run serve:web  # 本地预览生产包 http://localhost:4173
 
 Web 版支持鼠标操作；语音使用浏览器 Web Speech API（推荐 Chrome / Edge / Safari，日语语音会自动选择）。进度通过内置接口读写 `user/progress.json`，与终端版完全一致；接口不可用时自动回退到浏览器 localStorage。
 
+### Web 日语输入
+
+- 默认使用内置罗马字输入：保持英文输入法，输入 `isshoni` 得到 `いっしょに`。切到 `ア` 后输入 `depa-to` 得到 `デパート`；切换只影响之后输入的罗马字，因此同一句可混用两种假名。
+- 系统输入法模式保留原有日语输入方式。内置转换只处理假名，不提供汉字候选，也不替代其他软件里的系统日语输入法。
+- 未完成的 `sh`、`ky` 等保留待输入状态，补全后才能提交；结尾的 `n` 在提交时确定为 `ん`。需要明确分隔时使用 `n'`，如 `kin'youbi`。
+- 输入助手支持清音、浊音、拗音、小假名、长音和外来音查询。点击假名查看按键/别名和发音，可插入光标所在位置；键盘按钮支持输入、退格、空格和提交。
+- 答错后显示按组合分段的答案标注与输入规则。可选择始终显示、答错后显示或手动查看；查看整题答案后答对会标为辅助完成，FSRS 按“难”评分。查单个假名不自动扣词汇评分。
+- “假名输入练习”提供看假名打字、听音打字和易错项复练。偏好及输入练习记录单独保存在本浏览器的 localStorage，不修改课程数据或终端进度结构；不同浏览器不会共享这些记录。
+- 听写仍可在同一个输入区作答；输入框内的 `p`、`s` 不会触发重听/慢速快捷键。Web 跳题使用“跳过”按钮。
+
 ## 验证
 
 ```bash
 npm run typecheck
+npm test
+npx playwright install chromium
+npm run test:web
 ```
 
 `typecheck` 同时检查终端版（`src/`）与 Web 版（`web/` + `vite.config.ts`）。
+
+逻辑测试覆盖假名表及所有课程答案的按键往返、组合音和混合假名；浏览器测试覆盖编辑、输入法确认、听写、辅助评分及桌面/手机布局。浏览器测试拦截 `/api/progress`，不会写入实际学习进度。
+
+如果已有 Chrome，也可跳过浏览器下载，在 PowerShell 中运行 `$env:PLAYWRIGHT_CHANNEL='chrome'; npm.cmd run test:web`。

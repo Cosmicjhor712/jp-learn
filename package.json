@@ -4,6 +4,8 @@
   "description": "日语学习工具（终端 + Web）— 强制打字产出 + FSRS 间隔重复 + 听力练习",
   "type": "module",
   "scripts": {
+    "test": "node --import tsx --test tests/kana.test.ts",
+    "test:web": "playwright test",
     "start": "node --import tsx src/index.tsx",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.web.json --noEmit",
     "web": "vite",
@@ -15,10 +17,13 @@
     "chalk": "^5.3.0",
     "ink": "^7.1.0",
     "ink-text-input": "^6.0.0",
+    "lucide-react": "^1.54.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "wanakana": "^5.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
     "@types/node": "^26.0.1",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
