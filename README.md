@@ -100,4 +100,12 @@ npm run test:web
 
 逻辑测试覆盖假名表及所有课程答案的按键往返、组合音和混合假名；浏览器测试覆盖编辑、输入法确认、听写、辅助评分及桌面/手机布局。浏览器测试拦截 `/api/progress`，不会写入实际学习进度。
 
-如果已有 Chrome，也可跳过浏览器下载，在 PowerShell 中运行 `$env:PLAYWRIGHT_CHANNEL='chrome'; npm.cmd run test:web`。
+如果已有 Chrome，也可跳过浏览器下载，直接指定系统 Chrome 运行测试：
+
+```bash
+# macOS / Linux
+PLAYWRIGHT_CHANNEL=chrome npm run test:web
+
+# Windows PowerShell
+$env:PLAYWRIGHT_CHANNEL='chrome'; npm run test:web
+```
