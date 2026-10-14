@@ -1,0 +1,571 @@
+.home-scenario {
+  padding: 24px 0 28px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.home-scenario .home-section-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--cyan);
+}
+.home-scenario-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.home-scenario-body h3 {
+  margin: 8px 0 4px;
+  font-size: 24px;
+}
+.home-scenario-body p {
+  margin: 0 0 8px;
+  color: var(--text);
+}
+.home-scenario-body > button {
+  flex-shrink: 0;
+}
+.scenario-lesson {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.scenario-course-heading {
+  padding: 22px 0 26px;
+}
+.scenario-eyebrow {
+  font-size: 13px;
+  color: var(--cyan);
+}
+.scenario-course-heading h1 {
+  margin: 8px 0 6px;
+  font-size: 28px;
+  line-height: 1.4;
+}
+.scenario-course-heading p {
+  margin: 0;
+  color: var(--muted);
+}
+.scenario-steps {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  border-block: 1px solid var(--border);
+}
+.scenario-steps button {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 16px 6px;
+  font-size: 13px;
+  justify-content: center;
+  border-bottom: 2px solid transparent;
+  gap: 6px;
+}
+.scenario-steps button[aria-current="step"] {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+  background: #1c2927;
+}
+.scenario-steps button:disabled {
+  color: var(--muted);
+  opacity: 0.6;
+}
+.scenario-steps button > span {
+  width: 21px;
+  height: 21px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.scenario-stage {
+  padding: 26px 0 12px;
+}
+.scenario-stage-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.scenario-stage h2 {
+  margin: 0;
+  font-size: 21px;
+}
+.scenario-stage h2:focus {
+  outline: none;
+}
+.scenario-stage h3 {
+  font-size: 17px;
+  margin: 0;
+}
+.scenario-audio-scene {
+  padding: 22px 0;
+  border-block: 1px solid var(--border);
+}
+.scenario-audio-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.scenario-audio-heading > svg {
+  color: var(--cyan);
+}
+.scenario-audio-heading strong {
+  display: block;
+  font-size: 18px;
+}
+.scenario-audio-heading span {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.scenario-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.scenario-lesson button,
+.scenario-stats button {
+  background-color: #242b2c;
+}
+.scenario-lesson .home-primary {
+  background-color: var(--cyan);
+  color: #10221f;
+}
+.scenario-lesson .home-link {
+  background: transparent;
+}
+.scenario-lesson .home-primary:disabled {
+  opacity: 0.4;
+}
+.scenario-icon {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  padding: 0;
+  justify-content: center;
+}
+.scenario-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 18px 0;
+}
+.scenario-toggles label,
+.scenario-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+.scenario-lesson input[type="checkbox"] {
+  accent-color: var(--cyan);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+.scenario-dialogue {
+  border-left: 2px solid #567984;
+  padding: 4px 0 4px 20px;
+  margin: 8px 0 24px;
+}
+.scenario-dialogue-line {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+}
+.scenario-speaker {
+  font-size: 13px;
+  color: #abc7e3;
+  padding-top: 5px;
+}
+.scenario-japanese {
+  min-width: 0;
+}
+.scenario-japanese p {
+  font-size: 20px;
+  line-height: 1.9;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.scenario-japanese ruby rt {
+  font-size: 11px;
+  color: var(--muted);
+}
+.scenario-japanese .scenario-romaji {
+  font-size: 14px;
+  color: #b6cce7;
+  margin-top: 5px;
+  line-height: 1.65;
+}
+.scenario-japanese .scenario-translation {
+  font-size: 15px;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.65;
+}
+.scenario-question {
+  border: 0;
+  padding: 0;
+  margin: 22px 0 30px;
+  min-width: 0;
+}
+.scenario-question legend {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 12px;
+  max-width: 100%;
+}
+.scenario-question legend > span {
+  font-size: 12px;
+  color: var(--muted);
+  margin-right: 12px;
+  font-weight: 400;
+}
+.scenario-choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.scenario-choices button {
+  text-align: left;
+  min-height: 52px;
+  padding: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 14px;
+  gap: 10px;
+  overflow-wrap: anywhere;
+}
+.scenario-choices button > svg {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.scenario-option-letter {
+  color: var(--muted);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.scenario-choices .choice-correct {
+  border-color: #5baf91;
+  background: #1d352c;
+  opacity: 1;
+}
+.scenario-choices .choice-incorrect {
+  border-color: #db9292;
+  background: #382728;
+  opacity: 1;
+}
+.scenario-feedback {
+  border-left: 2px solid var(--border);
+  margin-top: 12px;
+  padding-left: 12px;
+  font-size: 14px;
+}
+.scenario-feedback p {
+  margin: 3px 0 0;
+  color: var(--muted);
+}
+.scenario-answer-support {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.scenario-notice {
+  padding: 10px 14px;
+  border-left: 2px solid #d6b875;
+  background: #29291f;
+  font-size: 13px;
+  color: #e1cc9f;
+}
+.scenario-expressions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 36px;
+}
+.scenario-expression {
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  min-width: 0;
+}
+.scenario-expression-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.scenario-expression-heading h3 {
+  color: #abc7e3;
+}
+.scenario-expression .muted {
+  margin-bottom: 0;
+}
+.scenario-turns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 22px;
+}
+.scenario-turns button {
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid var(--border);
+  border-radius: 0;
+  font-size: 14px;
+  padding: 8px 0;
+}
+.scenario-turns button[aria-current="step"] {
+  border-bottom-color: var(--cyan);
+  color: var(--cyan);
+}
+.scenario-context {
+  font-size: 17px;
+  line-height: 1.8;
+  margin: 12px 0 22px;
+}
+.scenario-cue {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  border-left: 2px solid #567984;
+  padding: 8px 0 8px 18px;
+}
+.scenario-cue .scenario-speaker {
+  flex-shrink: 0;
+}
+.scenario-cue .scenario-icon {
+  margin-left: auto;
+}
+.scenario-goals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  color: #b6cce7;
+  padding-left: 20px;
+  margin-block: 22px;
+  font-size: 14px;
+}
+.scenario-recorder {
+  padding: 20px 0;
+  border-block: 1px solid var(--border);
+}
+.scenario-recorder audio {
+  display: block;
+  width: min(100%, 420px);
+  margin-top: 16px;
+  height: 42px;
+}
+.scenario-recorder .recording-button {
+  border-color: #db9292;
+  color: #ffc0c0;
+}
+.scenario-answer-actions {
+  padding: 24px 0 12px;
+}
+.scenario-references {
+  padding-top: 24px;
+}
+.scenario-reference {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+.scenario-reference:last-of-type {
+  border: 0;
+}
+.scenario-ratings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.scenario-ratings button[aria-pressed="true"] {
+  background: #233932;
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+.scenario-next-turn {
+  margin-top: 20px;
+}
+.scenario-message {
+  max-width: 720px;
+  background: #222a2b;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 22px 24px;
+}
+.scenario-message-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #abc7e3;
+  margin-bottom: 18px;
+}
+.scenario-message-heading span {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--muted);
+}
+.scenario-message .scenario-japanese p {
+  line-height: 2.2;
+}
+.scenario-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 0 8px;
+  border-top: 1px solid var(--border);
+}
+.scenario-report dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  padding: 24px 0;
+  margin: 0;
+  border-block: 1px solid var(--border);
+}
+.scenario-report dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+.scenario-report dd {
+  margin: 8px 0 0;
+  font-size: 26px;
+  color: var(--cyan);
+}
+.scenario-report dd.scenario-report-word {
+  font-size: 20px;
+  line-height: 41.6px;
+}
+.scenario-report small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.scenario-report dl > div {
+  min-width: 0;
+}
+.scenario-score-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-variant-numeric: tabular-nums;
+}
+.scenario-score-label {
+  font-size: 14px;
+  color: var(--text);
+}
+.scenario-score-empty {
+  font-size: 20px;
+  color: var(--muted);
+}
+.scenario-report .scenario-used-supports {
+  margin-top: 10px;
+  color: #b6cce7;
+  overflow-wrap: anywhere;
+}
+.scenario-next-practice {
+  padding: 26px 0 0;
+}
+.scenario-next-practice ul {
+  padding-left: 20px;
+  color: var(--text);
+  font-size: 15px;
+}
+.scenario-next-practice li {
+  margin-bottom: 10px;
+}
+.scenario-stats {
+  margin-top: 28px;
+}
+.scenario-stats h2 {
+  font-size: 18px;
+}
+.scenario-stats > button {
+  margin-top: 18px;
+}
+@media (max-width: 720px) {
+  .home-scenario-body {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .home-scenario-body h3 {
+    font-size: 22px;
+  }
+  .scenario-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .scenario-steps button {
+    padding: 12px 4px;
+  }
+  .scenario-expressions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .scenario-report dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .scenario-choices {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .scenario-course-heading h1 {
+    font-size: 25px;
+  }
+  .scenario-stage-heading {
+    align-items: flex-start;
+  }
+  .scenario-stage-heading > span {
+    padding-top: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  .scenario-japanese p {
+    font-size: 18px;
+  }
+  .scenario-message {
+    padding: 18px;
+  }
+  .scenario-dialogue {
+    padding-left: 12px;
+  }
+  .scenario-cue {
+    padding-left: 12px;
+    gap: 8px;
+  }
+  .scenario-cue .scenario-speaker {
+    display: none;
+  }
+  .scenario-footer {
+    flex-wrap: wrap;
+  }
+  .scenario-footer > .scenario-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .scenario-lesson button {
+    max-width: 100%;
+  }
+  .scenario-answer-actions > .home-primary {
+    font-size: 14px;
+  }
+}

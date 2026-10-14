@@ -44,7 +44,7 @@ async function openWordDrill(page: Page): Promise<void> {
   await page.getByRole("button", { name: /开始词汇练习/ }).click();
 }
 
-test("home recommends the first lesson without counting unseen content as due", async ({
+test("home prioritizes communication while keeping unstudied foundation content out of reviews", async ({
   page,
 }) => {
   const fresh = { ...fixture, completedLessons: [] };
@@ -61,14 +61,19 @@ test("home recommends the first lesson without counting unseen content as due", 
   ).toBeVisible();
   await expect(page.getByLabel("0 项待复习", { exact: true })).toBeVisible();
   await expect(
-    page.getByRole("region", { name: "下一课", exact: true }),
+    page.getByRole("region", { name: "基础巩固", exact: true }),
   ).toContainText(lessons[0].title);
-  await page.getByRole("button", { name: "开始学习", exact: true }).click();
+  await expect(page.getByRole("region", { name: "今天练什么" })).toContainText(
+    "约朋友吃饭",
+  );
+  await page
+    .getByRole("button", { name: `开始学习：${lessons[0].title}`, exact: true })
+    .click();
   await expect(page.getByText(lessons[0].title, { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: /查看词汇表/ })).toBeVisible();
 });
 
-test("home prioritizes available reviews and opens the next unfinished lesson directly", async ({
+test("foundation reviews and next unfinished lesson remain directly accessible", async ({
   page,
 }) => {
   const progress = structuredClone(fixture);
@@ -92,15 +97,15 @@ test("home prioritizes available reviews and opens the next unfinished lesson di
   await page.goto("/");
   await expect(page.getByLabel("1 项待复习", { exact: true })).toBeVisible();
   await expect(
-    page.getByLabel("已完成 1 / 15 课", { exact: true }),
+    page.getByText("已完成 1 / 15 课", { exact: true }),
   ).toBeVisible();
   await expect(
     page
-      .getByRole("region", { name: "今日任务", exact: true })
+      .getByRole("region", { name: "基础巩固", exact: true })
       .getByRole("button", { name: "开始复习", exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("region", { name: "下一课", exact: true }),
+    page.getByRole("region", { name: "基础巩固", exact: true }),
   ).toContainText(lessons[1].title);
   await page
     .getByRole("button", { name: `开始学习：${lessons[1].title}`, exact: true })
@@ -131,12 +136,12 @@ test("home handles a fully completed course with no due reviews", async ({
   await page.goto("/");
   await expect(page.getByLabel("0 项待复习", { exact: true })).toBeVisible();
   await expect(
-    page.getByRole("region", { name: "课程进度", exact: true }),
-  ).toContainText("全部课程已完成");
-  await expect(
-    page.getByRole("region", { name: "下一课", exact: true }),
-  ).toHaveCount(0);
-  await page.getByRole("button", { name: "练习假名", exact: true }).click();
+    page.getByRole("region", { name: "基础巩固", exact: true }),
+  ).toContainText("已完成 15 / 15 课");
+  await expect(page.getByRole("button", { name: /^开始学习：/ })).toHaveCount(
+    0,
+  );
+  await page.getByRole("button", { name: "假名输入练习", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "开始练习", exact: true }),
   ).toBeVisible();
@@ -171,10 +176,10 @@ for (const width of [1440, 390, 320]) {
     ).toBeVisible();
     await expect(page.getByLabel("8 项待复习", { exact: true })).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "开始复习", exact: true }),
+      page.getByRole("button", { name: "开始情景课", exact: true }),
     ).toBeInViewport();
     await expect(
-      page.getByRole("region", { name: "下一课", exact: true }),
+      page.getByRole("region", { name: "今天练什么", exact: true }),
     ).toBeInViewport();
     expect(
       await page.evaluate(
