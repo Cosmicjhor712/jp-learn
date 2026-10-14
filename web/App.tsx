@@ -19,20 +19,39 @@ import lessonsData from "../data/lessons.json";
 import {
   ArrowRight,
   ArrowUpRight,
-  BookOpen,
-  CalendarDays,
   ChartNoAxesColumnIncreasing,
   ChevronRight,
-  CircleCheck,
-  Clock3,
-  Headphones,
   House,
-  Keyboard,
-  RotateCcw,
 } from "lucide-react";
 import KanaPractice from "./components/KanaPractice.tsx";
 import KanaAnnotation from "./components/KanaAnnotation.tsx";
 import { useInputLearning } from "./inputLearning.tsx";
+import ScenarioLesson, {
+  ScenarioReport,
+  ScenarioFocus,
+  FocusResult,
+} from "./scenario/ScenarioLesson.tsx";
+import type { ScenarioProgress } from "./scenario/progress.ts";
+import { stages } from "./scenario/content.ts";
+import { getScenario, scenarioCourses } from "./scenario/catalogue.ts";
+import LearningHome, { formatAttemptDate } from "./scenario/LearningHome.tsx";
+import PracticeRadar from "./scenario/PracticeRadar.tsx";
+import RevisitLesson, { RevisitOutcome } from "./scenario/RevisitLesson.tsx";
+import {
+  startRevisit,
+  finishRevisit,
+  revisitUnlockedStep,
+  noteExposure,
+} from "./scenario/revisit.ts";
+import { findVariant } from "./scenario/variants.ts";
+import {
+  loadLibrary,
+  LIBRARY_STORAGE_KEY,
+  updateCourse,
+  startFocus,
+  finishFocus,
+  type PracticeTarget,
+} from "./scenario/library.ts";
 
 const lessons = lessonsData as Lesson[];
 
@@ -40,6 +59,10 @@ type ListenMode = "dictation" | "choice";
 
 type Screen =
   | { type: "menu" }
+  | { type: "scenario" }
+  | { type: "scenario-focus" }
+  | { type: "scenario-revisit" }
+  | { type: "scenario-attempt"; index: number }
   | { type: "kana-practice" }
   | { type: "lesson-select" }
   | { type: "listen-menu" }
@@ -81,7 +104,12 @@ type Screen =
       index: number;
       correctCount: number;
     }
-  | { type: "listen-done"; mode: ListenMode; correctCount: number; total: number }
+  | {
+      type: "listen-done";
+      mode: ListenMode;
+      correctCount: number;
+      total: number;
+    }
   | { type: "stats" };
 
 function BackButton({
@@ -102,6 +130,117 @@ export default function App(): React.JSX.Element {
   const { preferences, history } = useInputLearning();
   const [progress, setProgress] = useState<Progress | null>(null);
   const [screen, setScreen] = useState<Screen>({ type: "menu" });
+  const [library, setLibrary] = useState(loadLibrary);
+  const scenario = library.courses[library.selectedId];
+  const [scenarioSaveError, setScenarioSaveError] = useState(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(LIBRARY_STORAGE_KEY, JSON.stringify(library));
+      setScenarioSaveError(false);
+    } catch {
+      setScenarioSaveError(true);
+    }
+  }, [library]);
+
+  function openCourse(id: string): void {
+    const baseId = findVariant(id)?.baseId ?? id;
+    setLibrary((current) => ({
+      ...noteExposure(current, baseId),
+      selectedId: baseId,
+    }));
+    setScreen({ type: "scenario" });
+  }
+
+  function openAttempt(index: number): void {
+    setLibrary((current) =>
+      current.attempts[index]
+        ? noteExposure(current, current.attempts[index].lessonId)
+        : current,
+    );
+    setScreen({ type: "scenario-attempt", index });
+  }
+
+  function openRevisit(baseId: string): void {
+    if (library.focus) {
+      setScreen({ type: "scenario-focus" });
+      return;
+    }
+    const next = startRevisit(library, baseId);
+    if (!next.revisit) return;
+    setLibrary(next);
+    setScreen({ type: "scenario-revisit" });
+  }
+
+  function changeRevisit(action: React.SetStateAction<ScenarioProgress>): void {
+    setLibrary((current) =>
+      current.revisit
+        ? {
+            ...current,
+            revisit: {
+              ...current.revisit,
+              progress:
+                typeof action === "function"
+                  ? action(current.revisit.progress)
+                  : action,
+            },
+          }
+        : current,
+    );
+  }
+
+  function completeRevisit(): void {
+    const next = finishRevisit(library);
+    if (next === library) return;
+    setLibrary(next);
+    setScreen({ type: "scenario-attempt", index: next.attempts.length - 1 });
+  }
+
+  function changeScenario(
+    action: React.SetStateAction<ScenarioProgress>,
+  ): void {
+    const id = library.selectedId;
+    setLibrary((current) =>
+      updateCourse(
+        current,
+        id,
+        typeof action === "function" ? action(current.courses[id]) : action,
+      ),
+    );
+  }
+
+  function openFocus(target: PracticeTarget): void {
+    if (library.revisit) {
+      setScreen({ type: "scenario-revisit" });
+      return;
+    }
+    setLibrary((current) => startFocus(current, target));
+    setScreen({ type: "scenario-focus" });
+  }
+
+  function changeFocus(action: React.SetStateAction<ScenarioProgress>): void {
+    setLibrary((current) =>
+      current.focus
+        ? {
+            ...current,
+            focus: {
+              ...current.focus,
+              progress:
+                typeof action === "function"
+                  ? action(current.focus.progress)
+                  : action,
+            },
+          }
+        : current,
+    );
+  }
+
+  function completeFocus(): void {
+    const next = finishFocus(library);
+    if (next === library) return;
+    setLibrary(next);
+    setScreen({ type: "scenario-attempt", index: next.attempts.length - 1 });
+  }
 
   function returnHome(): void {
     if (canSpeak) window.speechSynthesis.cancel();
@@ -126,8 +265,8 @@ export default function App(): React.JSX.Element {
     return getDueEntries(
       entriesForCompletedLessons(
         Object.values(progress.entries),
-        progress.completedLessons
-      )
+        progress.completedLessons,
+      ),
     )
       .filter((entry) => findReviewPrompt(entry, lessons) !== null)
       .map((entry) => entry.itemId);
@@ -139,7 +278,7 @@ export default function App(): React.JSX.Element {
     const relevant = trained
       ? entriesForCompletedLessons(
           Object.values(progress.entries),
-          progress.completedLessons
+          progress.completedLessons,
         )
       : Object.values(progress.entries);
     return { ...getStats(relevant), due: reviewQueue.length };
@@ -177,7 +316,7 @@ export default function App(): React.JSX.Element {
     setScreen(
       reviewQueue.length === 0
         ? { type: "review-done", correctCount: 0, total: 0 }
-        : { type: "review", queue: reviewQueue, index: 0, correctCount: 0 }
+        : { type: "review", queue: reviewQueue, index: 0, correctCount: 0 },
     );
   }
 
@@ -193,243 +332,35 @@ export default function App(): React.JSX.Element {
     const nextLesson = lessons.find(
       (lesson) => !current.completedLessons.includes(lesson.id),
     );
-    const nextNumber = nextLesson ? lessons.indexOf(nextLesson) + 1 : 0;
-    const hasReview = stats.due > 0;
     const practiceAttempts = Object.values(history).reduce(
       (total, item) => total + item.attempts,
       0,
     );
-
-    function openNextLesson(): void {
-      if (nextLesson) setScreen({ type: "grammar", lessonId: nextLesson.id });
-    }
-
     return (
-      <div className="learning-home">
-        <section aria-label="学习概览" className="home-overview">
-          <div className="home-heading">
-            <h1>今日学习</h1>
-            <span className="home-date">
-              <CalendarDays size={15} aria-hidden="true" />
-              {new Date().toLocaleDateString("zh-CN", {
-                month: "long",
-                day: "numeric",
-                weekday: "long",
-              })}
-            </span>
-          </div>
-          <dl className="home-metrics">
-            <div className={hasReview ? "metric-due" : ""}>
-              <dt>
-                <Clock3 size={15} aria-hidden="true" />
-                待复习
-              </dt>
-              <dd aria-label={`${stats.due} 项待复习`}>
-                {stats.due}
-                <span>项</span>
-              </dd>
-            </div>
-            <div>
-              <dt>
-                <BookOpen size={15} aria-hidden="true" />
-                已完成课程
-              </dt>
-              <dd
-                aria-label={`已完成 ${completedCount} / ${lessons.length} 课`}
-              >
-                {completedCount}
-                <span>/ {lessons.length} 课</span>
-              </dd>
-            </div>
-            <div className="metric-mastered">
-              <dt>
-                <CircleCheck size={15} aria-hidden="true" />
-                已掌握词条
-              </dt>
-              <dd aria-label={`已掌握 ${stats.mastered} / ${stats.total} 项`}>
-                {stats.mastered}
-                <span>/ {stats.total} 项</span>
-              </dd>
-            </div>
-          </dl>
-        </section>
-
-        <section
-          aria-label="今日任务"
-          className={`home-task ${hasReview ? "task-due" : ""}`}
-        >
-          <div className="home-section-heading">
-            <h2>今日任务</h2>
-            <span
-              className={`home-status ${hasReview ? "status-due" : "status-clear"}`}
-            >
-              {hasReview ? (
-                <Clock3 size={14} aria-hidden="true" />
-              ) : (
-                <CircleCheck size={14} aria-hidden="true" />
-              )}
-              {hasReview
-                ? "复习优先"
-                : completedCount === 0
-                  ? "准备开始"
-                  : "暂无到期复习"}
-            </span>
-          </div>
-          <div className="home-task-body">
-            <div className="home-task-summary">
-              {hasReview ? (
-                <RotateCcw size={24} aria-hidden="true" />
-              ) : nextLesson ? (
-                <BookOpen size={24} aria-hidden="true" />
-              ) : (
-                <CircleCheck size={24} aria-hidden="true" />
-              )}
-              <div>
-                <h3>
-                  {hasReview
-                    ? "复习已学内容"
-                    : nextLesson
-                      ? completedCount === 0
-                        ? "开始第一课"
-                        : "开始下一课"
-                      : "今日复习已清空"}
-                </h3>
-                <p>
-                  {hasReview
-                    ? `${stats.due} 项到期 · ${completedCount} 课已学`
-                    : nextLesson
-                      ? nextLesson.title
-                      : `${completedCount} 门课程已全部完成`}
-                </p>
-              </div>
-            </div>
-            <div className="home-task-actions">
-              <button
-                type="button"
-                className="home-primary"
-                onClick={
-                  hasReview
-                    ? startReview
-                    : nextLesson
-                      ? openNextLesson
-                      : () => setScreen({ type: "kana-practice" })
-                }
-              >
-                {hasReview ? "开始复习" : nextLesson ? "开始学习" : "练习假名"}
-                <ArrowRight size={18} aria-hidden="true" />
-              </button>
-              {!hasReview ? (
-                <button
-                  type="button"
-                  className="home-link"
-                  onClick={startReview}
-                >
-                  <RotateCcw size={15} aria-hidden="true" />
-                  开始复习
-                </button>
-              ) : null}
-            </div>
-          </div>
-        </section>
-
-        <section
-          aria-label={nextLesson ? "下一课" : "课程进度"}
-          className="home-course"
-        >
-          <div className="home-section-heading">
-            <h2>{nextLesson ? "下一课" : "课程进度"}</h2>
-            <button
-              type="button"
-              className="home-link"
-              onClick={() => setScreen({ type: "lesson-select" })}
-            >
-              <BookOpen size={15} aria-hidden="true" />
-              学习新课
-              <ChevronRight size={15} aria-hidden="true" />
-            </button>
-          </div>
-          {nextLesson ? (
-            <button
-              type="button"
-              className="next-lesson"
-              aria-label={`开始学习：${nextLesson.title}`}
-              title={`学习${nextLesson.title}`}
-              onClick={openNextLesson}
-            >
-              <span className="lesson-number" aria-hidden="true">
-                {String(nextNumber).padStart(2, "0")}
-              </span>
-              <span className="next-lesson-content">
-                <strong>{nextLesson.title}</strong>
-                <span className="lesson-description">
-                  {nextLesson.description}
-                </span>
-                <span className="lesson-details">
-                  {nextLesson.vocabulary.length} 个词汇
-                  <span aria-hidden="true">·</span>
-                  {nextLesson.sentences.length} 个句子
-                  <span aria-hidden="true">·</span>
-                  {nextLesson.grammar.length} 个语法点
-                </span>
-              </span>
-              <ArrowUpRight size={22} aria-hidden="true" />
-            </button>
-          ) : (
-            <div className="course-finished">
-              <CircleCheck size={24} aria-hidden="true" />
-              <div>
-                <strong>全部课程已完成</strong>
-                <span>
-                  {completedCount} / {lessons.length} 课
-                </span>
-              </div>
-            </div>
-          )}
-        </section>
-
-        <section aria-label="专项练习" className="home-practice">
-          <div className="home-section-heading">
-            <h2>专项练习</h2>
-          </div>
-          <div className="home-practice-grid">
-            <button
-              type="button"
-              className="practice-entry"
-              disabled={!canSpeak || completedCount === 0}
-              onClick={() => setScreen({ type: "listen-menu" })}
-            >
-              <Headphones size={23} aria-hidden="true" />
-              <span>
-                <strong>听力练习</strong>
-                <small>
-                  {!canSpeak
-                    ? "浏览器不支持语音"
-                    : completedCount === 0
-                      ? "暂无可练课程"
-                      : `${completedCount} 课可练`}
-                </small>
-              </span>
-              <ChevronRight size={18} aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="practice-entry"
-              onClick={() => setScreen({ type: "kana-practice" })}
-            >
-              <Keyboard size={23} aria-hidden="true" />
-              <span>
-                <strong>假名输入练习</strong>
-                <small>
-                  {practiceAttempts
-                    ? `累计练习 ${practiceAttempts} 次`
-                    : "尚无练习记录"}
-                </small>
-              </span>
-              <ChevronRight size={18} aria-hidden="true" />
-            </button>
-          </div>
-        </section>
-      </div>
+      <LearningHome
+        library={library}
+        saveError={scenarioSaveError}
+        onCourse={openCourse}
+        onFocus={openFocus}
+        onRevisit={openRevisit}
+        onAttempt={openAttempt}
+        foundation={{
+          due: stats.due,
+          completed: completedCount,
+          total: lessons.length,
+          kanaAttempts: practiceAttempts,
+          canListen: canSpeak && completedCount > 0,
+          nextTitle: nextLesson?.title,
+          onReview: startReview,
+          onLessons: () => setScreen({ type: "lesson-select" }),
+          onNext: () => {
+            if (nextLesson)
+              setScreen({ type: "grammar", lessonId: nextLesson.id });
+          },
+          onKana: () => setScreen({ type: "kana-practice" }),
+          onListen: () => setScreen({ type: "listen-menu" }),
+        }}
+      />
     );
   }
 
@@ -447,14 +378,18 @@ export default function App(): React.JSX.Element {
               <button
                 key={lesson.id}
                 className="menu-btn"
-                onClick={() => setScreen({ type: "grammar", lessonId: lesson.id })}
+                onClick={() =>
+                  setScreen({ type: "grammar", lessonId: lesson.id })
+                }
               >
                 <span>
                   {done ? "✅ " : ""}
                   {lesson.title}
                 </span>
                 <span className="muted">
-                  {done ? `${lesson.description} · 已学，可重新练习` : lesson.description}
+                  {done
+                    ? `${lesson.description} · 已学，可重新练习`
+                    : lesson.description}
                 </span>
               </button>
             );
@@ -499,12 +434,19 @@ export default function App(): React.JSX.Element {
       <div className="card">
         <div className="card-head">
           <strong>{lesson.title} - 词汇表</strong>
-          <BackButton onClick={() => setScreen({ type: "grammar", lessonId })} />
+          <BackButton
+            onClick={() => setScreen({ type: "grammar", lessonId })}
+          />
         </div>
         <div className="vocab-list">
           {lesson.vocabulary.map((word) => (
             <div key={word.id} className="vocab-row">
-              <span className="jp"><KanaAnnotation text={word.japanese} annotate={preferences.help !== "manual"} /></span>
+              <span className="jp">
+                <KanaAnnotation
+                  text={word.japanese}
+                  annotate={preferences.help !== "manual"}
+                />
+              </span>
               <span>{word.english}</span>
               <span className="muted">{word.partOfSpeech}</span>
             </div>
@@ -530,7 +472,7 @@ export default function App(): React.JSX.Element {
   function renderWordDrill(
     lessonId: string,
     index: number,
-    correctCount: number
+    correctCount: number,
   ): React.JSX.Element {
     const lesson = findLesson(lessons, lessonId);
     if (!lesson) return <div className="bad">课程不存在。</div>;
@@ -577,7 +519,7 @@ export default function App(): React.JSX.Element {
     lessonId: string,
     index: number,
     wordCorrect: number,
-    correctCount: number
+    correctCount: number,
   ): React.JSX.Element {
     const lesson = findLesson(lessons, lessonId);
     if (!lesson) return <div className="bad">课程不存在。</div>;
@@ -623,7 +565,11 @@ export default function App(): React.JSX.Element {
     );
   }
 
-  function renderReview(queue: string[], index: number, correctCount: number): React.JSX.Element {
+  function renderReview(
+    queue: string[],
+    index: number,
+    correctCount: number,
+  ): React.JSX.Element {
     const itemId = queue[index];
     const entry = current.entries[itemId];
     const prompt = entry ? findReviewPrompt(entry, lessons) : null;
@@ -702,7 +648,9 @@ export default function App(): React.JSX.Element {
           </button>
         </div>
         {!canSpeak ? (
-          <div className="warn">当前浏览器不支持语音合成，题目将无法播放音频。</div>
+          <div className="warn">
+            当前浏览器不支持语音合成，题目将无法播放音频。
+          </div>
         ) : null}
       </div>
     );
@@ -710,13 +658,15 @@ export default function App(): React.JSX.Element {
 
   function renderListenLessonSelect(mode: ListenMode): React.JSX.Element {
     const completed = lessons.filter((lesson) =>
-      current.completedLessons.includes(lesson.id)
+      current.completedLessons.includes(lesson.id),
     );
 
     return (
       <div className="card">
         <div className="card-head">
-          <strong>{mode === "dictation" ? "听写模式" : "理解选择"} - 选择课程</strong>
+          <strong>
+            {mode === "dictation" ? "听写模式" : "理解选择"} - 选择课程
+          </strong>
           <BackButton onClick={() => setScreen({ type: "listen-menu" })} />
         </div>
         {completed.length === 0 ? (
@@ -746,7 +696,7 @@ export default function App(): React.JSX.Element {
                           queue,
                           index: 0,
                           correctCount: 0,
-                        }
+                        },
                   );
                 }}
               >
@@ -764,7 +714,7 @@ export default function App(): React.JSX.Element {
     lessonId: string,
     queue: string[],
     index: number,
-    correctCount: number
+    correctCount: number,
   ): React.JSX.Element {
     const lesson = findLesson(lessons, lessonId);
     const item = findListenItem(queue[index], lessons);
@@ -782,7 +732,9 @@ export default function App(): React.JSX.Element {
           prompt="请听下面的日语，输入你听到的内容"
           expected={item.japanese}
           hint={item.hint}
-          check={(answer) => checkAnswer(answer, item.japanese, item.alternatives)}
+          check={(answer) =>
+            checkAnswer(answer, item.japanese, item.alternatives)
+          }
           play={(slow) => speak(item.japanese, slow)}
           onNext={(grade) => {
             updateEntry(item.id, grade);
@@ -814,7 +766,7 @@ export default function App(): React.JSX.Element {
     lessonId: string,
     queue: string[],
     index: number,
-    correctCount: number
+    correctCount: number,
   ): React.JSX.Element {
     const lesson = findLesson(lessons, lessonId);
     const item = findListenItem(queue[index], lessons);
@@ -830,7 +782,9 @@ export default function App(): React.JSX.Element {
           key={item.id}
           title="听力理解"
           progress={`${index + 1}/${queue.length}`}
-          question={item.kind === "word" ? "这个词的意思是？" : "这句话的意思是？"}
+          question={
+            item.kind === "word" ? "这个词的意思是？" : "这句话的意思是？"
+          }
           choices={choices}
           correctIndex={correctIndex}
           play={(slow) => speak(item.japanese, slow)}
@@ -860,12 +814,20 @@ export default function App(): React.JSX.Element {
     );
   }
 
-  function renderDone(kind: "复习" | "听力练习", correctCount: number, total: number, mode?: ListenMode): React.JSX.Element {
+  function renderDone(
+    kind: "复习" | "听力练习",
+    correctCount: number,
+    total: number,
+    mode?: ListenMode,
+  ): React.JSX.Element {
     return (
       <div className="card card-ok">
         <div className="card-head">
           <strong>{kind}完成</strong>
-          <BackButton onClick={() => setScreen({ type: "menu" })} label="返回主菜单" />
+          <BackButton
+            onClick={() => setScreen({ type: "menu" })}
+            label="返回主菜单"
+          />
         </div>
         {total === 0 ? (
           <div>
@@ -889,46 +851,97 @@ export default function App(): React.JSX.Element {
 
   function renderStats(): React.JSX.Element {
     return (
-      <div className="card">
+      <div className="learning-progress">
         <div className="card-head">
-          <strong>学习进度</strong>
+          <h1>学习进度</h1>
           <BackButton onClick={() => setScreen({ type: "menu" })} />
         </div>
-        <div className="stat-line">
-          总词条数：<b>{stats.total}</b>
-        </div>
-        <div className="stat-line">
-          今日待复习：<b className={stats.due > 0 ? "warn-text" : "ok-text"}>{stats.due}</b>
-        </div>
-        <div className="stat-line">
-          已掌握：<b className="ok-text">{stats.mastered}</b>
-          <span className="muted">（稳定度 ≥ 21 天）</span>
-        </div>
-        <div className="lesson-stats">
-          {lessons.map((lesson) => {
-            const done = current.completedLessons.includes(lesson.id);
-            const lessonEntries = [
-              ...lesson.vocabulary.map((word) => current.entries[word.id]),
-              ...lesson.sentences.map((sentence) => current.entries[sentence.id]),
-            ].filter((entry): entry is SrsEntry => Boolean(entry));
-            const dueItems = getDueEntries(lessonEntries).length;
-            const totalItems = lesson.vocabulary.length + lesson.sentences.length;
-            const status = done
-              ? dueItems > 0
-                ? `待复习 ${dueItems}`
-                : "已学完"
-              : "未开始";
+        <PracticeRadar
+          library={library}
+          onFocus={openFocus}
+          onCourse={openCourse}
+          onRevisit={openRevisit}
+          onAttempt={openAttempt}
+        />
+        <section className="scenario-stats" aria-label="情景课进度">
+          <h2>逐课进度</h2>
+          {scenarioCourses.map((course) => {
+            const record = library.courses[course.id];
             return (
-              <div key={lesson.id} className="lesson-stat-row">
-                <span className={done ? "ok-text" : ""}>
-                  {done ? "✅" : "○"} {lesson.title}
-                </span>
-                <span className="muted">{totalItems} 项</span>
-                <span className={dueItems > 0 ? "warn-text" : ""}>{status}</span>
-              </div>
+              <details
+                className="scenario-course-progress"
+                key={course.id}
+                open={course.id === library.selectedId}
+              >
+                <summary>
+                  <div>
+                    <h3>{course.title}</h3>
+                    <p className="muted">
+                      累计完成 {record.completedRuns} 轮 · 当前：
+                      {stages[record.stage]}
+                    </p>
+                  </div>
+                  <ChevronRight size={17} aria-hidden="true" />
+                </summary>
+                <ScenarioReport progress={record} />
+                <button
+                  type="button"
+                  className="home-link"
+                  onClick={() => openCourse(course.id)}
+                >
+                  进入情景课
+                  <ArrowRight size={17} />
+                </button>
+              </details>
             );
           })}
-        </div>
+        </section>
+        <details className="foundation-progress">
+          <summary>基础巩固进度</summary>
+          <div className="stat-line">
+            总词条数：<b>{stats.total}</b>
+          </div>
+          <div className="stat-line">
+            今日待复习：
+            <b className={stats.due > 0 ? "warn-text" : "ok-text"}>
+              {stats.due}
+            </b>
+          </div>
+          <div className="stat-line">
+            已掌握：<b className="ok-text">{stats.mastered}</b>
+            <span className="muted">（稳定度 ≥ 21 天）</span>
+          </div>
+          <div className="lesson-stats">
+            {lessons.map((lesson) => {
+              const done = current.completedLessons.includes(lesson.id);
+              const lessonEntries = [
+                ...lesson.vocabulary.map((word) => current.entries[word.id]),
+                ...lesson.sentences.map(
+                  (sentence) => current.entries[sentence.id],
+                ),
+              ].filter((entry): entry is SrsEntry => Boolean(entry));
+              const dueItems = getDueEntries(lessonEntries).length;
+              const totalItems =
+                lesson.vocabulary.length + lesson.sentences.length;
+              const status = done
+                ? dueItems > 0
+                  ? `待复习 ${dueItems}`
+                  : "已学完"
+                : "未开始";
+              return (
+                <div key={lesson.id} className="lesson-stat-row">
+                  <span className={done ? "ok-text" : ""}>
+                    {done ? "✅" : "○"} {lesson.title}
+                  </span>
+                  <span className="muted">{totalItems} 项</span>
+                  <span className={dueItems > 0 ? "warn-text" : ""}>
+                    {status}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </details>
       </div>
     );
   }
@@ -937,6 +950,112 @@ export default function App(): React.JSX.Element {
     switch (screen.type) {
       case "menu":
         return renderMenu();
+      case "scenario":
+        return (
+          <ScenarioLesson
+            key={scenario.lessonId}
+            progress={scenario}
+            onChange={changeScenario}
+            onRelatedCourse={openCourse}
+            saveError={scenarioSaveError}
+            onHome={returnHome}
+            onNextCourse={
+              scenarioCourses[
+                scenarioCourses.findIndex((c) => c.id === scenario.lessonId) + 1
+              ]
+                ? () =>
+                    openCourse(
+                      scenarioCourses[
+                        scenarioCourses.findIndex(
+                          (c) => c.id === scenario.lessonId,
+                        ) + 1
+                      ].id,
+                    )
+                : undefined
+            }
+          />
+        );
+      case "scenario-focus":
+        return library.focus ? (
+          <ScenarioFocus
+            run={library.focus}
+            onChange={changeFocus}
+            onFinish={completeFocus}
+            saveError={scenarioSaveError}
+          />
+        ) : (
+          renderMenu()
+        );
+      case "scenario-revisit":
+        return library.revisit ? (
+          <RevisitLesson
+            run={library.revisit}
+            onChange={changeRevisit}
+            onStep={(step) =>
+              setLibrary((current) =>
+                current.revisit &&
+                step >= 0 &&
+                step <=
+                  Math.min(3, revisitUnlockedStep(current.revisit.progress))
+                  ? { ...current, revisit: { ...current.revisit, step } }
+                  : current,
+              )
+            }
+            onFinish={completeRevisit}
+            saveError={scenarioSaveError}
+          />
+        ) : (
+          renderMenu()
+        );
+      case "scenario-attempt": {
+        const attempt = library.attempts[screen.index];
+        if (!attempt) return renderMenu();
+        return (
+          <div className="scenario-lesson">
+            <div className="history-attempt-heading">
+              <span className="scenario-eyebrow">
+                {attempt.kind === "lesson"
+                  ? "完整课程回顾"
+                  : attempt.kind === "revisit"
+                    ? "变体练习回顾"
+                    : "单项练习回顾"}
+              </span>
+              <h1>{getScenario(attempt.lessonId).title}</h1>
+              <time className="muted" dateTime={attempt.completedAt}>
+                {formatAttemptDate(attempt.completedAt)}
+              </time>
+            </div>
+            {scenarioSaveError && (
+              <p className="scenario-notice" role="alert">
+                本次记录暂时无法保存，刷新可能丢失。
+              </p>
+            )}
+            {attempt.kind === "revisit" ? (
+              <RevisitOutcome attempt={attempt} library={library} />
+            ) : (
+              <FocusResult attempt={attempt} />
+            )}
+            <footer className="scenario-footer">
+              <button
+                type="button"
+                className="home-link"
+                onClick={() => openCourse(attempt.lessonId)}
+              >
+                进入课程
+                <ArrowRight size={17} />
+              </button>
+              <button
+                type="button"
+                className="home-primary"
+                onClick={returnHome}
+              >
+                回到首页
+                <House size={17} />
+              </button>
+            </footer>
+          </div>
+        );
+      }
       case "kana-practice":
         return <KanaPractice onBack={() => setScreen({ type: "menu" })} />;
       case "lesson-select":
@@ -946,13 +1065,17 @@ export default function App(): React.JSX.Element {
       case "vocab-preview":
         return renderVocabPreview(screen.lessonId);
       case "drill-word":
-        return renderWordDrill(screen.lessonId, screen.index, screen.correctCount);
+        return renderWordDrill(
+          screen.lessonId,
+          screen.index,
+          screen.correctCount,
+        );
       case "drill-sentence":
         return renderSentenceDrill(
           screen.lessonId,
           screen.index,
           screen.wordCorrect,
-          screen.correctCount
+          screen.correctCount,
         );
       case "lesson-complete": {
         const lesson = findLesson(lessons, screen.lessonId);
@@ -960,7 +1083,10 @@ export default function App(): React.JSX.Element {
           <div className="card card-ok">
             <div className="card-head">
               <strong>课程完成</strong>
-              <BackButton onClick={() => setScreen({ type: "menu" })} label="返回主菜单" />
+              <BackButton
+                onClick={() => setScreen({ type: "menu" })}
+                label="返回主菜单"
+              />
             </div>
             <div className="ok-text">{lesson?.title ?? "课程"} 完成！</div>
             <div>
@@ -985,21 +1111,21 @@ export default function App(): React.JSX.Element {
           screen.lessonId,
           screen.queue,
           screen.index,
-          screen.correctCount
+          screen.correctCount,
         );
       case "listen-choice":
         return renderListenChoice(
           screen.lessonId,
           screen.queue,
           screen.index,
-          screen.correctCount
+          screen.correctCount,
         );
       case "listen-done":
         return renderDone(
           "听力练习",
           screen.correctCount,
           screen.total,
-          screen.mode
+          screen.mode,
         );
       case "stats":
         return renderStats();
@@ -1011,12 +1137,20 @@ export default function App(): React.JSX.Element {
       <header className="topbar">
         <strong>日本語学習</strong>
         {screen.type === "menu" ? (
-          <button type="button" className="home-link topbar-progress" onClick={() => setScreen({ type: "stats" })}>
-            <ChartNoAxesColumnIncreasing size={16} aria-hidden="true" />查看进度<ArrowUpRight size={14} aria-hidden="true" />
+          <button
+            type="button"
+            className="home-link topbar-progress"
+            onClick={() => setScreen({ type: "stats" })}
+          >
+            <ChartNoAxesColumnIncreasing size={16} aria-hidden="true" />
+            查看进度
+            <ArrowUpRight size={14} aria-hidden="true" />
           </button>
         ) : (
           <span className="muted topbar-stats">
-            {stats.due} 待复习 · {stats.mastered}/{stats.total} 掌握
+            {screen.type.startsWith("scenario") || screen.type === "stats"
+              ? "日常交流 · 阅读"
+              : `${stats.due} 待复习 · ${stats.mastered}/${stats.total} 掌握`}
           </span>
         )}
         {screen.type !== "menu" ? (
