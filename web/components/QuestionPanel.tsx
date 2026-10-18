@@ -7,7 +7,7 @@ import {
 } from "../../src/exercises.ts";
 import { missedChunks, rulesFor, type InputChunk } from "../../src/kana.ts";
 import { useInputLearning } from "../inputLearning.tsx";
-import { canSpeak, speak } from "../speech.ts";
+import { canSpeak, speak, stopSpeaking } from "../speech.ts";
 import KanaEditor, { type KanaEditorHandle } from "./KanaEditor.tsx";
 import KanaAnnotation from "./KanaAnnotation.tsx";
 import InputAssistant from "./InputAssistant.tsx";
@@ -63,7 +63,7 @@ export default function QuestionPanel({
   useEffect(() => {
     play?.(false);
     return () => {
-      if (play && canSpeak) window.speechSynthesis.cancel();
+      if (play) stopSpeaking();
     };
   }, []);
   useEffect(() => {

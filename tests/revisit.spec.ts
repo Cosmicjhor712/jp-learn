@@ -36,6 +36,21 @@ function learned(index = 0, at = now - 2 * day) {
   return updateCourse(newLibrary(), course.id, progress);
 }
 test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      window.sessionStorage.setItem("jp-learn-tts-skip", "1");
+    } catch {
+      // ignore
+    }
+  });
+  // Keep tests offline: never call the real Volcengine TTS (would consume quota).
+  await page.route("**/api/tts**", (route) =>
+    route.fulfill({
+      status: 503,
+      contentType: "application/json",
+      body: JSON.stringify({ error: "not-configured" }),
+    }),
+  );
   await page.route("**/api/progress", (route) =>
     route.fulfill({ json: { completedLessons: [], entries: {} } }),
   );

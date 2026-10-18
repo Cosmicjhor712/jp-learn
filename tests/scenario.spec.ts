@@ -35,6 +35,21 @@ test.use({
 });
 
 test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      window.sessionStorage.setItem("jp-learn-tts-skip", "1");
+    } catch {
+      // ignore
+    }
+  });
+  // Keep tests offline: never call the real Volcengine TTS (would consume quota).
+  await page.route("**/api/tts**", (route) =>
+    route.fulfill({
+      status: 503,
+      contentType: "application/json",
+      body: JSON.stringify({ error: "not-configured" }),
+    }),
+  );
   // Isolate all progress requests, including the existing app's autosave on mount.
   await page.route("**/api/progress", (route) =>
     route.fulfill({ json: { completedLessons: [], entries: {} } }),

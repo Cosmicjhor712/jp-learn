@@ -1,74 +1,81 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  hasJapaneseVoice,
+  playLine,
+  stopSpeaking,
+  ttsStatus,
+} from "../speech.ts";
+import { getSessionApiKey, isTtsSkipped } from "../ttsSettings.ts";
 
 export function useScenarioSpeech() {
   const [available, setAvailable] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [error, setError] = useState("");
   const generation = useRef(0);
-  const utterance = useRef<SpeechSynthesisUtterance | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    let removeVoiceListener: (() => void) | undefined;
+
+    // 没有服务端 TTS 时，退回检查浏览器是否有日语语音
+    function watchBrowserVoices(): void {
+      if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+        if (alive) setAvailable(false);
+        return;
+      }
+      const synth = window.speechSynthesis;
+      const refresh = () => {
+        if (alive) setAvailable(hasJapaneseVoice());
+      };
+      refresh();
+      synth.addEventListener("voiceschanged", refresh);
+      removeVoiceListener = () =>
+        synth.removeEventListener("voiceschanged", refresh);
+    }
+
+    ttsStatus().then((status) => {
+      if (!alive) return;
+      if (!isTtsSkipped() && (status?.configured || getSessionApiKey())) {
+        setAvailable(true);
+      } else {
+        watchBrowserVoices();
+      }
+    });
+
+    return () => {
+      alive = false;
+      removeVoiceListener?.();
+      generation.current += 1;
+      stopSpeaking();
+    };
+  }, []);
+
   const stop = useCallback(() => {
     generation.current += 1;
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-    utterance.current = null;
+    stopSpeaking();
     setPlaying(false);
   }, []);
-  useEffect(() => {
-    if (!("speechSynthesis" in window)) return;
-    const synth = window.speechSynthesis;
-    const refresh = () =>
-      setAvailable(
-        synth.getVoices().some((v) => v.lang.toLowerCase().startsWith("ja")),
-      );
-    refresh();
-    synth.addEventListener("voiceschanged", refresh);
-    return () => {
-      synth.removeEventListener("voiceschanged", refresh);
-      stop();
-    };
-  }, [stop]);
 
   function play(lines: string[], slow = false, onComplete?: () => void) {
     stop();
-    const voice =
-      "speechSynthesis" in window
-        ? window.speechSynthesis
-            .getVoices()
-            .find((v) => v.lang.toLowerCase().startsWith("ja"))
-        : undefined;
-    if (!voice) {
-      setError("当前没有可用的日语语音，可以先看文字完成练习。");
-      return;
-    }
     const current = generation.current;
     setError("");
     setPlaying(true);
-    function next(index: number) {
-      if (generation.current !== current) return;
-      if (index === lines.length) {
-        setPlaying(false);
-        utterance.current = null;
-        onComplete?.();
-        return;
-      }
-      const item = new SpeechSynthesisUtterance(lines[index]);
-      item.voice = voice!;
-      item.lang = "ja-JP";
-      item.rate = slow ? 0.75 : 1;
-      item.onend = () => next(index + 1);
-      const fail = () => {
+
+    void (async () => {
+      for (const line of lines) {
         if (generation.current !== current) return;
-        setPlaying(false);
-        setError("语音播放失败；可以重试，或展开日文继续练习。");
-      };
-      item.onerror = fail;
-      utterance.current = item;
-      try {
-        window.speechSynthesis.speak(item);
-      } catch {
-        fail();
+        await playLine(line, slow);
       }
-    }
-    next(0);
+      if (generation.current !== current) return;
+      setPlaying(false);
+      onComplete?.();
+    })().catch(() => {
+      if (generation.current !== current) return;
+      setPlaying(false);
+      setError("语音播放失败；可以重试，或展开日文继续练习。");
+    });
   }
+
   return { available, playing, error, play, stop };
 }

@@ -24,6 +24,22 @@ const fixture: Progress = {
 };
 
 test.beforeEach(async ({ page }) => {
+  // Keep the voice setup dialog out of unrelated tests.
+  await page.addInitScript(() => {
+    try {
+      window.sessionStorage.setItem("jp-learn-tts-skip", "1");
+    } catch {
+      // ignore
+    }
+  });
+  // Keep tests offline: never call the real Volcengine TTS (would consume quota).
+  await page.route("**/api/tts**", (route) =>
+    route.fulfill({
+      status: 503,
+      contentType: "application/json",
+      body: JSON.stringify({ error: "not-configured" }),
+    }),
+  );
   // Never write to the user's real learning-progress endpoint during tests.
   await page.route("**/api/progress", (route) =>
     route.fulfill({
@@ -32,6 +48,47 @@ test.beforeEach(async ({ page }) => {
       body: JSON.stringify(fixture),
     }),
   );
+});
+
+test("voice setup dialog can be skipped or enabled for the current session", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    try {
+      window.sessionStorage.removeItem("jp-learn-tts-skip");
+      window.sessionStorage.removeItem("jp-learn-volc-api-key");
+    } catch {
+      // ignore
+    }
+  });
+
+  await page.goto("/");
+  const dialog = page.getByRole("dialog", { name: "语音设置" });
+  await expect(dialog).toBeVisible();
+
+  await page
+    .getByRole("button", { name: /跳过，使用浏览器语音/ })
+    .click();
+  await expect(dialog).toBeHidden();
+  expect(
+    await page.evaluate(() => sessionStorage.getItem("jp-learn-tts-skip"))
+  ).toBe("1");
+
+  await page
+    .getByRole("button", { name: "语音设置（火山引擎 API Key）" })
+    .click();
+  await expect(dialog).toBeVisible();
+  await page.getByLabel("API Key").fill("test-key");
+  await page.getByRole("button", { name: /启用火山引擎语音/ }).click();
+  await expect(dialog).toBeHidden();
+  expect(
+    await page.evaluate(() =>
+      sessionStorage.getItem("jp-learn-volc-api-key")
+    )
+  ).toBe("test-key");
+  expect(
+    await page.evaluate(() => sessionStorage.getItem("jp-learn-tts-skip"))
+  ).toBe(null);
 });
 
 async function openWordDrill(page: Page): Promise<void> {

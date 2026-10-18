@@ -79,6 +79,45 @@ npm run serve:web  # 本地预览生产包 http://localhost:4173
 
 Web 版支持鼠标操作；语音使用浏览器 Web Speech API（推荐 Chrome / Edge / Safari，日语语音会自动选择）。进度通过内置接口读写 `user/progress.json`，与终端版完全一致；接口不可用时自动回退到浏览器 localStorage。
 
+### 语音（火山引擎豆包 TTS 2.0，可选）
+
+Web 版语音默认优先使用火山引擎豆包语音合成 2.0 生成的高质量日语 mp3，未启用或请求失败时自动回退浏览器 Web Speech API。终端版仍使用系统语音（`say` / SAPI / espeak-ng）。
+
+使用方法：
+
+1. 打开[火山引擎语音新版控制台](https://console.volcengine.com/speech/new/overview)，确认应用已开通「语音合成大模型」，并在音色管理中勾选 **2.0 音色**（资源 `seed-tts-2.0`）；
+2. 在控制台创建并复制 **API Key**（新版推荐方式）；
+3. 运行 `npm run web` 并打开页面，首次使用会弹出「语音设置」：粘贴 API Key，点击「启用火山引擎语音」即可；
+4. 之后可从首页「基础巩固」底部的「语音设置（火山引擎 API Key）」随时更换或清除 Key。
+
+说明：
+
+- API Key 只保存在当前标签页的 `sessionStorage`，关闭页面后自动清除；不会写入项目文件、不会进入 git，也不会发送到除本地开发服务器外的任何地方；
+- 弹窗中选择「跳过，使用浏览器语音」后，本次会话不会调用火山引擎，直接使用浏览器自带日语语音；
+- 服务端模式（可选，适合固定部署）：也可以在 `.env` 中配置 `VOLC_TTS_API_KEY`，此时页面不再提示输入；旧版 `VOLC_TTS_APP_ID` + `VOLC_TTS_ACCESS_KEY` 仍兼容，资源 ID 默认 `volc.service_type.10029`。两种方式都支持用 `VOLC_TTS_RESOURCE_ID` 显式覆盖。
+
+可用日语大模型音色（`VOLC_TTS_VOICE`）：
+
+| voice_type | 音色 |
+|------|------|
+| `ja_female_bv522_uranus_bigtts` | Hana · 通用/教学女声（默认） |
+| `ja_female_bv024_uranus_bigtts` | Bonnie · 教学场景女声 |
+| `ja_female_bv520_uranus_bigtts` | Poppy · 视频配音女声 |
+| `ja_female_bv521_uranus_bigtts` | Aoi · 角色扮演女声 |
+| `ja_female_bv523_uranus_bigtts` | Lily · 趣味口音女声 |
+| `ja_male_bv524_uranus_bigtts` | Ken · 通用男声 |
+| `ja_female_minimi_uranus_bigtts` | Minimi · 上下文遵循女声 |
+| `ja_female_shirou_uranus_bigtts` | Shirou · 角色扮演女声 |
+
+说明：
+
+- 页面输入的 Key 通过请求头一次性传给本地代理，仅用于当次合成请求，不落盘；
+- API Key 模式下按官方要求自动附带 `X-Api-Key`、`X-Api-Resource-Id: seed-tts-2.0` 和每请求唯一的 `X-Api-Request-Id`；
+- 合成结果按「文本 + 音色」永久保存在 `data/audio/`（按音色分目录，`index.json` 记录每段音频对应的文本），同一句只消耗一次额度；生成后可随 git 提交，换电脑克隆仓库后无需重新合成；
+- 使用中生成的音频会以未跟踪文件出现，定期执行 `git add data/audio && git commit` 即可随仓库分发；音频积累会让仓库体积增大，可按需清理不常用的音色目录；
+- 慢速播放通过浏览器端 0.8 倍速实现（保持音调），不额外消耗合成次数；
+- 支持 `GET /api/tts?text=...` 手动试听，`GET /api/tts/status` 查看当前是否已启用。
+
 ### Web 日语输入
 
 - 默认使用内置罗马字输入：保持英文输入法，输入 `isshoni` 得到 `いっしょに`。切到 `ア` 后输入 `depa-to` 得到 `デパート`；切换只影响之后输入的罗马字，因此同一句可混用两种假名。

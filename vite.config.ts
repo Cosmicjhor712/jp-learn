@@ -1,12 +1,23 @@
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import {
+  configWithClientApiKey,
+  isAllowedVoice,
+  readCachedAudio,
+  readVolcTtsConfig,
+  synthesizeVolcTts,
+  volcTtsConfigured,
+  writeCachedAudio,
+  type VolcTtsConfig,
+} from "./server/tts.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROGRESS_FILE = path.resolve(__dirname, "user", "progress.json");
+const MAX_TTS_TEXT_LENGTH = 600;
 
 function handleProgress(req: IncomingMessage, res: ServerResponse): void {
   if (req.method === "GET") {
@@ -74,6 +85,122 @@ function progressApiPlugin(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [react(), progressApiPlugin()],
+function sendJson(
+  res: ServerResponse,
+  status: number,
+  payload: unknown
+): void {
+  res.statusCode = status;
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.end(JSON.stringify(payload));
+}
+
+function handleTts(
+  req: IncomingMessage,
+  res: ServerResponse,
+  config: VolcTtsConfig
+): void {
+  const url = new URL(req.url ?? "/", "http://localhost");
+
+  if (url.pathname === "/api/tts/status") {
+    sendJson(res, 200, {
+      configured: volcTtsConfigured(config),
+      serverConfigured: volcTtsConfigured(config),
+      voice: config.voice,
+      authMode: config.authMode,
+      resourceId: config.resourceId,
+    });
+    return;
+  }
+
+  // 页面手动输入的 Key 通过请求头传入，只用于本次请求，不落盘
+  const requestConfig = configWithClientApiKey(
+    config,
+    req.headers["x-volc-api-key"] as string | undefined
+  );
+  const text = (url.searchParams.get("text") ?? "").trim();
+  const voice = url.searchParams.get("voice") ?? requestConfig.voice;
+
+  if (!text) {
+    sendJson(res, 400, { error: "missing-text" });
+    return;
+  }
+  if (text.length > MAX_TTS_TEXT_LENGTH) {
+    sendJson(res, 400, { error: "text-too-long" });
+    return;
+  }
+  if (!isAllowedVoice(voice)) {
+    sendJson(res, 400, { error: "unsupported-voice" });
+    return;
+  }
+  if (!volcTtsConfigured(requestConfig)) {
+    sendJson(res, 503, {
+      error: "not-configured",
+      message:
+        "未配置火山引擎 TTS。请在页面「语音设置」中填入 API Key，或在 .env 中配置服务端凭证。",
+    });
+    return;
+  }
+
+  const cached = readCachedAudio(requestConfig, text, voice);
+  if (cached) {
+    sendAudio(res, cached, voice);
+    return;
+  }
+
+  synthesizeVolcTts(requestConfig, text, voice)
+    .then((audio) => {
+      writeCachedAudio(requestConfig, text, voice, audio);
+      sendAudio(res, audio, voice);
+    })
+    .catch((error: unknown) => {
+      sendJson(res, 502, {
+        error: "synthesis-failed",
+        message: error instanceof Error ? error.message : String(error),
+      });
+    });
+}
+
+function sendAudio(res: ServerResponse, audio: Buffer, voice: string): void {
+  res.setHeader("Content-Type", "audio/mpeg");
+  res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  res.setHeader("X-Tts-Voice", voice);
+  res.end(audio);
+}
+
+function ttsPlugin(config: VolcTtsConfig): Plugin {
+  const middleware = (
+    req: IncomingMessage,
+    res: ServerResponse,
+    next: () => void
+  ): void => {
+    if (req.url?.startsWith("/api/tts")) {
+      handleTts(req, res, config);
+    } else {
+      next();
+    }
+  };
+
+  return {
+    name: "jp-learn-volc-tts",
+    configureServer(server) {
+      server.middlewares.use(middleware);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware);
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => {
+  const fileEnv = loadEnv(mode, process.cwd(), "");
+  const env: Record<string, string | undefined> = {
+    ...fileEnv,
+    ...process.env,
+  };
+  const ttsConfig = readVolcTtsConfig(__dirname, env);
+
+  return {
+    plugins: [react(), progressApiPlugin(), ttsPlugin(ttsConfig)],
+  };
 });

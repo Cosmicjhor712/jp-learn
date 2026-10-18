@@ -10,11 +10,16 @@ import {
   findReviewPrompt,
   makeChoices,
 } from "../src/logic.ts";
-import { canSpeak, speak } from "./speech.ts";
+import { canSpeak, speak, stopSpeaking, ttsStatus } from "./speech.ts";
+import {
+  getSessionApiKey,
+  isTtsSkipped,
+} from "./ttsSettings.ts";
 import { loadProgress, saveProgress } from "./progressApi.ts";
 import ProgressBar from "./components/ProgressBar";
 import QuestionPanel from "./components/QuestionPanel";
 import ChoicePanel from "./components/ChoicePanel";
+import TtsSetup from "./components/TtsSetup";
 import lessonsData from "../data/lessons.json";
 import {
   ArrowRight,
@@ -130,6 +135,20 @@ export default function App(): React.JSX.Element {
   const { preferences, history } = useInputLearning();
   const [progress, setProgress] = useState<Progress | null>(null);
   const [screen, setScreen] = useState<Screen>({ type: "menu" });
+  const [showTtsSetup, setShowTtsSetup] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    ttsStatus().then((status) => {
+      if (!alive) return;
+      if (status?.configured) return; // 服务端 .env 已配置
+      if (getSessionApiKey() || isTtsSkipped()) return;
+      setShowTtsSetup(true);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
   const [library, setLibrary] = useState(loadLibrary);
   const scenario = library.courses[library.selectedId];
   const [scenarioSaveError, setScenarioSaveError] = useState(false);
@@ -243,7 +262,7 @@ export default function App(): React.JSX.Element {
   }
 
   function returnHome(): void {
-    if (canSpeak) window.speechSynthesis.cancel();
+    stopSpeaking();
     setScreen({ type: "menu" });
   }
 
@@ -359,6 +378,7 @@ export default function App(): React.JSX.Element {
           },
           onKana: () => setScreen({ type: "kana-practice" }),
           onListen: () => setScreen({ type: "listen-menu" }),
+          onVoiceSettings: () => setShowTtsSetup(true),
         }}
       />
     );
@@ -1166,6 +1186,9 @@ export default function App(): React.JSX.Element {
         ) : null}
       </header>
       <main>{renderContent()}</main>
+      {showTtsSetup ? (
+        <TtsSetup onClose={() => setShowTtsSetup(false)} />
+      ) : null}
     </div>
   );
 }
