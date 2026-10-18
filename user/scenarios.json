@@ -1,36 +1,135 @@
 {
   "version": 2,
-  "selectedId": "dinner-invitation-v1",
+  "selectedId": "asking-directions-v1",
   "courses": {
     "dinner-invitation-v1": {
       "version": 1,
       "lessonId": "dinner-invitation-v1",
-      "stage": 0,
-      "heard": false,
+      "stage": 5,
+      "heard": true,
       "supports": {
         "listening": [],
-        "reading": []
+        "reading": [
+          "reading"
+        ]
       },
-      "answers": {},
-      "expressionsDone": false,
-      "speaking": {},
-      "completedAt": null,
-      "completedRuns": 0
+      "answers": {
+        "listen-intent": {
+          "choice": 0,
+          "independent": true,
+          "supports": []
+        },
+        "listen-time": {
+          "choice": 1,
+          "independent": true,
+          "supports": []
+        },
+        "listen-place": {
+          "choice": 2,
+          "independent": true,
+          "supports": []
+        },
+        "read-time": {
+          "choice": 1,
+          "independent": false,
+          "supports": [
+            "reading"
+          ]
+        },
+        "read-route": {
+          "choice": 2,
+          "independent": false,
+          "supports": [
+            "reading"
+          ]
+        }
+      },
+      "expressionsDone": true,
+      "speaking": {
+        "respond-accept": {
+          "triedFirst": true,
+          "revealed": true,
+          "rating": "independent"
+        },
+        "respond-decline": {
+          "triedFirst": true,
+          "revealed": true,
+          "rating": "independent"
+        },
+        "transfer-coffee": {
+          "triedFirst": true,
+          "revealed": true,
+          "rating": "independent"
+        }
+      },
+      "completedAt": "2026-10-18T13:48:23.824Z",
+      "completedRuns": 1
     },
     "cafe-order-v1": {
       "version": 1,
       "lessonId": "cafe-order-v1",
-      "stage": 0,
-      "heard": false,
+      "stage": 5,
+      "heard": true,
       "supports": {
-        "listening": [],
-        "reading": []
+        "listening": [
+          "transcript",
+          "reading"
+        ],
+        "reading": [
+          "reading"
+        ]
       },
-      "answers": {},
-      "expressionsDone": false,
-      "speaking": {},
-      "completedAt": null,
-      "completedRuns": 0
+      "answers": {
+        "listen-milk": {
+          "choice": 2,
+          "independent": true,
+          "supports": []
+        },
+        "listen-service": {
+          "choice": 1,
+          "independent": true,
+          "supports": []
+        },
+        "listen-meal": {
+          "choice": 0,
+          "independent": true,
+          "supports": []
+        },
+        "read-number": {
+          "choice": 1,
+          "independent": false,
+          "supports": [
+            "reading"
+          ]
+        },
+        "read-price": {
+          "choice": 2,
+          "independent": false,
+          "supports": [
+            "reading"
+          ]
+        }
+      },
+      "expressionsDone": true,
+      "speaking": {
+        "respond-order": {
+          "triedFirst": true,
+          "revealed": true,
+          "rating": "independent"
+        },
+        "respond-preference": {
+          "triedFirst": true,
+          "revealed": true,
+          "rating": "independent"
+        },
+        "transfer-tea": {
+          "triedFirst": true,
+          "revealed": true,
+          "rating": "assisted"
+        }
+      },
+      "completedAt": "2026-10-18T13:58:09.822Z",
+      "completedRuns": 1
     },
     "asking-directions-v1": {
       "version": 1,
@@ -183,7 +282,149 @@
       "completedRuns": 0
     }
   },
-  "attempts": [],
+  "attempts": [
+    {
+      "kind": "lesson",
+      "lessonId": "dinner-invitation-v1",
+      "skill": "speaking",
+      "completedAt": "2026-10-18T13:48:23.824Z",
+      "progress": {
+        "version": 1,
+        "lessonId": "dinner-invitation-v1",
+        "stage": 5,
+        "heard": true,
+        "supports": {
+          "listening": [],
+          "reading": [
+            "reading"
+          ]
+        },
+        "answers": {
+          "listen-intent": {
+            "choice": 0,
+            "independent": true,
+            "supports": []
+          },
+          "listen-time": {
+            "choice": 1,
+            "independent": true,
+            "supports": []
+          },
+          "listen-place": {
+            "choice": 2,
+            "independent": true,
+            "supports": []
+          },
+          "read-time": {
+            "choice": 1,
+            "independent": false,
+            "supports": [
+              "reading"
+            ]
+          },
+          "read-route": {
+            "choice": 2,
+            "independent": false,
+            "supports": [
+              "reading"
+            ]
+          }
+        },
+        "expressionsDone": true,
+        "speaking": {
+          "respond-accept": {
+            "triedFirst": true,
+            "revealed": true,
+            "rating": "independent"
+          },
+          "respond-decline": {
+            "triedFirst": true,
+            "revealed": true,
+            "rating": "independent"
+          },
+          "transfer-coffee": {
+            "triedFirst": true,
+            "revealed": true,
+            "rating": "independent"
+          }
+        },
+        "completedAt": "2026-10-18T13:48:23.824Z",
+        "completedRuns": 1
+      }
+    },
+    {
+      "kind": "lesson",
+      "lessonId": "cafe-order-v1",
+      "skill": "speaking",
+      "completedAt": "2026-10-18T13:58:09.822Z",
+      "progress": {
+        "version": 1,
+        "lessonId": "cafe-order-v1",
+        "stage": 5,
+        "heard": true,
+        "supports": {
+          "listening": [
+            "transcript",
+            "reading"
+          ],
+          "reading": [
+            "reading"
+          ]
+        },
+        "answers": {
+          "listen-milk": {
+            "choice": 2,
+            "independent": true,
+            "supports": []
+          },
+          "listen-service": {
+            "choice": 1,
+            "independent": true,
+            "supports": []
+          },
+          "listen-meal": {
+            "choice": 0,
+            "independent": true,
+            "supports": []
+          },
+          "read-number": {
+            "choice": 1,
+            "independent": false,
+            "supports": [
+              "reading"
+            ]
+          },
+          "read-price": {
+            "choice": 2,
+            "independent": false,
+            "supports": [
+              "reading"
+            ]
+          }
+        },
+        "expressionsDone": true,
+        "speaking": {
+          "respond-order": {
+            "triedFirst": true,
+            "revealed": true,
+            "rating": "independent"
+          },
+          "respond-preference": {
+            "triedFirst": true,
+            "revealed": true,
+            "rating": "independent"
+          },
+          "transfer-tea": {
+            "triedFirst": true,
+            "revealed": true,
+            "rating": "assisted"
+          }
+        },
+        "completedAt": "2026-10-18T13:58:09.822Z",
+        "completedRuns": 1
+      }
+    }
+  ],
   "focus": null,
   "revisit": null,
   "exposures": []
