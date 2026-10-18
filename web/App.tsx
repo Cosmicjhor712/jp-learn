@@ -51,12 +51,16 @@ import {
 import { findVariant } from "./scenario/variants.ts";
 import {
   loadLibrary,
-  LIBRARY_STORAGE_KEY,
   updateCourse,
   startFocus,
   finishFocus,
+  type LearningLibrary,
   type PracticeTarget,
 } from "./scenario/library.ts";
+import {
+  loadSyncedLibrary,
+  saveSyncedLibrary,
+} from "./scenario/librarySync.ts";
 
 const lessons = lessonsData as Lesson[];
 
@@ -149,18 +153,27 @@ export default function App(): React.JSX.Element {
       alive = false;
     };
   }, []);
-  const [library, setLibrary] = useState(loadLibrary);
+  const [library, setLibrary] = useState<LearningLibrary>(loadLibrary);
+  const [libraryReady, setLibraryReady] = useState(false);
   const scenario = library.courses[library.selectedId];
   const [scenarioSaveError, setScenarioSaveError] = useState(false);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(LIBRARY_STORAGE_KEY, JSON.stringify(library));
-      setScenarioSaveError(false);
-    } catch {
-      setScenarioSaveError(true);
-    }
-  }, [library]);
+    let alive = true;
+    loadSyncedLibrary().then((synced) => {
+      if (!alive) return;
+      setLibrary(synced);
+      setLibraryReady(true);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!libraryReady) return;
+    setScenarioSaveError(!saveSyncedLibrary(library));
+  }, [library, libraryReady]);
 
   function openCourse(id: string): void {
     const baseId = findVariant(id)?.baseId ?? id;
@@ -339,7 +352,7 @@ export default function App(): React.JSX.Element {
     );
   }
 
-  if (!progress) {
+  if (!progress || !libraryReady) {
     return <div className="loading">正在加载学习进度…</div>;
   }
   const current = progress;

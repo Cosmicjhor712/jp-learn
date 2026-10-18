@@ -54,6 +54,11 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/api/progress", (route) =>
     route.fulfill({ json: { completedLessons: [], entries: {} } }),
   );
+  await page.route("**/api/state/**", (route) =>
+    route.request().method() === "GET"
+      ? route.fulfill({ json: null })
+      : route.fulfill({ json: { ok: true } }),
+  );
   await page.clock.setFixedTime(new Date(now));
   await page.addInitScript(() => {
     let generation = 0;

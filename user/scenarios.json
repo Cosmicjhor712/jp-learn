@@ -1,0 +1,190 @@
+{
+  "version": 2,
+  "selectedId": "dinner-invitation-v1",
+  "courses": {
+    "dinner-invitation-v1": {
+      "version": 1,
+      "lessonId": "dinner-invitation-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "cafe-order-v1": {
+      "version": 1,
+      "lessonId": "cafe-order-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "asking-directions-v1": {
+      "version": 1,
+      "lessonId": "asking-directions-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "clothes-shopping-v1": {
+      "version": 1,
+      "lessonId": "clothes-shopping-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "meeting-people-v1": {
+      "version": 1,
+      "lessonId": "meeting-people-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "train-transfer-v1": {
+      "version": 1,
+      "lessonId": "train-transfer-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "hotel-checkin-v1": {
+      "version": 1,
+      "lessonId": "hotel-checkin-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "weekend-plans-v1": {
+      "version": 1,
+      "lessonId": "weekend-plans-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "reschedule-plans-v1": {
+      "version": 1,
+      "lessonId": "reschedule-plans-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "cafe-changes-v1": {
+      "version": 1,
+      "lessonId": "cafe-changes-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "shopping-exchange-v1": {
+      "version": 1,
+      "lessonId": "shopping-exchange-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    },
+    "clarifying-information-v1": {
+      "version": 1,
+      "lessonId": "clarifying-information-v1",
+      "stage": 0,
+      "heard": false,
+      "supports": {
+        "listening": [],
+        "reading": []
+      },
+      "answers": {},
+      "expressionsDone": false,
+      "speaking": {},
+      "completedAt": null,
+      "completedRuns": 0
+    }
+  },
+  "attempts": [],
+  "focus": null,
+  "revisit": null,
+  "exposures": []
+}

@@ -67,6 +67,31 @@ export function hasStarted(progress: ScenarioProgress): boolean {
     progress.supports.listening.length > 0
   );
 }
+export function libraryHasProgress(library: LearningLibrary): boolean {
+  return (
+    library.attempts.length > 0 ||
+    library.focus !== null ||
+    library.revisit !== null ||
+    library.exposures.length > 0 ||
+    scenarioCourses.some((course) => {
+      const progress = library.courses[course.id];
+      return !!progress && hasStarted(progress);
+    })
+  );
+}
+/**
+ * 文件优先；只有本地存在尚未写入文件的修改，或文件为空而本地有进度时，
+ * 才继续使用本地记录。其余情况以 user/scenarios.json 为准。
+ */
+export function pickSyncedLibrary(
+  local: LearningLibrary,
+  remote: LearningLibrary | null,
+  localPending: boolean,
+): LearningLibrary {
+  if (!remote || localPending) return local;
+  if (!libraryHasProgress(remote) && libraryHasProgress(local)) return local;
+  return remote;
+}
 export function recommendedCourse(library: LearningLibrary): string {
   const selected = library.courses[library.selectedId];
   if (selected && hasStarted(selected) && !selected.completedAt)

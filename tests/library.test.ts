@@ -23,6 +23,8 @@ import {
   startFocus,
   finishFocus,
   focusReady,
+  libraryHasProgress,
+  pickSyncedLibrary,
 } from "../web/scenario/library.ts";
 
 function completeCourse(index = 0, count = 0) {
@@ -315,4 +317,33 @@ test("corrupted multi-course data cannot import a different course's progress or
     null,
   );
   assert.deepEqual(restored, library);
+});
+
+test("synced library prefers the file unless local work is newer or the file is empty", () => {
+  const empty = newLibrary();
+  const localProgress = completeCourse(0, 1);
+  const local = updateCourse(
+    newLibrary(),
+    localProgress.lessonId,
+    localProgress,
+  );
+  const remoteProgress = completeCourse(1, 1);
+  const remote = updateCourse(
+    newLibrary(),
+    remoteProgress.lessonId,
+    remoteProgress,
+  );
+
+  assert.equal(libraryHasProgress(empty), false);
+  assert.equal(libraryHasProgress(local), true);
+  assert.equal(libraryHasProgress(remote), true);
+
+  // 正常的文件记录优先，跨设备时以仓库里的进度为准。
+  assert.equal(pickSyncedLibrary(local, remote, false), remote);
+  // 文件还是空的，不能盖掉本地已有进度。
+  assert.equal(pickSyncedLibrary(local, empty, false), local);
+  // 上一次写文件失败，保留本地未同步的修改。
+  assert.equal(pickSyncedLibrary(local, remote, true), local);
+  // 本地什么都没有时直接使用文件。
+  assert.equal(pickSyncedLibrary(empty, remote, false), remote);
 });

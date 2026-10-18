@@ -48,6 +48,12 @@ test.beforeEach(async ({ page }) => {
       body: JSON.stringify(fixture),
     }),
   );
+  // Scenario and kana records stay in localStorage during tests.
+  await page.route("**/api/state/**", (route) =>
+    route.request().method() === "GET"
+      ? route.fulfill({ json: null })
+      : route.fulfill({ json: { ok: true } }),
+  );
 });
 
 test("voice setup dialog can be skipped or enabled for the current session", async ({

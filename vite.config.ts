@@ -14,10 +14,18 @@ import {
   writeCachedAudio,
   type VolcTtsConfig,
 } from "./server/tts.ts";
+import {
+  isUserStateName,
+  readUserState,
+  writeUserState,
+  type UserStateName,
+} from "./server/userState.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROGRESS_FILE = path.resolve(__dirname, "user", "progress.json");
+const USER_DIR = path.resolve(__dirname, "user");
 const MAX_TTS_TEXT_LENGTH = 600;
+const MAX_STATE_BODY_BYTES = 5 * 1024 * 1024;
 
 function handleProgress(req: IncomingMessage, res: ServerResponse): void {
   if (req.method === "GET") {
@@ -76,6 +84,101 @@ function progressApiPlugin(): Plugin {
 
   return {
     name: "jp-learn-progress-api",
+    configureServer(server) {
+      server.middlewares.use(middleware);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware);
+    },
+  };
+}
+
+function handleUserState(
+  req: IncomingMessage,
+  res: ServerResponse,
+  name: UserStateName
+): void {
+  res.setHeader("Cache-Control", "no-store");
+
+  if (req.method === "GET") {
+    try {
+      const raw = readUserState(USER_DIR, name);
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      res.end(raw ?? "null");
+    } catch {
+      sendJson(res, 500, { error: "read-failed" });
+    }
+    return;
+  }
+
+  if (req.method === "PUT") {
+    let body = "";
+    let tooLarge = false;
+    req.setEncoding("utf8");
+    req.on("data", (chunk: string) => {
+      if (tooLarge) return;
+      body += chunk;
+      if (Buffer.byteLength(body, "utf8") > MAX_STATE_BODY_BYTES) {
+        tooLarge = true;
+        body = "";
+      }
+    });
+    req.on("end", () => {
+      if (tooLarge) {
+        sendJson(res, 413, { error: "state-too-large" });
+        return;
+      }
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(body);
+      } catch {
+        sendJson(res, 400, { error: "invalid-json" });
+        return;
+      }
+      if (
+        parsed === null ||
+        typeof parsed !== "object" ||
+        Array.isArray(parsed)
+      ) {
+        sendJson(res, 400, { error: "invalid-state" });
+        return;
+      }
+      try {
+        writeUserState(USER_DIR, name, parsed);
+        sendJson(res, 200, { ok: true });
+      } catch {
+        sendJson(res, 500, { error: "write-failed" });
+      }
+    });
+    return;
+  }
+
+  res.statusCode = 405;
+  res.end("method not allowed");
+}
+
+/** 白名单内的学习进度文件：/api/state/scenarios、/api/state/input-learning */
+function userStatePlugin(): Plugin {
+  const middleware = (
+    req: IncomingMessage,
+    res: ServerResponse,
+    next: () => void
+  ): void => {
+    const pathname = new URL(req.url ?? "/", "http://localhost").pathname;
+    if (!pathname.startsWith("/api/state/")) {
+      next();
+      return;
+    }
+    const name = pathname.slice("/api/state/".length);
+    if (!isUserStateName(name)) {
+      sendJson(res, 404, { error: "unknown-state" });
+      return;
+    }
+    handleUserState(req, res, name);
+  };
+
+  return {
+    name: "jp-learn-user-state",
     configureServer(server) {
       server.middlewares.use(middleware);
     },
@@ -201,6 +304,11 @@ export default defineConfig(({ mode }) => {
   const ttsConfig = readVolcTtsConfig(__dirname, env);
 
   return {
-    plugins: [react(), progressApiPlugin(), ttsPlugin(ttsConfig)],
+    plugins: [
+      react(),
+      progressApiPlugin(),
+      userStatePlugin(),
+      ttsPlugin(ttsConfig),
+    ],
   };
 });

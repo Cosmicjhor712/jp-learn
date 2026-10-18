@@ -54,6 +54,12 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/api/progress", (route) =>
     route.fulfill({ json: { completedLessons: [], entries: {} } }),
   );
+  // Keep scenario and kana records in localStorage; never touch user/ files.
+  await page.route("**/api/state/**", (route) =>
+    route.request().method() === "GET"
+      ? route.fulfill({ json: null })
+      : route.fulfill({ json: { ok: true } }),
+  );
   await page.addInitScript(() => {
     let generation = 0;
     // Mock the utterance too: native .voice only accepts native SpeechSynthesisVoice objects.
@@ -1438,4 +1444,42 @@ test.describe("native recording", () => {
     await page.getByRole("button", { name: "返回主界面", exact: true }).click();
     expect(JSON.stringify(await stored(page))).not.toContain("blob:");
   });
+});
+
+test("scenario progress uploads to the user state file and restores without localStorage", async ({
+  page,
+}) => {
+  let saved: LearningLibrary | null = null;
+  await page.route("**/api/state/scenarios", async (route) => {
+    if (route.request().method() === "GET") {
+      await route.fulfill({ json: saved });
+      return;
+    }
+    saved = route.request().postDataJSON() as LearningLibrary;
+    await route.fulfill({ json: { ok: true } });
+  });
+
+  const library = radarLibrary();
+  await page.goto("/");
+  await page.evaluate(
+    ({ key, library }) => localStorage.setItem(key, JSON.stringify(library)),
+    { key: LIBRARY_STORAGE_KEY, library },
+  );
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "今日学习", exact: true }),
+  ).toBeVisible();
+  await expect
+    .poll(() => saved?.attempts.length ?? 0)
+    .toBeGreaterThan(0);
+
+  // 文件已成为主记录：清空 localStorage 后仍能从文件恢复。
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await expect(
+    page.getByRole("region", { name: "最近一次练习" }),
+  ).toContainText("10月12日");
+  await expect(
+    page.getByRole("heading", { name: "今日学习", exact: true }),
+  ).toBeVisible();
 });
