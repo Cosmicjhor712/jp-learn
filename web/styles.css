@@ -44,6 +44,8 @@ body {
 
 .topbar strong {
   color: var(--cyan);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .card {
@@ -308,6 +310,18 @@ select {
 .topbar-stats {
   margin-left: auto;
 }
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.topbar-actions > button {
+  min-height: 36px;
+  white-space: nowrap;
+}
 .home-button {
   flex-shrink: 0;
   min-height: 36px;
@@ -481,9 +495,6 @@ select {
   background: transparent;
   color: var(--cyan);
 }
-.topbar-progress {
-  margin-left: auto;
-}
 .next-lesson {
   width: 100%;
   min-height: 122px;
@@ -656,10 +667,6 @@ select {
   .learning-home {
     padding-top: 4px;
   }
-  .topbar-progress {
-    grid-column: 2;
-    grid-row: 1;
-  }
   .home-metrics {
     margin-top: 22px;
     padding-bottom: 22px;
@@ -768,9 +775,6 @@ select {
   padding: 10px 16px;
 }
 
-.home-voice-settings {
-  margin-top: 10px;
-}
 .study-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
@@ -1359,28 +1363,28 @@ input[type="checkbox"] {
   }
 }
 
+@media (max-width: 640px) {
+  .topbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 6px 12px;
+  }
+  .topbar-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .topbar-stats {
+    font-size: 0.73rem;
+    text-align: right;
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: 0;
+  }
+}
+
 @media (max-width: 480px) {
   .app {
     padding: 12px 12px 40px;
-  }
-  .topbar strong {
-    white-space: nowrap;
-  }
-  .topbar {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 6px 12px;
-  }
-  .topbar .home-button {
-    grid-column: 2;
-    grid-row: 1;
-  }
-  .topbar .muted {
-    font-size: 0.73rem;
-    text-align: left;
-    grid-column: 1 / -1;
-    grid-row: 2;
-    margin-left: 0;
   }
   .question-surface .prompt {
     font-size: 1.25rem;

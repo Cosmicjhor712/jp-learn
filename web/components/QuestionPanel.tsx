@@ -11,6 +11,7 @@ import { canSpeak, speak, stopSpeaking } from "../speech.ts";
 import KanaEditor, { type KanaEditorHandle } from "./KanaEditor.tsx";
 import KanaAnnotation from "./KanaAnnotation.tsx";
 import InputAssistant from "./InputAssistant.tsx";
+import AudioVersions from "./AudioVersions.tsx";
 
 export interface QuestionPanelProps {
   title: string;
@@ -162,6 +163,7 @@ export default function QuestionPanel({
               <Volume2 size={16} />
               重听
             </button>
+            <AudioVersions text={expected} />
             <label className="checkbox-label">
               <input
                 type="checkbox"
@@ -247,13 +249,16 @@ export default function QuestionPanel({
               ))}
             </div>
             {canSpeak ? (
-              <button
-                type="button"
-                onClick={() => speak(lastResult?.expected ?? expected, slow)}
-              >
-                <Volume2 size={15} />
-                播放答案
-              </button>
+              <div className="speech-inline">
+                <button
+                  type="button"
+                  onClick={() => speak(lastResult?.expected ?? expected, slow)}
+                >
+                  <Volume2 size={15} />
+                  播放答案
+                </button>
+                <AudioVersions text={lastResult?.expected ?? expected} />
+              </div>
             ) : null}
           </div>
         ) : null}

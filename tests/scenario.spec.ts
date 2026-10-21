@@ -663,10 +663,9 @@ test("missing Japanese voice offers text practice without claiming listening suc
     }),
   );
   await openScenario(page);
-  await expect(page.getByText(/未检测到日语语音/)).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "播放对话", exact: true }),
-  ).toBeDisabled();
+  await page.getByRole("button", { name: "播放对话", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("浏览器没有可用的日语音色");
+  await expect(page.getByRole("button", { name: "录音版本", exact: true })).toBeEnabled();
   await page.getByLabel("中文释义", { exact: true }).check();
   await answerQuiz(page, "listen");
   const progress = await stored(page);
@@ -1460,12 +1459,16 @@ test("scenario progress uploads to the user state file and restores without loca
   });
 
   const library = radarLibrary();
-  await page.goto("/");
-  await page.evaluate(
-    ({ key, library }) => localStorage.setItem(key, JSON.stringify(library)),
+  // Seed before the app loads so its initial empty autosave cannot overwrite the fixture.
+  await page.addInitScript(
+    ({ key, library }) => {
+      if (sessionStorage.getItem("scenario-upload-seeded")) return;
+      localStorage.setItem(key, JSON.stringify(library));
+      sessionStorage.setItem("scenario-upload-seeded", "1");
+    },
     { key: LIBRARY_STORAGE_KEY, library },
   );
-  await page.reload();
+  await page.goto("/");
   await expect(
     page.getByRole("heading", { name: "今日学习", exact: true }),
   ).toBeVisible();

@@ -10,16 +10,14 @@ import {
   findReviewPrompt,
   makeChoices,
 } from "../src/logic.ts";
-import { canSpeak, speak, stopSpeaking, ttsStatus } from "./speech.ts";
-import {
-  getSessionApiKey,
-  isTtsSkipped,
-} from "./ttsSettings.ts";
+import { canSpeak, speak, stopSpeaking } from "./speech.ts";
+import { hasConfirmedTts } from "./ttsSettings.ts";
 import { loadProgress, saveProgress } from "./progressApi.ts";
 import ProgressBar from "./components/ProgressBar";
 import QuestionPanel from "./components/QuestionPanel";
 import ChoicePanel from "./components/ChoicePanel";
 import TtsSetup from "./components/TtsSetup";
+import SpeechNotice from "./components/SpeechNotice.tsx";
 import lessonsData from "../data/lessons.json";
 import {
   ArrowRight,
@@ -27,6 +25,7 @@ import {
   ChartNoAxesColumnIncreasing,
   ChevronRight,
   House,
+  SlidersHorizontal,
 } from "lucide-react";
 import KanaPractice from "./components/KanaPractice.tsx";
 import KanaAnnotation from "./components/KanaAnnotation.tsx";
@@ -142,21 +141,17 @@ export default function App(): React.JSX.Element {
   const [showTtsSetup, setShowTtsSetup] = useState(false);
 
   useEffect(() => {
-    let alive = true;
-    ttsStatus().then((status) => {
-      if (!alive) return;
-      if (status?.configured) return; // 服务端 .env 已配置
-      if (getSessionApiKey() || isTtsSkipped()) return;
-      setShowTtsSetup(true);
-    });
-    return () => {
-      alive = false;
-    };
+    if (!hasConfirmedTts()) setShowTtsSetup(true);
   }, []);
   const [library, setLibrary] = useState<LearningLibrary>(loadLibrary);
   const [libraryReady, setLibraryReady] = useState(false);
   const scenario = library.courses[library.selectedId];
   const [scenarioSaveError, setScenarioSaveError] = useState(false);
+
+  function openTtsSettings(): void {
+    stopSpeaking();
+    setShowTtsSetup(true);
+  }
 
   useEffect(() => {
     let alive = true;
@@ -391,7 +386,6 @@ export default function App(): React.JSX.Element {
           },
           onKana: () => setScreen({ type: "kana-practice" }),
           onListen: () => setScreen({ type: "listen-menu" }),
-          onVoiceSettings: () => setShowTtsSetup(true),
         }}
       />
     );
@@ -820,6 +814,7 @@ export default function App(): React.JSX.Element {
           }
           choices={choices}
           correctIndex={correctIndex}
+          audioText={item.japanese}
           play={(slow) => speak(item.japanese, slow)}
           onNext={(grade) => {
             updateEntry(item.id, grade);
@@ -1169,36 +1164,49 @@ export default function App(): React.JSX.Element {
     <div className="app">
       <header className="topbar">
         <strong>日本語学習</strong>
-        {screen.type === "menu" ? (
-          <button
-            type="button"
-            className="home-link topbar-progress"
-            onClick={() => setScreen({ type: "stats" })}
-          >
-            <ChartNoAxesColumnIncreasing size={16} aria-hidden="true" />
-            查看进度
-            <ArrowUpRight size={14} aria-hidden="true" />
-          </button>
-        ) : (
+        {screen.type !== "menu" && (
           <span className="muted topbar-stats">
             {screen.type.startsWith("scenario") || screen.type === "stats"
               ? "日常交流 · 阅读"
               : `${stats.due} 待复习 · ${stats.mastered}/${stats.total} 掌握`}
           </span>
         )}
-        {screen.type !== "menu" ? (
+        <nav className="topbar-actions" aria-label="全局操作">
           <button
             type="button"
             className="home-button"
-            title="返回主界面"
-            onClick={returnHome}
+            title="更换语音供应商、模型和音色"
+            aria-haspopup="dialog"
+            onClick={openTtsSettings}
           >
-            <House size={16} aria-hidden="true" />
-            返回主界面
+            <SlidersHorizontal size={16} aria-hidden="true" />
+            语音设置
           </button>
-        ) : null}
+          {screen.type === "menu" ? (
+            <button
+              type="button"
+              className="home-link"
+              onClick={() => setScreen({ type: "stats" })}
+            >
+              <ChartNoAxesColumnIncreasing size={16} aria-hidden="true" />
+              查看进度
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="home-button"
+              title="返回主界面"
+              onClick={returnHome}
+            >
+              <House size={16} aria-hidden="true" />
+              返回主界面
+            </button>
+          )}
+        </nav>
       </header>
       <main>{renderContent()}</main>
+      <SpeechNotice onSettings={openTtsSettings} />
       {showTtsSetup ? (
         <TtsSetup onClose={() => setShowTtsSetup(false)} />
       ) : null}

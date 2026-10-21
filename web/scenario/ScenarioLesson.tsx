@@ -46,6 +46,7 @@ import {
 } from "./progress.ts";
 import { useScenarioSpeech } from "./useScenarioSpeech.ts";
 import VoiceRecorder from "./VoiceRecorder.tsx";
+import AudioVersions from "../components/AudioVersions.tsx";
 
 type UpdateProgress = Dispatch<SetStateAction<ScenarioProgress>>;
 type Speech = ReturnType<typeof useScenarioSpeech>;
@@ -99,16 +100,19 @@ function AudioButton({
   disabled?: boolean;
 }) {
   return (
-    <button
-      type="button"
-      className="scenario-icon"
-      title="朗读日文"
-      aria-label={`朗读：${plainJapanese(line)}`}
-      disabled={!speech.available || disabled}
-      onClick={() => speech.play([plainJapanese(line)])}
-    >
-      <Volume2 size={19} />
-    </button>
+    <span className="speech-inline">
+      <button
+        type="button"
+        className="scenario-icon"
+        title="朗读日文"
+        aria-label={`朗读：${plainJapanese(line)}`}
+        disabled={!speech.available || disabled}
+        onClick={() => speech.play([plainJapanese(line)])}
+      >
+        <Volume2 size={19} />
+      </button>
+      <AudioVersions text={plainJapanese(line)} compact disabled={disabled} />
+    </span>
   );
 }
 
@@ -248,6 +252,7 @@ export function Listening({
             <Volume2 size={17} />
             慢速听
           </button>
+          <AudioVersions text={dialogue.map((turn) => plainJapanese(turn.line))} />
           {speech.playing && (
             <button
               type="button"

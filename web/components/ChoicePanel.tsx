@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import AudioVersions from "./AudioVersions.tsx";
+import { stopSpeaking } from "../speech.ts";
 
 export interface ChoicePanelProps {
   title: string;
@@ -7,6 +9,7 @@ export interface ChoicePanelProps {
   choices: string[];
   correctIndex: number;
   play: (slow: boolean) => void;
+  audioText?: string;
   onNext: (grade: number) => void; // 1=忘了 2=难 3=好 4=轻松
 }
 
@@ -21,6 +24,7 @@ export default function ChoicePanel({
   choices,
   correctIndex,
   play,
+  audioText,
   onNext,
 }: ChoicePanelProps): React.JSX.Element {
   const [phase, setPhase] = useState<Phase>("listen");
@@ -30,6 +34,7 @@ export default function ChoicePanel({
 
   useEffect(() => {
     play(false);
+    return stopSpeaking;
   }, []);
 
   function next(): void {
@@ -93,6 +98,7 @@ export default function ChoicePanel({
       </div>
 
       <div className="prompt">▶ {question}</div>
+      {audioText && <AudioVersions text={audioText} />}
 
       {phase === "listen" ? (
         <div className="listen-bar">

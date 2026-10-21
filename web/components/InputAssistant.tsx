@@ -11,6 +11,7 @@ import {
 } from "../../src/kana.ts";
 import { useInputLearning } from "../inputLearning.tsx";
 import { canSpeak, speak } from "../speech.ts";
+import AudioVersions from "./AudioVersions.tsx";
 import { toKatakana } from "wanakana";
 
 export default function InputAssistant({
@@ -108,6 +109,7 @@ export default function InputAssistant({
               >
                 <Volume2 size={18} />
               </button>
+              <AudioVersions text={inspected.text} compact />
             </div>
             <div className="detail-keys">
               {[
