@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./styles.css";
+import "./speech.css";
 import "./scenario/scenario.css";
 import "./scenario/home.css";
 import { InputLearningProvider } from "./inputLearning.tsx";

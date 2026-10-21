@@ -17,6 +17,7 @@ import {
 import { shuffle } from "../../src/logic.ts";
 import { useInputLearning } from "../inputLearning.tsx";
 import { canSpeak, speak } from "../speech.ts";
+import AudioVersions from "./AudioVersions.tsx";
 import QuestionPanel from "./QuestionPanel.tsx";
 import KanaAnnotation from "./KanaAnnotation.tsx";
 import ProgressBar from "./ProgressBar.tsx";
@@ -279,6 +280,7 @@ export default function KanaPractice({
               >
                 <Volume2 size={16} />
               </button>
+              <AudioVersions text={item.kana} compact />
             </div>
           ))
         ) : (

@@ -12,7 +12,7 @@
 - **课程数据**：15 课，298 词汇 + 107 翻译句 (`data/lessons.json`)
 - **Ink TUI 界面**：方向键导航 + TextInput 输入 + 面板边框 (`src/app.tsx`, `src/components/`)
 - **听力练习**：跨平台语音朗读 + 听写 / 理解选择两种模式，复用答案比对与 FSRS (`src/tts.ts`, `src/components/ChoiceBox.tsx`)
-- **Web 版界面**：浏览器可视化 UI，鼠标点击操作，语音走浏览器 Web Speech API，进度与终端版共用 `user/progress.json` (`web/`, `vite.config.ts`)
+- **Web 版界面**：浏览器可视化 UI，鼠标点击操作，支持浏览器、火山引擎和百炼语音及录音版本试听，进度与终端版共用 `user/progress.json` (`web/`, `vite.config.ts`)
 - **Web 日语输入练习台**：内置罗马字转假名、平/片假名切换、可点击键盘、假名查询、答案按键标注与输入专项练习 (`src/kana.ts`, `web/components/Kana*.tsx`)
 - **Web 情景课程**：12 课，按“日常入门 → 接续交流 → 处理变化”分为三个阶段，贯通听、说、迁移和阅读；分课断点、完整课程历史和单项重练独立保存 (`web/scenario/`)
 - **Web 进度同步**：情景课与假名练习记录通过 `/api/state` 写入 `user/scenarios.json`、`user/input-learning.json`，localStorage 仅作即时缓存与离线回退，可随 Git 提交同步
@@ -78,46 +78,48 @@ npm run build:web  # 构建生产包到 dist/
 npm run serve:web  # 本地预览生产包 http://localhost:4173
 ```
 
-Web 版支持鼠标操作；语音使用浏览器 Web Speech API（推荐 Chrome / Edge / Safari，日语语音会自动选择）。进度通过内置接口读写 `user/progress.json`，与终端版完全一致；接口不可用时自动回退到浏览器 localStorage。
+Web 版支持鼠标操作；语音可选浏览器 Web Speech API 或云端合成，也可直接播放已有录音。进度通过内置接口读写 `user/progress.json`，与终端版完全一致；接口不可用时自动回退到浏览器 localStorage。
 
-### 语音（火山引擎豆包 TTS 2.0，可选）
+### 语音与录音版本
 
-Web 版语音默认优先使用火山引擎豆包语音合成 2.0 生成的高质量日语 mp3，未启用或请求失败时自动回退浏览器 Web Speech API。终端版仍使用系统语音（`say` / SAPI / espeak-ng）。
+每个新标签页首次进入时选择供应商、模型和音色；所有页面顶部均保留「语音设置」，首次跳过后或练习途中都能随时修改，无需退出当前练习。打开设置会停止正在播放的朗读。默认配置记在 localStorage，Key 按供应商分别保留在 sessionStorage，不写入项目文件。同一标签页刷新不重复弹出设置。终端版仍使用系统语音，不受此设置影响。
 
-使用方法：
+| 供应商 | 模型 | 已接入音色 |
+|------|------|------|
+| 浏览器 | Web Speech API | 自动选择已安装的日语音色 |
+| 火山引擎 | 豆包 TTS 2.0 | Hana、Bonnie、Poppy、Aoi、Lily、Ken、Minimi、Shirou |
+| 阿里云百炼（北京） | Qwen3-TTS-Flash | Ono Anna、Cherry、Serena、Ethan |
+| 阿里云百炼（北京） | CosyVoice-v3-Flash | Yuuna、Tomoya、Yuuma |
 
-1. 打开[火山引擎语音新版控制台](https://console.volcengine.com/speech/new/overview)，确认应用已开通「语音合成大模型」，并在音色管理中勾选 **2.0 音色**（资源 `seed-tts-2.0`）；
-2. 在控制台创建并复制 **API Key**（新版推荐方式）；
-3. 运行 `npm run web` 并打开页面，首次使用会弹出「语音设置」：粘贴 API Key，点击「启用火山引擎语音」即可；
-4. 之后可从首页「基础巩固」底部的「语音设置（火山引擎 API Key）」随时更换或清除 Key。
+- 火山引擎需开通 2.0 音色及对应权限；API Key 模式默认资源 `seed-tts-2.0`。旧版 APP ID + Access Key 和显式资源 ID 配置继续兼容。
+- 百炼使用北京地域 Key；CosyVoice HTTP 接口还需要北京业务空间 ID（例如 `llm-xxx`），可在设置里输入。Qwen 不填空间 ID 时使用 DashScope 北京域名。模型、音色搭配在前后端都进行校验。
+- 可选服务端配置见 `.env.example`：`VOLC_TTS_API_KEY`、`DASHSCOPE_API_KEY`、`DASHSCOPE_WORKSPACE_ID`。`.env` 不提交；不要使用 `VITE_` 前缀保存凭证。
+- 只在点击试听样句或练习中请求播放时合成，切换下拉选项不会自动试听。无缓存的云端合成可能计费；失败不会自动重试或切换另一供应商，浏览器语音需要主动选择。
 
-说明：
+**同一句话的多个版本**
 
-- API Key 只保存在当前标签页的 `sessionStorage`，关闭页面后自动清除；不会写入项目文件、不会进入 git，也不会发送到除本地开发服务器外的任何地方；
-- 弹窗中选择「跳过，使用浏览器语音」后，本次会话不会调用火山引擎，直接使用浏览器自带日语语音；
-- 服务端模式（可选，适合固定部署）：也可以在 `.env` 中配置 `VOLC_TTS_API_KEY`，此时页面不再提示输入；旧版 `VOLC_TTS_APP_ID` + `VOLC_TTS_ACCESS_KEY` 仍兼容，资源 ID 默认 `volc.service_type.10029`。两种方式都支持用 `VOLC_TTS_RESOURCE_ID` 显式覆盖。
+播放入口旁的「录音版本」列出这句话已缓存的供应商、模型和音色。情景对话可先选择第几段发言，不提前显示日文答案。支持逐个试听、慢速试听，以及「本句使用」；本句选择仅保留在当前标签页会话，不修改全局配置，也不改变学习评分。「本句恢复默认配置」取消覆盖。
 
-可用日语大模型音色（`VOLC_TTS_VOICE`）：
+- 试听已有录音不需要 Key、不调用合成接口。录音文件丢失时明确报错，不自动重新合成。
+- 「生成当前配置版本」需要再次确认；只生成当前选定供应商的版本。生成后需要点击「本句使用」才会覆盖本句的默认播放配置。
+- 新缓存保存在 `data/audio/tts/<文本摘要>/<版本摘要>.wav|mp3`，旁边同名 JSON 保存文本、供应商、模型、音色、参数和生成时间。摘要包含文本、供应商、模型、音色、格式、采样率、语言和引擎参数；不包含 API Key。
+- 旧的 `data/audio/<voice>/<sha1>.mp3` 保持原样、可继续试听和复用，界面标记为旧版缓存，不推断未知参数。新版本不会覆盖旧音频或改写旧 `index.json`。
+- 慢速是本地播放速度变化，不生成额外文件。同一服务器进程对同凭证的相同合成请求去重；已完成的缓存跨重启可复用。缓存缺失或生成未成功保存时，下次重试可能再次计费。
+- 音频及元数据可随 Git 提交，学习进度仍存放在 `user/`，与语音配置独立。
 
-| voice_type | 音色 |
+**本地接口**（限可信本机使用，非公共付费代理）
+
+| 接口 | 用途 |
 |------|------|
-| `ja_female_bv522_uranus_bigtts` | Hana · 通用/教学女声（默认） |
-| `ja_female_bv024_uranus_bigtts` | Bonnie · 教学场景女声 |
-| `ja_female_bv520_uranus_bigtts` | Poppy · 视频配音女声 |
-| `ja_female_bv521_uranus_bigtts` | Aoi · 角色扮演女声 |
-| `ja_female_bv523_uranus_bigtts` | Lily · 趣味口音女声 |
-| `ja_male_bv524_uranus_bigtts` | Ken · 通用男声 |
-| `ja_female_minimi_uranus_bigtts` | Minimi · 上下文遵循女声 |
-| `ja_female_shirou_uranus_bigtts` | Shirou · 角色扮演女声 |
+| `GET /api/tts/status` | 供应商服务端凭证是否存在、业务空间是否配置、默认选择；不返回 Key |
+| `GET /api/tts/variants?text=...` | 返回 `{variants:[{id,provider,model,voice,format,sampleRate,generatedAt,legacy?}]}`，仅列出实际存在的文件 |
+| `GET /api/tts/audio?text=...&id=...` | 仅播放指定缓存，不合成；缺失返回 404 |
+| `POST /api/tts` | JSON `{text,selection:{provider,model,voice}}`；优先缓存，缺失才合成，返回 `audio/wav` 或 `audio/mpeg` |
+| `GET /api/tts?text=...&voice=...` | 兼容旧火山引擎调用，缺缓存时可能合成 |
 
-说明：
+合成请求使用 `X-Volc-Api-Key` 或 `X-Bailian-Api-Key`，百炼可附带 `X-Bailian-Workspace-Id`；页面只发送当前供应商的凭证。代理只把该 Key 发给相应供应商，下载百炼结果文件时不携带 Key。文本上限 600 字符；跨源请求拒绝。请使用 `npm run web -- --host 127.0.0.1`，不要把付费代理直接公开到互联网。
 
-- 页面输入的 Key 通过请求头一次性传给本地代理，仅用于当次合成请求，不落盘；
-- API Key 模式下按官方要求自动附带 `X-Api-Key`、`X-Api-Resource-Id: seed-tts-2.0` 和每请求唯一的 `X-Api-Request-Id`；
-- 合成结果按「文本 + 音色」永久保存在 `data/audio/`（按音色分目录，`index.json` 记录每段音频对应的文本），同一句只消耗一次额度；生成后可随 git 提交，换电脑克隆仓库后无需重新合成；
-- 使用中生成的音频会以未跟踪文件出现，定期执行 `git add data/audio && git commit` 即可随仓库分发；音频积累会让仓库体积增大，可按需清理不常用的音色目录；
-- 慢速播放通过浏览器端 0.8 倍速实现（保持音调），不额外消耗合成次数；
-- 支持 `GET /api/tts?text=...` 手动试听，`GET /api/tts/status` 查看当前是否已启用。
+接口与音色依据：[Qwen API](https://help.aliyun.com/zh/model-studio/qwen-tts-api)、[Qwen 音色](https://help.aliyun.com/zh/model-studio/qwen-tts-voice-list)、[CosyVoice HTTP API](https://help.aliyun.com/zh/model-studio/cosyvoice-tts-http-api)、[CosyVoice 音色](https://help.aliyun.com/zh/model-studio/cosyvoice-voice-list)。新增自动测试使用模拟响应，不消费真实配额；实际音质与账号可用性需要配置真实凭证后手动试听验证。
 
 ### Web 日语输入
 
@@ -174,7 +176,7 @@ Web 版语音默认优先使用火山引擎豆包语音合成 2.0 生成的高�
 
 - 理解题保存第一次作答，答错会给出解释。回顾主数字显示总答对数，借助辅助答对也计入；下方分别显示无提示答对、借助辅助答对，以及本环节使用过的慢速、原文、注音、罗马音和中文释义。新作答记录每题作答前用过的辅助，关闭提示不清除已查看的记录；旧记录保留原始结果，不补猜逐题辅助详情。下一步建议区分答错重练与答对后逐渐减少辅助。口语明确标为自评，不提供自动语音识别、发音或语法评分。
 - 可选录音只在点击按钮后请求麦克风，最长 60 秒，只在当前页面回听。离开回应题或情景课会释放设备并清除录音，不上传、不持久化；拒绝权限仍可直接开口后自评。
-- 听力需要浏览器可用的日语语音，录音需要 HTTPS 或 localhost/127.0.0.1 等安全上下文。缺少语音时可以用原文继续，但不会计为独立听懂；不需要安装日语输入法。
+- 听力可使用已缓存录音、云端合成或浏览器的日语音色，录音需要 HTTPS 或 localhost/127.0.0.1 等安全上下文。缺少语音时可以用原文继续，但不会计为独立听懂；不需要安装日语输入法。
 - 分课断点、各题结果、完成轮数、历史回顾及未完成的单项重练保存在 `user/scenarios.json`，同时写入 localStorage（`jp-learn-scenarios-v2`）作为即时缓存与接口不可用时的回退。打开页面时优先读取文件；文件不存在而浏览器已有记录时，会自动上传旧记录。自动迁移 `jp-learn-scenario-v1` 的试验课记录，保留旧键不覆盖。旧版只有最近一轮详情，因此迁移时保留该轮与累计次数，不虚构更早的历史记录。
 - 四课版本的 v2 记录直接兼容：旧课程 ID、题目与编号保持不变，新增课程补上空白进度，旧答案、历史和未完成单项练习均保留；学完原四课后可从第 5 课继续。
 - 可随时返回首页或刷新后继续；进度文件可随 Git 提交同步到其他设备。不同浏览器、域名或端口仍有各自的本地缓存，但打开页面后会以 `user/scenarios.json` 为准；清理浏览器数据不会删除文件。保存失败时页面会提示。仍不修改 `user/progress.json` 的 FSRS 数据。

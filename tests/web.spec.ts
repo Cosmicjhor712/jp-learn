@@ -73,7 +73,7 @@ test("voice setup dialog can be skipped or enabled for the current session", asy
   await expect(dialog).toBeVisible();
 
   await page
-    .getByRole("button", { name: /跳过，使用浏览器语音/ })
+    .getByRole("button", { name: "保存配置" })
     .click();
   await expect(dialog).toBeHidden();
   expect(
@@ -81,11 +81,12 @@ test("voice setup dialog can be skipped or enabled for the current session", asy
   ).toBe("1");
 
   await page
-    .getByRole("button", { name: "语音设置（火山引擎 API Key）" })
+    .getByRole("button", { name: "语音设置", exact: true })
     .click();
   await expect(dialog).toBeVisible();
+  await page.getByLabel("供应商").selectOption("volc");
   await page.getByLabel("API Key").fill("test-key");
-  await page.getByRole("button", { name: /启用火山引擎语音/ }).click();
+  await page.getByRole("button", { name: "保存配置" }).click();
   await expect(dialog).toBeHidden();
   expect(
     await page.evaluate(() =>
@@ -325,10 +326,13 @@ test("the home button works by keyboard after a listening answer and stops playb
   page,
 }) => {
   await page.addInitScript(() => {
+    Object.defineProperty(window, "SpeechSynthesisUtterance", { value: class {
+      constructor(public text: string) {}
+    } });
     Object.defineProperty(window, "speechSynthesis", {
       value: {
         speaking: false,
-        getVoices: () => [],
+        getVoices: () => [{ lang: "ja-JP", name: "Test Japanese" }],
         speak() {
           this.speaking = true;
         },

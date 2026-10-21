@@ -1,162 +1,218 @@
-// ============================================================
-// Web 语音播放
-//
-// 优先使用服务端 /api/tts（火山引擎豆包 TTS 2.0，生成 mp3 并缓存），
-// 未配置或请求失败时回退到浏览器 Web Speech API。
-// ============================================================
+import type { AudioVariant, TtsSelection, TtsStatus } from "../shared/tts.ts";
+import {
+  getSessionApiKey,
+  getSentenceVersion,
+  getTtsSelection,
+  getWorkspaceId,
+} from "./ttsSettings.ts";
+export type { TtsStatus } from "../shared/tts.ts";
 
-import { getSessionApiKey, isTtsSkipped } from "./ttsSettings.ts";
-
-let voices: SpeechSynthesisVoice[] = [];
-let jpVoice: SpeechSynthesisVoice | null = null;
-let currentAudio: HTMLAudioElement | null = null;
-let currentObjectUrl: string | null = null;
 let currentAbort: AbortController | null = null;
+let cancelPlayback: (() => void) | null = null;
 let playToken = 0;
-
-export const canSpeak: boolean =
+export const canSpeak =
   typeof window !== "undefined" &&
   ("speechSynthesis" in window || typeof Audio !== "undefined");
-
-function refreshVoices(): void {
-  voices = window.speechSynthesis.getVoices();
-  jpVoice =
-    voices.find((v) => v.lang.toLowerCase().startsWith("ja")) ?? null;
-}
-
-if (typeof window !== "undefined" && "speechSynthesis" in window) {
-  refreshVoices();
-  window.speechSynthesis.onvoiceschanged = refreshVoices;
-}
-
 export function hasJapaneseVoice(): boolean {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-    return false;
-  }
-  refreshVoices();
-  return jpVoice !== null;
+  return (
+    typeof window !== "undefined" &&
+    !!window.speechSynthesis
+      ?.getVoices()
+      .some((voice) => voice.lang.toLowerCase().startsWith("ja"))
+  );
 }
-
-export interface TtsStatus {
-  configured: boolean;
-  voice: string;
-}
-
-/** 查询服务端是否已配置火山引擎 TTS */
 export async function ttsStatus(): Promise<TtsStatus | null> {
   try {
-    const res = await fetch("/api/tts/status");
-    if (!res.ok) return null;
-    return (await res.json()) as TtsStatus;
+    const response = await fetch("/api/tts/status", {
+      signal: AbortSignal.timeout(8_000),
+    });
+    return response.ok ? await response.json() : null;
   } catch {
     return null;
   }
 }
-
-/** 停止当前语音（火山引擎音频 / 浏览器语音 / 进行中的请求） */
+async function checkResponse(response: Response): Promise<Response> {
+  if (!response.ok) {
+    const result = await response.json().catch(() => null);
+    throw new Error(
+      result?.message ?? `语音服务不可用（HTTP ${response.status}）`,
+    );
+  }
+  return response;
+}
+export async function listVariants(
+  text: string,
+  signal?: AbortSignal,
+): Promise<AudioVariant[]> {
+  const response = await checkResponse(
+    await fetch(`/api/tts/variants?text=${encodeURIComponent(text.trim())}`, {
+      signal,
+    }),
+  );
+  const result = await response.json();
+  if (!Array.isArray(result.variants)) throw new Error("录音列表响应无效");
+  return result.variants;
+}
 export function stopSpeaking(): void {
-  playToken += 1;
+  playToken++;
   currentAbort?.abort();
   currentAbort = null;
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio = null;
-  }
-  if (currentObjectUrl) {
-    URL.revokeObjectURL(currentObjectUrl);
-    currentObjectUrl = null;
-  }
-  if (typeof window !== "undefined" && "speechSynthesis" in window) {
-    window.speechSynthesis.cancel();
-  }
+  cancelPlayback?.();
+  cancelPlayback = null;
+  window.speechSynthesis?.cancel();
 }
+export function isPlaybackCancelled(error: unknown): boolean {
+  return error instanceof Error && error.name === "AbortError";
+}
+const cancelled = () => new DOMException("播放已停止", "AbortError");
 
 function playViaBrowser(text: string, slow: boolean): Promise<void> {
   return new Promise((resolve, reject) => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+    if (!window.speechSynthesis) {
       reject(new Error("当前浏览器不支持语音合成"));
       return;
     }
-
+    const voice = window.speechSynthesis
+      .getVoices()
+      .find((item) => item.lang.toLowerCase().startsWith("ja"));
+    if (!voice) {
+      reject(
+        new Error("浏览器没有可用的日语音色，请选择已有录音或配置云端语音"),
+      );
+      return;
+    }
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "ja-JP";
-    if (jpVoice) utterance.voice = jpVoice;
-    utterance.rate = slow ? 0.7 : 1.0;
-    utterance.onend = () => resolve();
-    utterance.onerror = () => reject(new Error("浏览器语音播放失败"));
-    window.speechSynthesis.cancel();
+    utterance.voice = voice;
+    utterance.rate = slow ? 0.7 : 1;
+    const cancel = () => reject(cancelled());
+    cancelPlayback = cancel;
+    const finish = () => {
+      if (cancelPlayback === cancel) cancelPlayback = null;
+    };
+    utterance.onend = () => {
+      finish();
+      resolve();
+    };
+    utterance.onerror = () => {
+      finish();
+      reject(new Error("浏览器语音播放失败"));
+    };
     window.speechSynthesis.speak(utterance);
   });
 }
-
-async function playViaServer(
-  text: string,
-  slow: boolean,
-  token: number
-): Promise<void> {
-  const controller = new AbortController();
-  currentAbort = controller;
-  const timeout = setTimeout(() => controller.abort(), 30_000);
-
-  try {
-    const apiKey = getSessionApiKey();
-    const res = await fetch(`/api/tts?text=${encodeURIComponent(text)}`, {
-      signal: controller.signal,
-      headers: apiKey ? { "X-Volc-Api-Key": apiKey } : undefined,
-    });
-    if (!res.ok) {
-      throw new Error(`TTS 服务不可用（HTTP ${res.status}）`);
-    }
-
-    const blob = await res.blob();
-    if (token !== playToken) throw new Error("已被新的播放请求取代");
-
+function playBlob(blob: Blob, slow: boolean): Promise<void> {
+  return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
     audio.preservesPitch = true;
-    audio.playbackRate = slow ? 0.8 : 1.0;
-    currentAudio = audio;
-    currentObjectUrl = url;
-
-    await audio.play();
-    await new Promise<void>((resolve, reject) => {
-      audio.onended = () => resolve();
-      audio.onpause = () => resolve();
-      audio.onerror = () => reject(new Error("音频播放失败"));
-    });
+    audio.playbackRate = slow ? 0.8 : 1;
+    let settled = false;
+    const finish = (error?: Error) => {
+      if (settled) return;
+      settled = true;
+      audio.onended = null;
+      audio.onerror = null;
+      audio.pause();
+      audio.removeAttribute("src");
+      URL.revokeObjectURL(url);
+      if (cancelPlayback === cancel) cancelPlayback = null;
+      if (error) reject(error);
+      else resolve();
+    };
+    const cancel = () => finish(cancelled());
+    cancelPlayback = cancel;
+    audio.onended = () => finish();
+    audio.onerror = () =>
+      finish(new Error("录音播放失败，请重试或选择另一份录音"));
+    void audio
+      .play()
+      .catch(() => finish(new Error("浏览器未能播放音频，请再次点击播放")));
+  });
+}
+export interface PlayOptions {
+  variantId?: string;
+  selection?: TtsSelection;
+  apiKey?: string;
+  workspaceId?: string;
+  ignorePreference?: boolean;
+}
+export async function playLine(
+  text: string,
+  slow = false,
+  options: PlayOptions = {},
+): Promise<void> {
+  text = text.trim();
+  if (!text) return;
+  stopSpeaking();
+  const token = playToken;
+  const selection = options.selection ?? getTtsSelection();
+  const variantId =
+    options.variantId ??
+    (options.ignorePreference ? undefined : getSentenceVersion(text));
+  if (!variantId && selection.provider === "browser") {
+    await playViaBrowser(text, slow);
+    return;
+  }
+  const controller = new AbortController();
+  currentAbort = controller;
+  const timeout = setTimeout(() => controller.abort(), 100_000);
+  let blob: Blob;
+  try {
+    let response: Response;
+    if (variantId) {
+      response = await fetch(
+        `/api/tts/audio?${new URLSearchParams({ text, id: variantId })}`,
+        { signal: controller.signal },
+      );
+    } else {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (selection.provider !== "browser") {
+        const key = options.apiKey ?? getSessionApiKey(selection.provider);
+        if (key)
+          headers[
+            selection.provider === "volc"
+              ? "X-Volc-Api-Key"
+              : "X-Bailian-Api-Key"
+          ] = key;
+      }
+      const workspace = options.workspaceId ?? getWorkspaceId();
+      if (selection.provider === "bailian" && workspace)
+        headers["X-Bailian-Workspace-Id"] = workspace;
+      response = await fetch("/api/tts", {
+        method: "POST",
+        headers,
+        signal: controller.signal,
+        body: JSON.stringify({ text, selection }),
+      });
+    }
+    await checkResponse(response);
+    blob = await response.blob();
+    if (!variantId) window.dispatchEvent(new Event("tts-cache-updated"));
+  } catch (error) {
+    if (token !== playToken) throw cancelled();
+    if (controller.signal.aborted)
+      throw new Error("语音请求超时，已生成的录音可能稍后可在录音版本中找到");
+    throw error;
   } finally {
     clearTimeout(timeout);
     if (currentAbort === controller) currentAbort = null;
   }
+  if (token !== playToken) throw cancelled();
+  await playBlob(blob, slow);
 }
-
-/**
- * 播放一行日语，播放完成（或失败/被停止）后 resolve。
- * 火山引擎不可用时自动回退浏览器语音。
- */
-export async function playLine(text: string, slow = false): Promise<void> {
-  if (!text) return;
-  stopSpeaking();
-  const token = playToken;
-
-  // 用户选择跳过火山引擎时，直接使用浏览器语音
-  if (isTtsSkipped() && !getSessionApiKey()) {
-    await playViaBrowser(text, slow);
-    return;
-  }
-
-  try {
-    await playViaServer(text, slow, token);
-  } catch (error) {
-    if (token !== playToken) return; // 已被新的播放或 stop 取代
-    await playViaBrowser(text, slow);
-  }
-}
-
-/** 播放一段日语文本（不等待播放结束） */
 export function speak(text: string, slow = false): void {
-  if (!text) return;
-  void playLine(text, slow).catch(() => {
-    // 火山引擎与浏览器语音都不可用时静默失败
+  void playLine(text, slow).catch((error: unknown) => {
+    if (!isPlaybackCancelled(error))
+      window.dispatchEvent(
+        new CustomEvent("tts-playback-error", {
+          detail: {
+            text,
+            message: error instanceof Error ? error.message : "语音播放失败",
+          },
+        }),
+      );
   });
 }

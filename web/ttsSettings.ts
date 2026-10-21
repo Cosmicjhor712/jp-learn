@@ -1,49 +1,116 @@
-// ============================================================
-// 语音设置：API Key 只保存在当前浏览器标签页的 sessionStorage，
-// 关闭标签页自动清除，不写入项目文件，也不进入 git。
-// ============================================================
+import {
+  defaultSelection,
+  isTtsSelection,
+  type CloudProvider,
+  type TtsSelection,
+} from "../shared/tts.ts";
 
-const KEY_STORAGE = "jp-learn-volc-api-key";
-const SKIP_STORAGE = "jp-learn-tts-skip";
+const PREFERENCE = "jp-learn-tts-selection-v1";
+const CONFIRMED = "jp-learn-tts-confirmed";
+const SKIP = "jp-learn-tts-skip";
+const VARIANTS = "jp-learn-tts-sentence-versions";
+const WORKSPACE = "jp-learn-bailian-workspace";
+const memory = new Map<string, string>();
+const keyName = (provider: CloudProvider) =>
+  provider === "volc" ? "jp-learn-volc-api-key" : "jp-learn-bailian-api-key";
 
-function safeGet(key: string): string | null {
+function get(key: string, persistent = false): string | null {
   try {
-    return window.sessionStorage.getItem(key);
+    return (
+      (persistent ? localStorage : sessionStorage).getItem(key) ??
+      memory.get(key) ??
+      null
+    );
   } catch {
-    return null;
+    return memory.get(key) ?? null;
   }
 }
-
-function safeSet(key: string, value: string | null): void {
+function set(key: string, value: string | null, persistent = false): void {
+  if (value === null) memory.delete(key);
+  else memory.set(key, value);
   try {
-    if (value === null) window.sessionStorage.removeItem(key);
-    else window.sessionStorage.setItem(key, value);
+    const storage = persistent ? localStorage : sessionStorage;
+    if (value === null) storage.removeItem(key);
+    else storage.setItem(key, value);
   } catch {
-    // 隐私模式等场景下不可用时保持内存外无持久化
+    /* Keep this tab usable when storage is blocked. */
   }
 }
-
-export function getSessionApiKey(): string {
-  if (typeof window === "undefined") return "";
-  return safeGet(KEY_STORAGE) ?? "";
+export function getSessionApiKey(provider: CloudProvider = "volc"): string {
+  return get(keyName(provider)) ?? "";
 }
-
-export function setSessionApiKey(key: string): void {
-  const trimmed = key.trim();
-  safeSet(KEY_STORAGE, trimmed || null);
+export function setSessionApiKey(
+  key: string,
+  provider: CloudProvider = "volc",
+): void {
+  set(keyName(provider), key.trim() || null);
 }
-
+export function getWorkspaceId(): string {
+  return get(WORKSPACE, true) ?? "";
+}
+export function setWorkspaceId(id: string): void {
+  set(WORKSPACE, id.trim(), true);
+}
 export function isTtsSkipped(): boolean {
-  if (typeof window === "undefined") return true;
-  return safeGet(SKIP_STORAGE) === "1";
+  return get(SKIP) === "1";
 }
-
 export function setTtsSkipped(skipped: boolean): void {
-  safeSet(SKIP_STORAGE, skipped ? "1" : null);
+  set(SKIP, skipped ? "1" : null);
 }
-
-/** 清除本会话的 Key 与跳过标记 */
+export function hasSavedSelection(): boolean {
+  try {
+    return isTtsSelection(JSON.parse(get(PREFERENCE, true) ?? "null"));
+  } catch {
+    return false;
+  }
+}
+export function getTtsSelection(): TtsSelection {
+  if (isTtsSkipped()) return defaultSelection();
+  try {
+    const value: unknown = JSON.parse(get(PREFERENCE, true) ?? "null");
+    if (isTtsSelection(value)) return value;
+  } catch {
+    /* Ignore invalid preferences. */
+  }
+  return defaultSelection(getSessionApiKey() ? "volc" : "browser");
+}
+export function saveTtsSelection(selection: TtsSelection): void {
+  if (!isTtsSelection(selection)) return;
+  set(PREFERENCE, JSON.stringify(selection), true);
+  setTtsSkipped(selection.provider === "browser");
+  set(CONFIRMED, "1");
+  window.dispatchEvent(new Event("tts-settings-changed"));
+}
+export function hasConfirmedTts(): boolean {
+  return get(CONFIRMED) === "1" || isTtsSkipped() || !!getSessionApiKey();
+}
 export function clearTtsSession(): void {
-  safeSet(KEY_STORAGE, null);
-  safeSet(SKIP_STORAGE, null);
+  setSessionApiKey("", "volc");
+  setSessionApiKey("", "bailian");
+  set(CONFIRMED, null);
+  set(SKIP, null);
+}
+function sentenceVersions(): Record<string, string> {
+  try {
+    const value = JSON.parse(get(VARIANTS) ?? "{}");
+    return value && typeof value === "object" && !Array.isArray(value)
+      ? value
+      : {};
+  } catch {
+    return {};
+  }
+}
+export function getSentenceVersion(text: string): string | undefined {
+  const id = sentenceVersions()[text.trim()];
+  return typeof id === "string" ? id : undefined;
+}
+export function setSentenceVersion(text: string, id?: string): void {
+  const versions = sentenceVersions();
+  if (id) versions[text.trim()] = id;
+  else delete versions[text.trim()];
+  set(
+    VARIANTS,
+    JSON.stringify(Object.fromEntries(Object.entries(versions).slice(-500))),
+  );
+  window.dispatchEvent(new Event("tts-settings-changed"));
 }

@@ -64,7 +64,7 @@ test("cache paths live under data/audio and are scoped by voice and text", () =>
   assert.notEqual(a, c);
   assert.notEqual(a, d);
   assert.match(
-    a,
+    a.split(path.sep).join("/"),
     new RegExp(
       `/data/audio/${DEFAULT_VOICE}/[0-9a-f]{40}\\.mp3$`
     )

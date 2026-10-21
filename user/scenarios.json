@@ -80,8 +80,8 @@
         ]
       },
       "answers": {
-        "listen-milk": {
-          "choice": 2,
+        "listen-meal": {
+          "choice": 0,
           "independent": true,
           "supports": []
         },
@@ -90,8 +90,8 @@
           "independent": true,
           "supports": []
         },
-        "listen-meal": {
-          "choice": 0,
+        "listen-milk": {
+          "choice": 2,
           "independent": true,
           "supports": []
         },
@@ -372,8 +372,8 @@
           ]
         },
         "answers": {
-          "listen-milk": {
-            "choice": 2,
+          "listen-meal": {
+            "choice": 0,
             "independent": true,
             "supports": []
           },
@@ -382,8 +382,8 @@
             "independent": true,
             "supports": []
           },
-          "listen-meal": {
-            "choice": 0,
+          "listen-milk": {
+            "choice": 2,
             "independent": true,
             "supports": []
           },

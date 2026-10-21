@@ -275,9 +275,8 @@ test("revisit text-only fallback remains usable but does not claim listening ret
   );
   await seed(page, learned());
   await page.getByRole("button", { name: "开始到期复测", exact: true }).click();
-  await expect(
-    page.getByRole("button", { name: "播放对话", exact: true }),
-  ).toBeDisabled();
+  await page.getByRole("button", { name: "播放对话", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText("浏览器没有可用的日语音色");
   await finishFromListening(page, scenarioVariants[0].id, false);
   await expect(page.locator(".revisit-result-context")).toContainText(
     "间隔 1 天",

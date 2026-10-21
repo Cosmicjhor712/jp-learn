@@ -10,6 +10,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { VOLC_VOICES } from "../shared/tts.ts";
 
 export const DEFAULT_VOICE = "ja_female_bv522_uranus_bigtts";
 export const DEFAULT_API_URL =
@@ -34,16 +35,7 @@ export interface VolcTtsConfig {
 }
 
 /** 官方文档中的日语大模型音色（豆包语音合成 2.0） */
-export const JAPANESE_VOICES: { id: string; label: string }[] = [
-  { id: "ja_female_bv522_uranus_bigtts", label: "Hana · 通用/教学女声" },
-  { id: "ja_female_bv024_uranus_bigtts", label: "Bonnie · 教学场景女声" },
-  { id: "ja_female_bv520_uranus_bigtts", label: "Poppy · 视频配音女声" },
-  { id: "ja_female_bv521_uranus_bigtts", label: "Aoi · 角色扮演女声" },
-  { id: "ja_female_bv523_uranus_bigtts", label: "Lily · 趣味口音女声" },
-  { id: "ja_male_bv524_uranus_bigtts", label: "Ken · 通用男声" },
-  { id: "ja_female_minimi_uranus_bigtts", label: "Minimi · 上下文遵循女声" },
-  { id: "ja_female_shirou_uranus_bigtts", label: "Shirou · 角色扮演女声" },
-];
+export const JAPANESE_VOICES = VOLC_VOICES;
 
 const VOICE_IDS = new Set(JAPANESE_VOICES.map((voice) => voice.id));
 

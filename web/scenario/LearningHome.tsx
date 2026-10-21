@@ -85,7 +85,6 @@ export default function LearningHome({
     onNext: () => void;
     onKana: () => void;
     onListen: () => void;
-    onVoiceSettings: () => void;
   };
 }) {
   const course = getScenario(recommendedCourse(library));
@@ -431,13 +430,6 @@ export default function LearningHome({
             <ArrowRight size={16} />
           </button>
         )}
-        <button
-          type="button"
-          className="home-link home-voice-settings"
-          onClick={foundation.onVoiceSettings}
-        >
-          语音设置（火山引擎 API Key）
-        </button>
       </section>
     </div>
   );

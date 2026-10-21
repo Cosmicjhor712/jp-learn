@@ -4,7 +4,7 @@
   "description": "日语学习工具（终端 + Web）— 强制打字产出 + FSRS 间隔重复 + 听力练习",
   "type": "module",
   "scripts": {
-    "test": "node --import tsx --test tests/kana.test.ts tests/scenario.test.ts tests/library.test.ts tests/evidence.test.ts tests/revisit.test.ts tests/tts.test.ts tests/userState.test.ts",
+    "test": "node --import tsx --test tests/kana.test.ts tests/scenario.test.ts tests/library.test.ts tests/evidence.test.ts tests/revisit.test.ts tests/tts.test.ts tests/multiTts.test.ts tests/userState.test.ts",
     "test:web": "playwright test",
     "start": "node --import tsx src/index.tsx",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.web.json --noEmit",
